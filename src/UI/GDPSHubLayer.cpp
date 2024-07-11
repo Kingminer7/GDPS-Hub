@@ -60,3 +60,7 @@ GDPSHubLayer *GDPSHubLayer::create()
     CC_SAFE_DELETE(ret);
     return nullptr;
 }
+
+void updateList() {
+    
+}
