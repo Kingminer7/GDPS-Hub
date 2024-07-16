@@ -1,4 +1,6 @@
 #include "GDPSHubLayer.hpp"
+#include "PrivateServerNode.hpp"
+#include "../utils/Structs.hpp"
 
 #include <Geode/utils/cocos.hpp>
 
@@ -19,7 +21,7 @@ bool GDPSHubLayer::init()
 
     auto winSize = CCDirector::get()->getWinSize();
 
-    auto title = CCLabelBMFont::create("Basic Layer", "goldFont.fnt");
+    auto title = CCLabelBMFont::create("Private Server Switcher", "goldFont.fnt");
     title->setPosition(winSize.width / 2, winSize.height - 22.5f);
     title->setID("title-text");
     this->addChild(title);
@@ -35,7 +37,23 @@ bool GDPSHubLayer::init()
     backBtn->setID("back-button");
     menu->addChild(backBtn);
     this->addChild(menu);
-    
+
+    auto scrollBg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
+    scrollBg->setColor({0, 0, 0});
+    scrollBg->setOpacity(90);
+    scrollBg->setContentSize({winSize.width - 85, winSize.height - 100});
+    scrollBg->setPosition(winSize / 2);
+    scrollBg->ignoreAnchorPointForPosition(false);
+    scrollBg->setID("server-scroll-bg");
+    this->addChild(scrollBg);
+
+    scroll = ScrollLayer::create({winSize.width - 85, winSize.height - 100});
+    scroll->setPosition((winSize - scroll->getContentSize()) / 2);
+    scroll->setID("server-scroll");
+    this->addChild(scroll);
+
+    updateList();
+
     return true;
 }
 
@@ -61,6 +79,20 @@ GDPSHubLayer *GDPSHubLayer::create()
     return nullptr;
 }
 
-void updateList() {
-    
+void GDPSHubLayer::updateList() {
+    m_loadingCircle->setParentLayer(this);
+    m_loadingCircle->setPosition({ -70,-40 });
+    m_loadingCircle->setScale(1.f);
+    m_loadingCircle->show();
+
+    m_listener.bind([this] (web::WebTask::Event* e) {
+        if (web::WebResponse* res = e->getValue()) {
+            auto resp = res->json().unwrapOr(matjson::Object{});
+            log::info("{}", resp);
+            m_loadingCircle->fadeAndRemove();
+        }
+    });
+
+    auto req = web::WebRequest();
+    m_listener.setFilter(req.get("https://api.gdpshub.com/gdps/geode"));
 }

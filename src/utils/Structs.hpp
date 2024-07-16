@@ -1,7 +1,8 @@
+#pragma once
+
 using namespace geode::prelude;
 
-struct Server
-    {
+struct Server{
     int id;
     std::string title;
     std::string description;

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "./Structs.hpp"
 
 using namespace geode::prelude;
