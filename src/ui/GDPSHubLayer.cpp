@@ -80,6 +80,7 @@ void GDPSHubLayer::updateList() {
     m_loadingCircle->setScale(1.f);
     m_loadingCircle->show();
 
+    // Error somewhere here will find tmrw
     m_listener.bind([this] (web::WebTask::Event* e) {
         if (web::WebResponse* res = e->getValue()) {
             std::string err;
