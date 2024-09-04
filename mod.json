@@ -1,5 +1,5 @@
 {
-	"geode": "3.2.0",
+	"geode": "3.4.0",
 	"gd": {
 		"win": "2.206",
 		"android": "2.206",
@@ -19,7 +19,9 @@
 	],
 	"repository": "https://github.com/kingminer7/gdps-hub",
 	"links": {
-		"source": "https://github.com/kingminer7/gdps-hub"
+		"source": "https://github.com/kingminer7/gdps-hub",
+		"community": "https://discord.gg/AeVS5J9bcy",
+		"homepage": "https://gdpshub.com/"
 	},
 	"issues": {
 		"info": "Report issues on the github issues page.",
@@ -31,5 +33,12 @@
 				"resources/*.png"
 			]
 		}
-	}
+	},
+	"dependencies": [
+		{
+			"id": "km7dev.server_api",
+			"importance": "required",
+			"version": "1.0.0-alpha.1"
+		}
+	]
 }
