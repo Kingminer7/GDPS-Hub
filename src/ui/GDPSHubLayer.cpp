@@ -75,12 +75,13 @@ GDPSHubLayer *GDPSHubLayer::create()
 }
 
 void GDPSHubLayer::updateList() {
+    scroll->m_contentLayer->removeAllChildren();
     m_loadingCircle->setParentLayer(this);
     m_loadingCircle->setPosition({ 0, 0 });
     m_loadingCircle->setScale(1.f);
     m_loadingCircle->show();
+    scroll->moveToTop();
 
-    // Error somewhere here will find tmrw
     m_listener.bind([this] (web::WebTask::Event* e) {
         if (web::WebResponse* res = e->getValue()) {
             std::string err;
@@ -94,12 +95,31 @@ void GDPSHubLayer::updateList() {
                     ->show();
                 return;
             }
-            auto servers = data["servers"].as<std::vector<Server>>();
+            auto servers = data.as_array();
 
-            for (Server server : servers) {
-                log::info("{}", server.url);
+            float totalHeight = 0.f;
+            std::vector<PrivateServerNode *> rendered;
+
+            for (matjson::Value val : servers) {
+                auto server = val.as<Server>();
+                log::info("{}", server.id);
+                
+                auto node = PrivateServerNode::create(this, server, ccp(scroll->getContentWidth(), 80));
+                node->setPosition(0, totalHeight);
+                scroll->m_contentLayer->addChild(node);
+                totalHeight += 85;
+                rendered.push_back(node);
             }
 
+            totalHeight -= 5;
+
+            if (totalHeight < scroll->m_contentLayer->getContentSize().height)
+            {
+                totalHeight = scroll->m_contentLayer->getContentSize().height;
+            }
+
+            scroll->m_contentLayer->setContentSize({scroll->m_contentLayer->getContentWidth(), totalHeight});
+            scroll->moveToTop();
             m_loadingCircle->fadeAndRemove();
         }
     });
