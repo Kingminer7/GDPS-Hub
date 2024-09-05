@@ -102,7 +102,6 @@ void GDPSHubLayer::updateList() {
 
             for (matjson::Value val : servers) {
                 auto server = val.as<Server>();
-                log::info("{}", server.id);
                 
                 auto node = PrivateServerNode::create(this, server, ccp(scroll->getContentWidth(), 80));
                 node->setPosition(0, totalHeight);
