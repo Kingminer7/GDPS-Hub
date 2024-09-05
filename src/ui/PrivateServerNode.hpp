@@ -16,16 +16,14 @@ protected:
     bool init(
         GDPSHubLayer* layer,
         Server entry,
-        CCSize size,
-        bool selected = false
+        CCSize size
     );
 
 public:
     static PrivateServerNode* create(
         GDPSHubLayer* layer,
         Server entry,
-        CCSize size,
-        bool selected = false
+        CCSize size
     );
     Server getServer();
 };
