@@ -35,22 +35,41 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     name->setAnchorPoint({0, 0.5});
     name->limitLabelWidth(size.width - 124, 0.8f, 0.1f);
     this->addChild(name);
+    
+    log::info("{}", std::to_string(entry.id));
+    auto idLab = CCLabelBMFont::create(fmt::format("id {}", entry.id).c_str(), "chatFont.fnt");
+    idLab->setPosition(4 + name->getContentWidth() * name->getScaleX(), this->getContentHeight() - 15.f);
+    idLab->setAnchorPoint({0, 0.5});
+    idLab->limitLabelWidth(116, 0.3f, 0.1f);
+    this->addChild(idLab);
 
     auto desc = SimpleTextArea::create(entry.description, "chatFont.fnt", .7);
     desc->setContentSize(ccp(size.width * .65, size.height - 30.f));
     desc->setWrappingMode(WrappingMode::WORD_WRAP);
     desc->setPosition(ccp(8, size.height / 2 - 10));
     desc->setAnchorPoint({0, 0.5});
-    desc->setMaxLines(4);
-    desc->setWidth(size.width * .65);
+    desc->setMaxLines(3);
+    desc->setWidth(size.width * .8);
     this->addChild(desc);
 
     auto menu = CCMenu::create();
-    menu->setContentSize(ccp(size.width * .35, size.height));
-    menu->setPosition(size.width * .65, 0);
+    menu->setContentSize(ccp(size.width * .2 - 16, size.height));
+    menu->setPosition(size.width * .8 + 8, 0);
+    auto spr = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
+    spr->setScale(.7f);
+    auto viewBtn = CCMenuItemSpriteExtra::create(spr,
+        this,
+        menu_selector(PrivateServerNode::viewServer));
+    viewBtn->setPosition(ccp(menu->getContentWidth() - 28.f, menu->getContentHeight() / 2));
+    menu->addChild(viewBtn);
+
     this->addChild(menu);
 
     return true;
+}
+
+void PrivateServerNode::viewServer(CCObject *) {
+    FLAlertLayer::create("Error", "Not implemented.", "Ok")->show();
 }
 
 Server PrivateServerNode::getServer()

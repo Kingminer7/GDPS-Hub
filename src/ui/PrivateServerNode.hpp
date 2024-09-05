@@ -26,4 +26,5 @@ public:
         CCSize size
     );
     Server getServer();
+    void viewServer(CCObject *);
 };
