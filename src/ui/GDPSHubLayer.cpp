@@ -88,12 +88,31 @@ void GDPSHubLayer::updateList() {
             auto opt = res->json();
             auto data = opt.value_or("err");
             if (data == "err") {
-                FLAlertLayer::create(
+                std::string err;
+                std::string fallback = R"(
+                [{
+                "id":1,
+                "title":"Could not connect! another long blurb lolz 123351512",
+                "description":"This is an example server for development without server access. Message km7dev if you see this. This is not intended to be built for release. Super long text for testing reasons :) gd is fun hello 1234567890:):):):P:):).",
+                "gdpsdb":"https://km7dev.ps.fhgdps.com",
+                "pfp":"https://raw.githubusercontent.com/geode-sdk/geode/main/loader/resources/logos/geode-logo.png",
+                "discord_url":"https://google.com",
+                "views":5819531923,
+                "created_at":"1725541895"
+                }]
+                )";
+                // timestamp should be Thu Sep 05 2024 09:11:35 GMT-0400 (Eastern Daylight Time) (current time as of creating the test)
+                auto dat = matjson::parse(fallback, err);
+                data = dat.value_or("err2");
+                if (data == "err2") {
+                    log::info("{}", err);
+                    FLAlertLayer::create(
                     "Error",
                     "Could not connect to GDPS Hub Servers.",
                     "Ok")
                     ->show();
-                return;
+                    return;
+                }
             }
             auto servers = data.as_array();
 
@@ -106,7 +125,7 @@ void GDPSHubLayer::updateList() {
                 auto node = PrivateServerNode::create(this, server, ccp(scroll->getContentWidth(), 80));
                 node->setPosition(0, totalHeight);
                 scroll->m_contentLayer->addChild(node);
-                totalHeight += 85;
+                totalHeight += 80;
                 rendered.push_back(node);
             }
 
@@ -115,6 +134,11 @@ void GDPSHubLayer::updateList() {
             if (totalHeight < scroll->m_contentLayer->getContentSize().height)
             {
                 totalHeight = scroll->m_contentLayer->getContentSize().height;
+            }
+
+            for (auto &node : rendered)
+            {
+                node->setPositionY(totalHeight - node->getPositionY() - 80);
             }
 
             scroll->m_contentLayer->setContentSize({scroll->m_contentLayer->getContentWidth(), totalHeight});
