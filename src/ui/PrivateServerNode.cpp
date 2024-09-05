@@ -37,13 +37,18 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     this->addChild(name);
 
     auto desc = SimpleTextArea::create(entry.description, "chatFont.fnt", .7);
-    desc->setContentSize(ccp(size.width - 16.f, size.height - 30.f));
+    desc->setContentSize(ccp(size.width * .65, size.height - 30.f));
     desc->setWrappingMode(WrappingMode::WORD_WRAP);
     desc->setPosition(ccp(8, size.height / 2 - 10));
     desc->setAnchorPoint({0, 0.5});
     desc->setMaxLines(4);
-    desc->setWidth(size.width - 16.f);
+    desc->setWidth(size.width * .65);
     this->addChild(desc);
+
+    auto menu = CCMenu::create();
+    menu->setContentSize(ccp(size.width * .35, size.height));
+    menu->setPosition(size.width * .65, 0);
+    this->addChild(menu);
 
     return true;
 }
