@@ -35,12 +35,11 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     name->setAnchorPoint({0, 0.5});
     name->limitLabelWidth(size.width - 124, 0.8f, 0.1f);
     this->addChild(name);
-    
-    log::info("{}", std::to_string(entry.id));
+
     auto idLab = CCLabelBMFont::create(fmt::format("id {}", entry.id).c_str(), "chatFont.fnt");
-    idLab->setPosition(4 + name->getContentWidth() * name->getScaleX(), this->getContentHeight() - 15.f);
+    idLab->setPosition(12 + name->getContentWidth() * name->getScaleX(), this->getContentHeight() - 15.f);
     idLab->setAnchorPoint({0, 0.5});
-    idLab->limitLabelWidth(116, 0.3f, 0.1f);
+    idLab->limitLabelWidth(64, 0.5f, 0.1f);
     this->addChild(idLab);
 
     auto desc = SimpleTextArea::create(entry.description, "chatFont.fnt", .7);
