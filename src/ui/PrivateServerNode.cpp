@@ -1,4 +1,5 @@
 #include "PrivateServerNode.hpp"
+#include "PSCreatorLayer.hpp"
 #include "../utils/Structs.hpp"
 
 PrivateServerNode *PrivateServerNode::create(GDPSHubLayer *layer, Server entry, CCSize size)
@@ -40,13 +41,14 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     idLab->setPosition(12 + name->getContentWidth() * name->getScaleX(), this->getContentHeight() - 15.f);
     idLab->setAnchorPoint({0, 0.5});
     idLab->limitLabelWidth(64, 0.5f, 0.1f);
+    // idLab->setColor();
     this->addChild(idLab);
 
     auto desc = SimpleTextArea::create(entry.description, "chatFont.fnt", .7);
     desc->setContentSize(ccp(size.width * .65, size.height - 30.f));
     desc->setWrappingMode(WrappingMode::WORD_WRAP);
-    desc->setPosition(ccp(8, size.height / 2 - 10));
-    desc->setAnchorPoint({0, 0.5});
+    desc->setPosition(ccp(8, size.height - 30));
+    desc->setAnchorPoint({0, 1});
     desc->setMaxLines(3);
     desc->setWidth(size.width * .8);
     this->addChild(desc);
@@ -68,7 +70,9 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
 }
 
 void PrivateServerNode::viewServer(CCObject *) {
-    FLAlertLayer::create("Error", "Not implemented.", "Ok")->show();
+    auto scene = CCScene::create();
+	scene->addChild(PSCreatorLayer::create());
+	CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
 Server PrivateServerNode::getServer()
