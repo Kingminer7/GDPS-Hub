@@ -159,7 +159,7 @@ void PSCreatorLayer::onScores(CCObject *) {
 }
 
 void PSCreatorLayer::onGauntlets(CCObject *) {
-    // GauntletSelectLayer::scene(0);
+    GauntletSelectLayer::scene(0);
 }
 
 void PSCreatorLayer::onMapPacks(CCObject *) {
@@ -167,18 +167,15 @@ void PSCreatorLayer::onMapPacks(CCObject *) {
 }
 
 void PSCreatorLayer::onDaily(CCObject *) {
-	auto page = DailyLevelPage::create(GJTimedLevelType::Daily);
-	page->show();
+	DailyLevelPage::create(GJTimedLevelType::Daily)->show();
 }
 
 void PSCreatorLayer::onWeekly(CCObject *) {
-	auto page = DailyLevelPage::create(GJTimedLevelType::Weekly);
-	page->show();
+	DailyLevelPage::create(GJTimedLevelType::Weekly)->show();
 }
 
 void PSCreatorLayer::onEvent(CCObject *) {
-	auto page = DailyLevelPage::create(GJTimedLevelType::Event);
-	page->show();
+	DailyLevelPage::create(GJTimedLevelType::Event)->show();
 }
 
 void PSCreatorLayer::onFeatured(CCObject *) {
