@@ -37,7 +37,7 @@
 	"dependencies": [
 		{
 			"id": "km7dev.server_api",
-			"importance": "required",
+			"importance": "recommended",
 			"version": "1.0.0-alpha.1"
 		}
 	]
