@@ -9,7 +9,7 @@ class GDPSHub {
         GDPSHub() {}
         static inline GDPSHub *instance = nullptr;
         Server currentServer;
-        bool isPreviewing;
+        bool previewing = false;
         std::string apiUrl = "https://api.gdpshub.com/gdps/geode";
     public:
         static GDPSHub *get() {
@@ -19,11 +19,11 @@ class GDPSHub {
 
         void beginPreview(Server server) {
             this->currentServer = server;
-            this->isPreviewing = true;
+            this->previewing = true;
         }
         
         void endPreview() {
-            this->isPreviewing = false;
+            this->previewing = false;
         }
 
         void switchPreview(Server server) {
@@ -35,6 +35,6 @@ class GDPSHub {
         }
 
         bool isPreviewing() {
-            return this->isPreviewing;
+            return this->previewing;
         }
 };
