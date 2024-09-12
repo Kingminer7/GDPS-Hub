@@ -1,4 +1,5 @@
 #include "PSCreatorLayer.hpp"
+#include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
 #include <Geode/binding/GauntletSelectLayer.hpp>
 #include <Geode/binding/LeaderboardsLayer.hpp>
@@ -10,6 +11,7 @@ bool PSCreatorLayer::init()
     if (!CCLayer::init())
         return false;
     
+    GDPSHub::get()->beginPreview({});
     
     this->setID("PSCreatorLayer");
 
@@ -139,6 +141,7 @@ void PSCreatorLayer::keyBackClicked()
 
 void PSCreatorLayer::onGoBack(CCObject *)
 {
+    GDPSHub::get()->endPreview();
     CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, MenuLayer::scene(false)));
 }
 
@@ -155,19 +158,23 @@ PSCreatorLayer *PSCreatorLayer::create()
 }
 
 void PSCreatorLayer::onScores(CCObject *) {
-    // LeaderboardsLayer::scene(LeaderboardState::Default);
+    LeaderboardsLayer::scene(LeaderboardState::Default);
 }
 
 void PSCreatorLayer::onGauntlets(CCObject *) {
-    GauntletSelectLayer::scene(0);
+    auto scene = GauntletSelectLayer::scene(0);
+	CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onMapPacks(CCObject *) {
-
+    auto gjso = GJSearchObject::create(SearchType::MapPack);
+    auto scene = LevelBrowserLayer::scene(gjso);
+    CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onDaily(CCObject *) {
-	DailyLevelPage::create(GJTimedLevelType::Daily)->show();
+	auto dlp = DailyLevelPage::create(GJTimedLevelType::Daily);
+    dlp->show();
 }
 
 void PSCreatorLayer::onWeekly(CCObject *) {
@@ -179,11 +186,16 @@ void PSCreatorLayer::onEvent(CCObject *) {
 }
 
 void PSCreatorLayer::onFeatured(CCObject *) {
-
+    auto gjso = GJSearchObject::create(SearchType::Featured);
+    auto scene = LevelBrowserLayer::scene(gjso);
+    CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onLists(CCObject *) {
-
+    auto gjso = GJSearchObject::create(SearchType::Featured);
+    gjso->m_searchMode = 1;
+    auto scene = LevelBrowserLayer::scene(gjso);
+    CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onSearch(CCObject *) {
