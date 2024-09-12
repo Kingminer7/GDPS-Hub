@@ -3,6 +3,7 @@
 #include "../utils/Structs.hpp"
 #include <Geode/binding/GauntletSelectLayer.hpp>
 #include <Geode/binding/LeaderboardsLayer.hpp>
+#include <Geode/binding/LevelSearchLayer.hpp>
 
 #include <Geode/utils/cocos.hpp>
 
@@ -158,7 +159,8 @@ PSCreatorLayer *PSCreatorLayer::create()
 }
 
 void PSCreatorLayer::onScores(CCObject *) {
-    LeaderboardsLayer::scene(LeaderboardState::Default);
+    auto scene = LeaderboardsLayer::scene(LeaderboardState::Default);
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onGauntlets(CCObject *) {
@@ -199,5 +201,6 @@ void PSCreatorLayer::onLists(CCObject *) {
 }
 
 void PSCreatorLayer::onSearch(CCObject *) {
-
+    auto scene = LevelSearchLayer::scene(0);
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
