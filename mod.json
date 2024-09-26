@@ -1,5 +1,5 @@
 {
-	"geode": "3.4.0",
+	"geode": "3.7.1",
 	"gd": {
 		"win": "2.206",
 		"android": "2.206",
@@ -17,7 +17,6 @@
 		"customization",
 		"online"
 	],
-	"repository": "https://github.com/kingminer7/gdps-hub",
 	"links": {
 		"source": "https://github.com/kingminer7/gdps-hub",
 		"community": "https://discord.gg/AeVS5J9bcy",
@@ -37,8 +36,8 @@
 	"dependencies": [
 		{
 			"id": "km7dev.server_api",
-			"importance": "recommended",
-			"version": "1.0.0-alpha.1"
+			"importance": "required",
+			"version": "1.0.0"
 		}
 	]
 }
