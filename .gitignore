@@ -59,3 +59,4 @@ build-*/
 
 # CLion
 /cmake-build-*/
+gdout/geode/mods/km7dev.server_api.geode
