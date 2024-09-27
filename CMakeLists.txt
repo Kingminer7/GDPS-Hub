@@ -23,4 +23,4 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
-setup_geode_mod(${PROJECT_NAME} EXTERNALS km7dev.server_api:1.0.0)
+setup_geode_mod(${PROJECT_NAME})
