@@ -47,15 +47,19 @@ class $modify(LeaderboardsLayer) {
     }
 };
 
-// class $modify(LevelSearchLayer) {
-//     void onBack(CCObject* sender) {
-//         if (GDPSHub::get()->isPreviewing() == true) {
-//             auto scene = CCScene::create();
-//             scene->addChild(PSCreatorLayer::create());
-//             CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
-//             return;
-//         }
-//         LevelSearchLayer::onBack(sender);
-//         return;
-//     }
-// };
+#ifndef GEODE_IS_ARM_MAC
+
+class $modify(LevelSearchLayer) {
+    void onBack(CCObject* sender) {
+        if (GDPSHub::get()->isPreviewing() == true) {
+            auto scene = CCScene::create();
+            scene->addChild(PSCreatorLayer::create());
+            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+            return;
+        }
+        LevelSearchLayer::onBack(sender);
+        return;
+    }
+};
+
+#endif
