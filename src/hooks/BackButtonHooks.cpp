@@ -62,4 +62,21 @@ class $modify(LevelSearchLayer) {
     }
 };
 
+#ifdef GEODE_IS_MACOS
+
+class $modify(LevelSearchLayer) {
+    void keyBackClicked(CCObject* sender) {
+        if (GDPSHub::get()->isPreviewing() == true) {
+            auto scene = CCScene::create();
+            scene->addChild(PSCreatorLayer::create());
+            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+            return;
+        }
+        LevelSearchLayer::keyBackClicked(sender);
+        return;
+    }
+};
+
+#endif
+
 #endif
