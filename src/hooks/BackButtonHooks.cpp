@@ -47,7 +47,7 @@ class $modify(LeaderboardsLayer) {
     }
 };
 
-#ifndef GEODE_IS_MACOS
+#ifndef GEODE_IS_ARM_MAC
 
 class $modify(LevelSearchLayer) {
     void onBack(CCObject* sender) {
