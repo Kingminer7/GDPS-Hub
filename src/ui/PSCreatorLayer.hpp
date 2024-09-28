@@ -20,6 +20,7 @@ public:
     void onLists(CCObject *);
     void onMapPacks(CCObject *);
     void onSearch(CCObject *);
+    void onDebug(CCObject *);
 protected:
     Server m_server;
     bool init() override;

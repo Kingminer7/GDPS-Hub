@@ -27,4 +27,5 @@ public:
     );
     Server getServer();
     void viewServer(CCObject *);
+    void openPopup(CCObject *);
 };

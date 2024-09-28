@@ -29,8 +29,8 @@ class $modify(menuLayer, MenuLayer) {
 
 	void onGdpsHub(CCObject*) {
 		auto scene = CCScene::create();
-		// scene->addChild(GDPSHubLayer::create());
-		scene->addChild(PSCreatorLayer::create());
+		scene->addChild(GDPSHubLayer::create());
+		// scene->addChild(PSCreatorLayer::create());
 		CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
 	}
 };

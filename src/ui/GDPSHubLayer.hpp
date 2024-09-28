@@ -24,4 +24,5 @@ public:
     void onGoBack(CCObject *);
     ScrollLayer *scroll;
     void updateList();
+    void fetchServers();
 };
