@@ -47,8 +47,6 @@ class $modify(LeaderboardsLayer) {
     }
 };
 
-#ifndef GEODE_IS_ARM_MAC
-
 class $modify(LevelSearchLayer) {
     void onBack(CCObject* sender) {
         if (GDPSHub::get()->isPreviewing() == true) {
@@ -65,18 +63,16 @@ class $modify(LevelSearchLayer) {
 #ifdef GEODE_IS_MACOS
 
 class $modify(LevelSearchLayer) {
-    void keyBackClicked(CCObject* sender) {
+    void keyBackClicked() {
         if (GDPSHub::get()->isPreviewing() == true) {
             auto scene = CCScene::create();
             scene->addChild(PSCreatorLayer::create());
             CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
             return;
         }
-        LevelSearchLayer::keyBackClicked(sender);
+        LevelSearchLayer::keyBackClicked();
         return;
     }
 };
-
-#endif
 
 #endif
