@@ -1,5 +1,7 @@
 #include "PrivateServerNode.hpp"
 #include "PSCreatorLayer.hpp"
+#include "PrivateServerPopup.hpp"
+#include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
 
 PrivateServerNode *PrivateServerNode::create(GDPSHubLayer *layer, Server entry, CCSize size)
@@ -56,13 +58,27 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     auto menu = CCMenu::create();
     menu->setContentSize(ccp(size.width * .2 - 16, size.height));
     menu->setPosition(size.width * .8 + 8, 0);
+
     auto spr = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
     spr->setScale(.7f);
     auto viewBtn = CCMenuItemSpriteExtra::create(spr,
         this,
         menu_selector(PrivateServerNode::viewServer));
     viewBtn->setPosition(ccp(menu->getContentWidth() - 28.f, menu->getContentHeight() / 2));
+    if (server.url == "No URL provided.") {
+        viewBtn->setEnabled(false);
+        viewBtn->setColor({100, 100, 100});
+        viewBtn->setOpacity(100);
+    }
     menu->addChild(viewBtn);
+
+    spr = CircleButtonSprite::createWithSpriteFrameName("info.png"_spr, 1.5, CircleBaseColor::Green, CircleBaseSize::Large);
+    spr->setScale(0.7f);
+    auto infoBtn = CCMenuItemSpriteExtra::create(spr,
+        this,
+        menu_selector(PrivateServerNode::openPopup));
+    infoBtn->setPosition(ccp(menu->getContentWidth() - 88.f, menu->getContentHeight() / 2));
+    menu->addChild(infoBtn);
 
     this->addChild(menu);
 
@@ -73,6 +89,12 @@ void PrivateServerNode::viewServer(CCObject *) {
     auto scene = CCScene::create();
 	scene->addChild(PSCreatorLayer::create());
 	CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
+    GDPSHub::get()->beginPreview(this->server);
+}
+
+void PrivateServerNode::openPopup(CCObject *) {
+    auto popup = PrivateServerPopup::create(server);
+    popup->show();
 }
 
 Server PrivateServerNode::getServer()

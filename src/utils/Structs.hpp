@@ -28,31 +28,51 @@ struct matjson::Serialize<Server>
         if (!value["title"].is_string()) {
             server.title = "No title provided";
         } else {
-            server.title = value["title"].as_string();
+            if (value["title"].as_string() == "") {
+                server.title = "No title provided";
+            } else {
+                server.title = value["title"].as_string();
+            }
         }
         
         if (!value["description"].is_string()) {
             server.description =  "No description provided.";
         } else {
-            server.description = value["description"].as_string();
+            if (value["description"].as_string() == "") {
+                server.description = "No description provided.";
+            } else {
+                server.description = value["description"].as_string();
+            }
         }
         
         if (!value["gdpsdb"].is_string()) {
             server.url = "No URL provided.";
-        }  else {
-            server.url = value["gdpsdb"].as_string();
+        } else {
+            if (value["gdpsdb"].as_string() == "") {
+                server.url = "No URL provided.";
+            } else {
+                server.url = value["gdpsdb"].as_string();
+            }
         }
         
         if (!value["discord_url"].is_string()) {
             server.dcUrl = "No discord provided.";
         } else {
-            server.dcUrl = value["discord_url"].as_string();
+            if (value["discord_url"].as_string() == "") {
+                server.dcUrl = "No discord provided.";
+            } else {
+                server.dcUrl = value["discord_url"].as_string();
+            }
         }
         
         if (!value["pfp"].is_string()) {
             server.pfp =  "No PFP provided";
         } else {
-            server.pfp = value["pfp"].as_string();
+            if (value["pfp"].as_string() == "") {
+                server.pfp = "No PFP provided";
+            } else {
+                server.pfp = value["pfp"].as_string();
+            }
         }
         
         if (!value["views"].is_number()) {

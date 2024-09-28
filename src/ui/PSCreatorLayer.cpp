@@ -1,5 +1,6 @@
 #include "PSCreatorLayer.hpp"
 #include "../utils/GDPSHub.hpp"
+#include "GDPSHubLayer.hpp"
 #include "../utils/Structs.hpp"
 #include <Geode/binding/GauntletSelectLayer.hpp>
 #include <Geode/binding/LeaderboardsLayer.hpp>
@@ -7,13 +8,13 @@
 
 #include <Geode/utils/cocos.hpp>
 
+using namespace geode::prelude;
+
 bool PSCreatorLayer::init()
 {
     if (!CCLayer::init())
         return false;
-    
-    GDPSHub::get()->beginPreview({});
-    
+
     this->setID("PSCreatorLayer");
 
     this->setKeypadEnabled(true);
@@ -34,6 +35,14 @@ bool PSCreatorLayer::init()
     backBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2 - 25.f);
     backBtn->setID("back-button");
     menu->addChild(backBtn);
+    this->addChild(menu);
+
+    auto debugBtn = CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("accountBtn_settings_001.png"),
+        this, menu_selector(PSCreatorLayer::onDebug));
+    debugBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2 - 60.f);
+    debugBtn->setID("debug-button");
+    menu->addChild(debugBtn);
     this->addChild(menu);
 
     auto trCorner = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
@@ -74,7 +83,7 @@ bool PSCreatorLayer::init()
     auto scoresBtn = CCMenuItemSpriteExtra::create(scoresSpr, this, menu_selector(PSCreatorLayer::onScores));
     scoresBtn->setID("scores-button");
     buttonMenu->addChild(scoresBtn);
-    
+
     auto gauntletsSpr = CCSprite::createWithSpriteFrameName("GJ_gauntletsBtn_001.png");
     gauntletsSpr->setScale(0.75);
     auto gauntletsBtn = CCMenuItemSpriteExtra::create(gauntletsSpr, this, menu_selector(PSCreatorLayer::onGauntlets));
@@ -129,7 +138,7 @@ bool PSCreatorLayer::init()
     layout->setGrowCrossAxis(true);
     layout->setAutoScale(false);
     buttonMenu->setLayout(layout);
-    
+
     this->addChild(buttonMenu);
 
     return true;
@@ -143,7 +152,11 @@ void PSCreatorLayer::keyBackClicked()
 void PSCreatorLayer::onGoBack(CCObject *)
 {
     GDPSHub::get()->endPreview();
-    CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, MenuLayer::scene(false)));
+    // CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, MenuLayer::scene(false)));
+    auto scene = CCScene::create();
+    scene->addChild(GDPSHubLayer::create());
+    // scene->addChild(PSCreatorLayer::create());
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
 PSCreatorLayer *PSCreatorLayer::create()
@@ -158,49 +171,68 @@ PSCreatorLayer *PSCreatorLayer::create()
     return nullptr;
 }
 
-void PSCreatorLayer::onScores(CCObject *) {
+void PSCreatorLayer::onScores(CCObject *)
+{
     auto scene = LeaderboardsLayer::scene(LeaderboardState::Default);
     CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
-void PSCreatorLayer::onGauntlets(CCObject *) {
+void PSCreatorLayer::onGauntlets(CCObject *)
+{
     auto scene = GauntletSelectLayer::scene(0);
-	CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
-void PSCreatorLayer::onMapPacks(CCObject *) {
+void PSCreatorLayer::onMapPacks(CCObject *)
+{
     auto gjso = GJSearchObject::create(SearchType::MapPack);
     auto scene = LevelBrowserLayer::scene(gjso);
     CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
-void PSCreatorLayer::onDaily(CCObject *) {
-	auto dlp = DailyLevelPage::create(GJTimedLevelType::Daily);
+void PSCreatorLayer::onDaily(CCObject *)
+{
+    auto dlp = DailyLevelPage::create(GJTimedLevelType::Daily);
     dlp->show();
 }
 
-void PSCreatorLayer::onWeekly(CCObject *) {
-	DailyLevelPage::create(GJTimedLevelType::Weekly)->show();
+void PSCreatorLayer::onWeekly(CCObject *)
+{
+    DailyLevelPage::create(GJTimedLevelType::Weekly)->show();
 }
 
-void PSCreatorLayer::onEvent(CCObject *) {
-	DailyLevelPage::create(GJTimedLevelType::Event)->show();
+void PSCreatorLayer::onEvent(CCObject *)
+{
+    DailyLevelPage::create(GJTimedLevelType::Event)->show();
 }
 
-void PSCreatorLayer::onFeatured(CCObject *) {
+void PSCreatorLayer::onFeatured(CCObject *)
+{
     auto gjso = GJSearchObject::create(SearchType::Featured);
     auto scene = LevelBrowserLayer::scene(gjso);
     CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
-void PSCreatorLayer::onLists(CCObject *) {
+void PSCreatorLayer::onLists(CCObject *)
+{
     auto gjso = GJSearchObject::create(SearchType::Featured);
     gjso->m_searchMode = 1;
     auto scene = LevelBrowserLayer::scene(gjso);
     CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
-void PSCreatorLayer::onSearch(CCObject *) {
+void PSCreatorLayer::onSearch(CCObject *)
+{
     auto scene = LevelSearchLayer::scene(0);
     CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
+}
+
+void PSCreatorLayer::onDebug(CCObject *)
+{
+    std::string str = "";
+    for (const auto &[uid, urlPrio] : ServerAPI::get()->getAllServers())
+    {
+        str += fmt::format("{}: {}\n", urlPrio.first, urlPrio.second);
+    }
+    geode::MDPopup::create("Server API Debug", str, "Close")->show();
 }

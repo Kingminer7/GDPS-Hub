@@ -1,4 +1,5 @@
 #include "GDPSHubLayer.hpp"
+#include "../utils/GDPSHub.hpp"
 #include "PrivateServerNode.hpp"
 #include "../utils/Structs.hpp"
 
@@ -26,7 +27,7 @@ bool GDPSHubLayer::init()
     menu->setZOrder(10);
 
     auto backBtn = CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png"),
+        CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png"),
         this, menu_selector(GDPSHubLayer::onGoBack));
     backBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2 - 25.f);
     backBtn->setID("back-button");
@@ -47,7 +48,14 @@ bool GDPSHubLayer::init()
     scroll->setID("server-scroll");
     this->addChild(scroll);
 
-    updateList();
+    if (GDPSHub::get()->servers.size() == 0)
+    {
+        this->fetchServers();
+    }
+    else
+    {
+        this->updateList();
+    }
 
     return true;
 }
@@ -74,15 +82,51 @@ GDPSHubLayer *GDPSHubLayer::create()
     return nullptr;
 }
 
-void GDPSHubLayer::updateList() {
+void GDPSHubLayer::updateList()
+{
     scroll->m_contentLayer->removeAllChildren();
-    m_loadingCircle->setParentLayer(this);
-    m_loadingCircle->setPosition({ 0, 0 });
-    m_loadingCircle->setScale(1.f);
-    m_loadingCircle->show();
     scroll->moveToTop();
 
-    m_listener.bind([this] (web::WebTask::Event* e) {
+    float totalHeight = 0.f;
+    std::vector<PrivateServerNode *> rendered;
+    int i = 0;
+    for (Server server : GDPSHub::get()->servers)
+    {
+        i++;
+        if (i > 10)
+            break;
+        auto node = PrivateServerNode::create(this, server, ccp(scroll->getContentWidth(), 80));
+        node->setPosition(0, totalHeight);
+        scroll->m_contentLayer->addChild(node);
+        totalHeight += 80;
+        rendered.push_back(node);
+    }
+
+    totalHeight -= 5;
+
+    if (totalHeight < scroll->m_contentLayer->getContentSize().height)
+    {
+        totalHeight = scroll->m_contentLayer->getContentSize().height;
+    }
+
+    for (auto &node : rendered)
+    {
+        node->setPositionY(totalHeight - node->getPositionY() - 80);
+    }
+
+    scroll->m_contentLayer->setContentSize({scroll->m_contentLayer->getContentWidth(), totalHeight});
+    scroll->moveToTop();
+}
+
+void GDPSHubLayer::fetchServers()
+{
+    m_loadingCircle->setParentLayer(this);
+    m_loadingCircle->setPosition({0, 0});
+    m_loadingCircle->setScale(1.f);
+    m_loadingCircle->show();
+
+    m_listener.bind([this](web::WebTask::Event *e)
+                    {
         if (web::WebResponse* res = e->getValue()) {
             std::string err;
             auto opt = res->json();
@@ -98,95 +142,13 @@ void GDPSHubLayer::updateList() {
             }
             auto servers = data.as_array();
 
-            float totalHeight = 0.f;
-            std::vector<PrivateServerNode *> rendered;
-
             for (matjson::Value val : servers) {
                 auto server = val.as<Server>();
-                
-                auto node = PrivateServerNode::create(this, server, ccp(scroll->getContentWidth(), 80));
-                node->setPosition(0, totalHeight);
-                scroll->m_contentLayer->addChild(node);
-                totalHeight += 80;
-                rendered.push_back(node);
+                GDPSHub::get()->servers.push_back(server);
             }
-
-            totalHeight -= 5;
-
-            if (totalHeight < scroll->m_contentLayer->getContentSize().height)
-            {
-                totalHeight = scroll->m_contentLayer->getContentSize().height;
-            }
-
-            for (auto &node : rendered)
-            {
-                node->setPositionY(totalHeight - node->getPositionY() - 80);
-            }
-
-            scroll->m_contentLayer->setContentSize({scroll->m_contentLayer->getContentWidth(), totalHeight});
-            scroll->moveToTop();
+            updateList();
             m_loadingCircle->fadeAndRemove();
-        }
-    });
-
-    if (Mod::get()->getSavedValue<bool>("devMode")) {
-        std::string err;
-        std::string fallback = R"(
-        [{
-        "id":1,
-        "title":"Could not connect.fsdadfaadsdffsdadfafdsaafd",
-        "description":"This is an example server for development without server access. Message km7dev if you see this. This is not intended to be built for release. Super long text for testing reasons :) gd is fun hello 1234567890:):):):P:):).",
-        "gdpsdb":"https://km7dev.ps.fhgdps.com",
-        "pfp":"https://raw.githubusercontent.com/geode-sdk/geode/main/loader/resources/logos/geode-logo.png",
-        "discord_url":"https://google.com",
-        "views":5819531923,
-        "created_at":"1725541895"
-        }]
-        )";
-        // timestamp should be Thu Sep 05 2024 09:11:35 GMT-0400 (Eastern Daylight Time) (current time as of creating the test)
-        auto dat = matjson::parse(fallback, err);
-        auto data = dat.value_or("err2");
-        if (data == "err2") {
-        log::info("{}", err);
-            FLAlertLayer::create(
-            "Error",
-            "Could not connect to GDPS Hub Servers.",
-            "Ok")
-            ->show();
-            return;
-        }
-        auto servers = data.as_array();
-
-            float totalHeight = 0.f;
-            std::vector<PrivateServerNode *> rendered;
-
-            for (matjson::Value val : servers) {
-                auto server = val.as<Server>();
-                
-                auto node = PrivateServerNode::create(this, server, ccp(scroll->getContentWidth(), 80));
-                node->setPosition(0, totalHeight);
-                scroll->m_contentLayer->addChild(node);
-                totalHeight += 80;
-                rendered.push_back(node);
-            }
-
-            totalHeight -= 5;
-
-            if (totalHeight < scroll->m_contentLayer->getContentSize().height)
-            {
-                totalHeight = scroll->m_contentLayer->getContentSize().height;
-            }
-
-            for (auto &node : rendered)
-            {
-                node->setPositionY(totalHeight - node->getPositionY() - 80);
-            }
-
-            scroll->m_contentLayer->setContentSize({scroll->m_contentLayer->getContentWidth(), totalHeight});
-            scroll->moveToTop();
-            m_loadingCircle->fadeAndRemove();
-    } else {
-        auto req = web::WebRequest();
-        m_listener.setFilter(req.get("https://api.gdpshub.com/gdps/geode"));
-    }
+        } });
+    auto req = web::WebRequest();
+    m_listener.setFilter(req.get("https://api.gdpshub.com/gdps/geode"));
 }
