@@ -81,10 +81,15 @@ struct matjson::Serialize<Server>
             server.views = value["views"].as_int();
         }
         
-        if (!value["created_at"].is_number()) {
+        if (!value["created_at"].is_string()) {
             server.created_at =  0;
         } else {
-            server.id = value["created_at"].as_int();
+            if (value["created_at"].as_string() == "") {
+                server.created_at = 0;
+            } else {
+                auto num = utils::numFromString<int>(value["created_at"].as_string());
+                server.created_at = num.isOk() ? num.unwrap() : 0;
+            }
         }
 
         return server;

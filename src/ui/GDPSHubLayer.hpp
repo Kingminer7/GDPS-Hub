@@ -18,6 +18,7 @@ protected:
     void keyBackClicked() override;
     LoadingCircle *m_loadingCircle = LoadingCircle::create();
     EventListener<web::WebTask> m_listener;
+    CCLabelBMFont *m_infoLabel;
 public:
     static GDPSHubLayer *create();
     static cocos2d::CCLayer *scene();

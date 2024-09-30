@@ -8,9 +8,9 @@ protected:
     bool setup(Server server) override {
         this->setTitle(server.title);
 
-        auto desc = MDTextArea::create(server.description, ccp(200, 175));
-        desc->setPosition(200, 150);
-        this->addChild(desc);
+        auto desc = MDTextArea::create(server.description, ccp(230, 200));
+        desc->setPosition(120, 107);
+        this->m_mainLayer->addChild(desc);
 
         return true;
     }
@@ -18,7 +18,7 @@ protected:
 public:
     static PrivateServerPopup* create(Server server) {
         auto ret = new PrivateServerPopup();
-        if (ret->initAnchored(400.f, 300.f, server)) {
+        if (ret->initAnchored(440.f, 280.f, server)) {
             ret->autorelease();
             return ret;
         }
