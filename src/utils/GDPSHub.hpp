@@ -48,4 +48,13 @@ class GDPSHub {
         bool isPreviewing() {
             return this->serverId != -1;
         }
+        
+        static std::string stampToDateTime(int stamp)
+        {
+            time_t t = stamp;
+            tm *tm = localtime(&t);
+            char buf[80];
+            strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", tm);
+            return buf;
+        }
 };

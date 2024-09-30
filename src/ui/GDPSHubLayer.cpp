@@ -3,9 +3,8 @@
 #include "PrivateServerNode.hpp"
 #include "../utils/Structs.hpp"
 
-#include <Geode/utils/cocos.hpp>
 
-std::string current;
+#include <Geode/utils/cocos.hpp>
 
 bool GDPSHubLayer::init()
 {
@@ -48,6 +47,13 @@ bool GDPSHubLayer::init()
     scroll->setID("server-scroll");
     this->addChild(scroll);
 
+    m_infoLabel = CCLabelBMFont::create("", "bigFont.fnt");
+    m_infoLabel->setPosition(winSize / 2);
+    m_infoLabel->setID("info-label");
+    m_infoLabel->setAnchorPoint({0.5, 0.5});
+    m_infoLabel->setScale(0.5);
+    this->addChild(m_infoLabel);
+
     if (GDPSHub::get()->servers.size() == 0)
     {
         this->fetchServers();
@@ -89,12 +95,8 @@ void GDPSHubLayer::updateList()
 
     float totalHeight = 0.f;
     std::vector<PrivateServerNode *> rendered;
-    int i = 0;
     for (Server server : GDPSHub::get()->servers)
     {
-        i++;
-        if (i > 10)
-            break;
         auto node = PrivateServerNode::create(this, server, ccp(scroll->getContentWidth(), 80));
         node->setPosition(0, totalHeight);
         scroll->m_contentLayer->addChild(node);
@@ -133,22 +135,28 @@ void GDPSHubLayer::fetchServers()
             auto data = opt.value_or("err");
             if (data == "err") {
                 log::info("{}", err);
-                FLAlertLayer::create(
-                    "Error",
-                    "Could not connect to GDPS Hub Servers.",
-                    "Ok")
-                    ->show();
+                this->m_infoLabel->setString("Failed to fetch servers.");
+                m_loadingCircle->fadeAndRemove();
                 return;
             }
-            auto servers = data.as_array();
+            if (!data.contains("success") || data["success"].as_bool() == false || !data.contains("data"))
+            {
+                if (data.contains("message")) this->m_infoLabel->setString(data["message"].as_string().c_str());
+                else this->m_infoLabel->setString("Failed to fetch servers.");
+                m_loadingCircle->fadeAndRemove();
+                return;
+            }
+            auto servers = data["data"].as_array();
 
             for (matjson::Value val : servers) {
                 auto server = val.as<Server>();
                 GDPSHub::get()->servers.push_back(server);
+                log::info("{}", server.created_at);
+                log::info("{}", GDPSHub::stampToDateTime(server.created_at));
             }
             updateList();
             m_loadingCircle->fadeAndRemove();
         } });
     auto req = web::WebRequest();
-    m_listener.setFilter(req.get("https://api.gdpshub.com/gdps/geode"));
+    m_listener.setFilter(req.get("https://api.gdpshub.com/geode/get"));
 }
