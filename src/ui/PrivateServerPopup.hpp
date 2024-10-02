@@ -22,7 +22,7 @@ protected:
     this->m_title->setScale(0.9);
     this->m_title->setID("server-name");
 
-    auto desc = MDTextArea::create(server.description, ccp(230, 200));
+    auto desc = MDTextArea::create(server.description, ccp(350, 200));
     desc->setPosition(120, 107);
     desc->setID("server-description");
     this->m_mainLayer->addChild(desc);
