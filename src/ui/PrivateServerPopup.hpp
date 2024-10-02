@@ -23,7 +23,7 @@ protected:
     this->m_title->setID("server-name");
 
     auto desc = MDTextArea::create(server.description, ccp(350, 200));
-    desc->setPosition(120, 107);
+    desc->setPosition(181, 107);
     desc->setID("server-description");
     this->m_mainLayer->addChild(desc);
 
@@ -102,6 +102,7 @@ protected:
     label->setScale(0.82f);
     label->setAnchorPoint({0.5, 0.5});    
     label->setOpacity(150);
+    label->setID("no-icon");
     this->m_mainLayer->addChild(label);
     handleFinish();
   }
@@ -116,6 +117,7 @@ protected:
     float imgScale = 50 / image->getContentSize().height;
     image->setScale(imgScale);
     image->setPosition({30, 234});
+    image->setID("ps-logo");
     this->m_mainLayer->addChild(image);
     handleFinish();
   }

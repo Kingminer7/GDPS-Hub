@@ -1,7 +1,5 @@
 #include "PSCreatorLayer.hpp"
 #include "../utils/GDPSHub.hpp"
-#include "GDPSHubLayer.hpp"
-#include "../utils/Structs.hpp"
 #include <Geode/binding/GauntletSelectLayer.hpp>
 #include <Geode/binding/LeaderboardsLayer.hpp>
 #include <Geode/binding/LevelSearchLayer.hpp>
@@ -152,11 +150,10 @@ void PSCreatorLayer::keyBackClicked()
 void PSCreatorLayer::onGoBack(CCObject *)
 {
     GDPSHub::get()->endPreview();
-    // CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, MenuLayer::scene(false)));
     auto scene = CCScene::create();
-    scene->addChild(GDPSHubLayer::create());
-    // scene->addChild(PSCreatorLayer::create());
+    scene->addChild(GDPSHub::get()->origin);
     CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
+    GDPSHub::get()->origin->release();
 }
 
 PSCreatorLayer *PSCreatorLayer::create()

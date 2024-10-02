@@ -11,9 +11,9 @@ class GDPSHub {
         static inline GDPSHub *instance = nullptr;
         int serverId = -1;
         Server *server;
-        std::string apiUrl = "https://api.gdpshub.com/gdps/geode";
     public:
         std::vector<Server> servers;
+        CCLayer *origin;
         static GDPSHub *get() {
             if (!instance) instance = new GDPSHub();
             return instance;

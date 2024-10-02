@@ -151,8 +151,6 @@ void GDPSHubLayer::fetchServers()
             for (matjson::Value val : servers) {
                 auto server = val.as<Server>();
                 GDPSHub::get()->servers.push_back(server);
-                log::info("{}", server.created_at);
-                log::info("{}", GDPSHub::stampToDateTime(server.created_at));
             }
             updateList();
             m_loadingCircle->fadeAndRemove();
