@@ -35,14 +35,17 @@ protected:
     m_loadingIndicator->show();
     m_loadingIndicator->setID("loading-circle");
 
+    auto menu = CCMenu::create();
+    menu->setPosition(0, 0);
+    menu->setID("social-menu");
+
     auto discordBtn = CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"),
         this, menu_selector(PrivateServerPopup::onDiscord));
     discordBtn->setPosition(419, 22);
     discordBtn->setID("discord-button");
-    auto menu = CCMenu::create(discordBtn, nullptr);
-    menu->setPosition(0, 0);
-    menu->setID("social-menu");
+    menu->addChild(discordBtn);
+    
     this->m_mainLayer->addChild(menu);
 
     retain();
