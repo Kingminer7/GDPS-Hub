@@ -20,9 +20,11 @@ protected:
     this->m_title->setPosition(60, 237);
     this->m_title->setAnchorPoint({0, 0.5});
     this->m_title->setScale(0.9);
+    this->m_title->setID("server-name");
 
     auto desc = MDTextArea::create(server.description, ccp(230, 200));
     desc->setPosition(120, 107);
+    desc->setID("server-description");
     this->m_mainLayer->addChild(desc);
 
     m_loadingIndicator = LoadingCircle::create();
@@ -31,13 +33,16 @@ protected:
     m_loadingIndicator->ignoreAnchorPointForPosition(false);
     m_loadingIndicator->setScale(0.75f);
     m_loadingIndicator->show();
+    m_loadingIndicator->setID("loading-circle");
 
     auto discordBtn = CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"),
         this, menu_selector(PrivateServerPopup::onDiscord));
-    discordBtn->setPosition(200, 30);
+    discordBtn->setPosition(419, 22);
+    discordBtn->setID("discord-button");
     auto menu = CCMenu::create(discordBtn, nullptr);
     menu->setPosition(0, 0);
+    menu->setID("social-menu");
     this->m_mainLayer->addChild(menu);
 
     retain();
