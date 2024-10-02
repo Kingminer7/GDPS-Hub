@@ -1,5 +1,6 @@
 #include "PSCreatorLayer.hpp"
 #include "../utils/GDPSHub.hpp"
+#include "Geode/binding/GameLevelManager.hpp"
 #include <Geode/binding/GauntletSelectLayer.hpp>
 #include <Geode/binding/LeaderboardsLayer.hpp>
 #include <Geode/binding/LevelSearchLayer.hpp>
@@ -139,6 +140,13 @@ bool PSCreatorLayer::init()
 
     this->addChild(buttonMenu);
 
+    log::info("{}", GameLevelManager::get()->m_dailyID);
+    log::info("{}", GameLevelManager::get()->m_dailyIDUnk);
+    
+    // GameLevelManager::get()->m_dailyID = -1;
+    // GameLevelManager::get()->m_weeklyID = -1;
+    // GameLevelManager::get()->m_eventID = -1;
+
     return true;
 }
 
@@ -149,11 +157,14 @@ void PSCreatorLayer::keyBackClicked()
 
 void PSCreatorLayer::onGoBack(CCObject *)
 {
+    GDPSHub::get()->psCLScene->release();
     GDPSHub::get()->endPreview();
-    auto scene = CCScene::create();
-    scene->addChild(GDPSHub::get()->origin);
-    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
-    GDPSHub::get()->origin->release();
+    GDPSHub::get()->psCLScene = nullptr;
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, GDPSHub::get()->hubScene));
+    
+    // GameLevelManager::get()->m_dailyID = -1;
+    // GameLevelManager::get()->m_weeklyID = -1;
+    // GameLevelManager::get()->m_eventID = -1;
 }
 
 PSCreatorLayer *PSCreatorLayer::create()
@@ -232,4 +243,13 @@ void PSCreatorLayer::onDebug(CCObject *)
         str += fmt::format("{}: {}\n", urlPrio.first, urlPrio.second);
     }
     geode::MDPopup::create("Server API Debug", str, "Close")->show();
+}
+
+CCScene *PSCreatorLayer::scene() {
+    if (GDPSHub::get()->psCLScene != nullptr) return GDPSHub::get()->psCLScene;
+    auto scene = CCScene::create();
+    scene->addChild(PSCreatorLayer::create());
+    GDPSHub::get()->psCLScene = scene;
+    scene->retain();
+    return scene;
 }

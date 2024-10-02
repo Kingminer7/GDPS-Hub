@@ -13,7 +13,8 @@ class GDPSHub {
         Server *server;
     public:
         std::vector<Server> servers;
-        CCLayer *origin;
+        CCScene *hubScene = nullptr;
+        CCScene *psCLScene = nullptr;
         static GDPSHub *get() {
             if (!instance) instance = new GDPSHub();
             return instance;

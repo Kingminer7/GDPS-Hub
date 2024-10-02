@@ -10,9 +10,7 @@ using namespace geode::prelude;
 class $modify(GauntletSelectLayer) {
     void onBack(CCObject* sender) {
         if (GDPSHub::get()->isPreviewing() == true) {
-            auto scene = CCScene::create();
-            scene->addChild(PSCreatorLayer::create());
-            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
             return;
         }
         GauntletSelectLayer::onBack(sender);
@@ -23,9 +21,7 @@ class $modify(GauntletSelectLayer) {
 class $modify(LevelBrowserLayer) {
     void onBack(CCObject* sender) {
         if (GDPSHub::get()->isPreviewing() == true) {
-            auto scene = CCScene::create();
-            scene->addChild(PSCreatorLayer::create());
-            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
             return;
         }
         LevelBrowserLayer::onBack(sender);
@@ -37,9 +33,7 @@ class $modify(LeaderboardsLayer) {
     void onBack(CCObject* sender) {
         if (GDPSHub::get()->isPreviewing() == true) {
             // GameManager::get()->safePopScene(); // maybe some day ill figure it out
-            auto scene = CCScene::create();
-            scene->addChild(PSCreatorLayer::create());
-            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
             return;
         }
         LeaderboardsLayer::onBack(sender);
@@ -50,9 +44,7 @@ class $modify(LeaderboardsLayer) {
 class $modify(LevelSearchLayer) {
     void onBack(CCObject* sender) {
         if (GDPSHub::get()->isPreviewing() == true) {
-            auto scene = CCScene::create();
-            scene->addChild(PSCreatorLayer::create());
-            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
             return;
         }
         LevelSearchLayer::onBack(sender);
@@ -65,9 +57,7 @@ class $modify(LevelSearchLayer) {
 class $modify(LevelSearchLayer) {
     void keyBackClicked() {
         if (GDPSHub::get()->isPreviewing() == true) {
-            auto scene = CCScene::create();
-            scene->addChild(PSCreatorLayer::create());
-            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+            CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
             return;
         }
         LevelSearchLayer::keyBackClicked();

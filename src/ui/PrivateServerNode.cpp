@@ -86,11 +86,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
 }
 
 void PrivateServerNode::viewServer(CCObject *) {
-    m_layer->retain();
-    GDPSHub::get()->origin = m_layer;
-    auto scene = CCScene::create();
-	scene->addChild(PSCreatorLayer::create());
-	CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
+	CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
     GDPSHub::get()->beginPreview(this->server);
 }
 
