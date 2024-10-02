@@ -8,8 +8,7 @@ using namespace geode::prelude;
 class PSCreatorLayer : public CCLayer
 {
 public:
-    static PSCreatorLayer *create();
-    static cocos2d::CCLayer *scene();
+    static CCScene *scene();
     void onGoBack(CCObject *);
     void onScores(CCObject *);
     void onDaily(CCObject *);
@@ -23,6 +22,7 @@ public:
     void onDebug(CCObject *);
 protected:
     Server m_server;
+    static PSCreatorLayer *create();
     bool init() override;
     void keyBackClicked() override;
 };

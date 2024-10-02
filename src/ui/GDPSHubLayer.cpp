@@ -63,6 +63,8 @@ bool GDPSHubLayer::init()
         this->updateList();
     }
 
+    retain();
+
     return true;
 }
 
@@ -73,6 +75,8 @@ void GDPSHubLayer::keyBackClicked()
 
 void GDPSHubLayer::onGoBack(CCObject *)
 {
+    release();
+    GDPSHub::get()->hubScene = nullptr;
     CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, MenuLayer::scene(false)));
 }
 
@@ -86,6 +90,15 @@ GDPSHubLayer *GDPSHubLayer::create()
     }
     CC_SAFE_DELETE(ret);
     return nullptr;
+}
+
+CCScene *GDPSHubLayer::scene() {
+    if (GDPSHub::get()->hubScene != nullptr) return GDPSHub::get()->hubScene;
+    auto scene = CCScene::create();
+    scene->addChild(GDPSHubLayer::create());
+    GDPSHub::get()->hubScene = scene;
+    scene->retain();
+    return scene;
 }
 
 void GDPSHubLayer::updateList()
