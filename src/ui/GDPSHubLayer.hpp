@@ -5,7 +5,6 @@
 
 #include <Geode/loader/Event.hpp>
 #include <Geode/utils/web.hpp>
-#include "../utils/Structs.hpp"
 
 #include "./PrivateServerNode.hpp"
 
