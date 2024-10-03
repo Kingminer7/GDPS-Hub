@@ -117,8 +117,6 @@ void GDPSHubLayer::updateList()
         rendered.push_back(node);
     }
 
-    totalHeight -= 5;
-
     if (totalHeight < scroll->m_contentLayer->getContentSize().height)
     {
         totalHeight = scroll->m_contentLayer->getContentSize().height;

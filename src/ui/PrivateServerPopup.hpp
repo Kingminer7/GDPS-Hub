@@ -1,5 +1,6 @@
-#include "../utils/Structs.hpp"
 #include "../utils/GDPSHub.hpp"
+#include "../utils/Structs.hpp"
+#include "Geode/binding/ButtonSprite.hpp"
 #include "PSCreatorLayer.hpp"
 #include <Geode/binding/LoadingCircle.hpp>
 #include <Geode/loader/Event.hpp>
@@ -19,80 +20,93 @@ protected:
   bool setup(Server server) override {
     this->server = server;
     this->setTitle(server.title);
-    this->m_title->setPosition(60, 237);
+    this->m_title->setPosition(245 - (m_title->getScaledContentWidth() / 2),
+                               248);
     this->m_title->setAnchorPoint({0, 0.5});
     this->m_title->setScale(0.9);
     this->m_title->setID("server-name");
 
-    auto desc = MDTextArea::create(server.description, ccp(350, 200));
-    desc->setPosition(181, 107);
+    auto desc = MDTextArea::create(server.description, ccp(420, 168));
+    desc->setPosition(220, 131);
     desc->setID("server-description");
     for (auto c : server.description) {
-      //1234567890-=qwertyuiop[]\asdfghjkl;'/z.x,cmvnb!@#$%^&*()_+|}{POIUYTREWQASDFGHJKL:"?><MNBVCXZ
-      // TODO: Use the suggested popup layout
+      // 1234567890-=qwertyuiop[]\asdfghjkl;'/z.x,cmvnb!@#$%^&*()_+|}{POIUYTREWQASDFGHJKL:"?><MNBVCXZ
+      //  TODO: Use the suggested popup layout
     }
     this->m_mainLayer->addChild(desc);
 
     m_loadingIndicator = LoadingCircle::create();
     m_loadingIndicator->setParentLayer(this->m_mainLayer);
-    m_loadingIndicator->setPosition({30, 234});
+    m_loadingIndicator->setPosition(
+        {220 - (m_title->getScaledContentWidth() / 2), 245});
     m_loadingIndicator->ignoreAnchorPointForPosition(false);
     m_loadingIndicator->setScale(0.75f);
     m_loadingIndicator->show();
     m_loadingIndicator->setID("loading-circle");
 
-    auto idLab = CCLabelBMFont::create(fmt::format("{}", server.id).c_str(), "chatFont.fnt");
-    idLab->setAnchorPoint({ 0, 0.5 });
-    idLab->setPosition({ m_title->getContentWidth() * m_title->getScaleX() + m_title->getPositionX(), 235 });
-    idLab->setID("id-label");
-    idLab->setScale(0.6f);
-    idLab->setOpacity(155);
-    this->m_mainLayer->addChild(idLab);
+    // auto idLab = CCLabelBMFont::create(fmt::format("{}", server.id).c_str(),
+    // "chatFont.fnt"); idLab->setAnchorPoint({ 0, 0.5 }); idLab->setPosition({
+    // m_title->getContentWidth() * m_title->getScaleX() +
+    // m_title->getPositionX(), 235 }); idLab->setID("id-label");
+    // idLab->setScale(0.6f);
+    // idLab->setOpacity(155);
+    // this->m_mainLayer->addChild(idLab);
 
-    auto viewCtr = CCLabelBMFont::create(fmt::format("{} views", server.views).c_str(), "chatFont.fnt");
-    viewCtr->setAnchorPoint({ 0, 0.5 });
-    viewCtr->setPosition({ 0, 0 });
-    viewCtr->setScale(0.8f);
-    viewCtr->setOpacity(155);
-    viewCtr->setID("view-label");
-    viewCtr->setAnchorPoint({ 1, 0.5 });
-    viewCtr->setPosition({ 434, 253 });
-    this->m_mainLayer->addChild(viewCtr);
+    // auto viewCtr = CCLabelBMFont::create(fmt::format("{} views",
+    // server.views).c_str(), "chatFont.fnt"); viewCtr->setAnchorPoint({ 0, 0.5
+    // }); viewCtr->setPosition({ 0, 0 }); viewCtr->setScale(0.8f);
+    // viewCtr->setOpacity(155);
+    // viewCtr->setID("view-label");
+    // viewCtr->setAnchorPoint({ 1, 0.5 });
+    // viewCtr->setPosition({ 434, 253 });
+    // this->m_mainLayer->addChild(viewCtr);
 
-    auto creationLab = CCLabelBMFont::create(fmt::format("Created {}", GDPSHub::stampToDateTime(server.created_at)).c_str(), "chatFont.fnt");
-    creationLab->setAnchorPoint({ 1, 0.5 });
-    creationLab->setPosition({ 434, 267 });
-    creationLab->setScale(0.8f);
-    creationLab->setOpacity(155);
-    creationLab->setID("timestamp-label");
-    this->m_mainLayer->addChild(creationLab);
+    // auto creationLab = CCLabelBMFont::create(fmt::format("Created {}",
+    // GDPSHub::stampToDateTime(server.created_at)).c_str(), "chatFont.fnt");
+    // creationLab->setAnchorPoint({ 1, 0.5 });
+    // creationLab->setPosition({ 434, 267 });
+    // creationLab->setScale(0.8f);
+    // creationLab->setOpacity(155);
+    // creationLab->setID("timestamp-label");
+    // this->m_mainLayer->addChild(creationLab);
 
     auto menu = CCMenu::create();
     menu->setPosition(0, 0);
     menu->setID("interaction-menu");
 
     auto discordBtn = CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("discordBigger.png"_spr),
-        this, menu_selector(PrivateServerPopup::onDiscord));
-    discordBtn->setPosition(396, 75);
-    discordBtn->m_baseScale = 0.7;
-    discordBtn->setScale(0.7);
+        CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"), this,
+        menu_selector(PrivateServerPopup::onDiscord));
+    discordBtn->setPosition(420, 22);
+    // discordBtn->m_baseScale = 0.7;
+    // discordBtn->setScale(0.7);
     discordBtn->setID("discord-button");
     menu->addChild(discordBtn);
 
-    auto spr = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
-    spr->setScale(.7f);
-    auto viewBtn = CCMenuItemSpriteExtra::create(spr,
-        this,
+    auto viewBtn = CCMenuItemSpriteExtra::create(
+        ButtonSprite::create("Play"), this,
         menu_selector(PrivateServerPopup::viewServer));
-    viewBtn->setPosition({ 396, 145 });
+    viewBtn->setPosition({175, 26});
     viewBtn->setID("view-button");
-    if (server.url == "No URL provided.") {
-        viewBtn->setEnabled(false);
-        viewBtn->setColor({100, 100, 100});
-        viewBtn->setOpacity(100);
-    }
     menu->addChild(viewBtn);
+
+    auto saveBtn = CCMenuItemSpriteExtra::create(
+        ButtonSprite::create("Save"), this,
+        menu_selector(PrivateServerPopup::saveServer));
+    saveBtn->setPosition({265, 26});
+    saveBtn->setID("save-button");
+    menu->addChild(saveBtn);
+
+    auto trMenu = CCMenu::create();
+    trMenu->setPosition(0, 0);
+    trMenu->setID("interaction-menu");
+
+    auto infoBtn = CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png"), this,
+        menu_selector(PrivateServerPopup::onInfo));
+    infoBtn->setPosition(420, 260);
+    infoBtn->setID("info-button");
+    menu->addChild(infoBtn);
 
     this->m_mainLayer->addChild(menu);
 
@@ -104,8 +118,13 @@ protected:
   }
 
   void viewServer(CCObject *) {
-    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
+    CCDirector::sharedDirector()->replaceScene(
+        CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
     GDPSHub::get()->beginPreview(this->server);
+  }
+
+  void saveServer(CCObject *) {
+    FLAlertLayer::create("Error", "Not implemented.", "Close")->show();
   }
 
   void onDiscord(CCObject *sender) {
@@ -113,6 +132,16 @@ protected:
       return;
     }
     CCApplication::sharedApplication()->openURL(server.dcUrl.c_str());
+  }
+
+  void onInfo(CCObject *) {
+    FLAlertLayer::create(
+        "Server Info",
+        fmt::format("<cl>ID: {}</c>\n<cg>Views: {}</c>\n<cy>Created: {}</c>",
+                    server.id, server.views,
+                    GDPSHub::stampToDateTime(server.created_at)),
+        "Close")
+        ->show();
   }
 
   // Icon stuff
@@ -163,9 +192,9 @@ protected:
 
   void onDownloadFailed() {
     auto label = CCLabelBMFont::create("N/A", "bigFont.fnt");
-    label->setPosition({30, 234});
+    label->setPosition({220 - (m_title->getScaledContentWidth() / 2), 245});
     label->setScale(0.82f);
-    label->setAnchorPoint({0.5, 0.5});    
+    label->setAnchorPoint({0.5, 0.5});
     label->setOpacity(150);
     label->setID("no-icon");
     this->m_mainLayer->addChild(label);
@@ -181,7 +210,7 @@ protected:
 
     float imgScale = 50 / image->getContentSize().height;
     image->setScale(imgScale);
-    image->setPosition({30, 234});
+    image->setPosition({220 - (m_title->getScaledContentWidth() / 2), 245});
     image->setID("ps-logo");
     this->m_mainLayer->addChild(image);
     handleFinish();
