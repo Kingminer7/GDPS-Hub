@@ -29,6 +29,7 @@ protected:
     desc->setID("server-description");
     for (auto c : server.description) {
       //1234567890-=qwertyuiop[]\asdfghjkl;'/z.x,cmvnb!@#$%^&*()_+|}{POIUYTREWQASDFGHJKL:"?><MNBVCXZ
+      // TODO: Use the suggested popup layout
     }
     this->m_mainLayer->addChild(desc);
 
