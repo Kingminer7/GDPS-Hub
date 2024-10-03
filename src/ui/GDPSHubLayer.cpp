@@ -167,5 +167,5 @@ void GDPSHubLayer::fetchServers()
             m_loadingCircle->fadeAndRemove();
         } });
     auto req = web::WebRequest();
-    m_listener.setFilter(req.get("https://api.gdpshub.com/geode/get"));
+    m_listener.setFilter(req.get(fmt::format("https://api.gdpshub.com/geode/get?page={}&type={}", page, queryType)));
 }
