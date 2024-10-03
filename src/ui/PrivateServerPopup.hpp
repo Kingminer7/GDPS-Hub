@@ -1,4 +1,6 @@
 #include "../utils/Structs.hpp"
+#include "../utils/GDPSHub.hpp"
+#include "PSCreatorLayer.hpp"
 #include <Geode/binding/LoadingCircle.hpp>
 #include <Geode/loader/Event.hpp>
 #include <Geode/ui/Popup.hpp>
@@ -25,6 +27,9 @@ protected:
     auto desc = MDTextArea::create(server.description, ccp(350, 200));
     desc->setPosition(181, 107);
     desc->setID("server-description");
+    for (auto c : server.description) {
+      //1234567890-=qwertyuiop[]\asdfghjkl;'/z.x,cmvnb!@#$%^&*()_+|}{POIUYTREWQASDFGHJKL:"?><MNBVCXZ
+    }
     this->m_mainLayer->addChild(desc);
 
     m_loadingIndicator = LoadingCircle::create();
@@ -35,17 +40,59 @@ protected:
     m_loadingIndicator->show();
     m_loadingIndicator->setID("loading-circle");
 
+    auto idLab = CCLabelBMFont::create(fmt::format("{}", server.id).c_str(), "chatFont.fnt");
+    idLab->setAnchorPoint({ 0, 0.5 });
+    idLab->setPosition({ m_title->getContentWidth() * m_title->getScaleX() + m_title->getPositionX(), 235 });
+    idLab->setID("id-label");
+    idLab->setScale(0.6f);
+    idLab->setOpacity(155);
+    this->m_mainLayer->addChild(idLab);
+
+    auto viewCtr = CCLabelBMFont::create(fmt::format("{} views", server.views).c_str(), "chatFont.fnt");
+    viewCtr->setAnchorPoint({ 0, 0.5 });
+    viewCtr->setPosition({ 0, 0 });
+    viewCtr->setScale(0.8f);
+    viewCtr->setOpacity(155);
+    viewCtr->setID("view-label");
+    viewCtr->setAnchorPoint({ 1, 0.5 });
+    viewCtr->setPosition({ 434, 253 });
+    this->m_mainLayer->addChild(viewCtr);
+
+    auto creationLab = CCLabelBMFont::create(fmt::format("Created {}", GDPSHub::stampToDateTime(server.created_at)).c_str(), "chatFont.fnt");
+    creationLab->setAnchorPoint({ 1, 0.5 });
+    creationLab->setPosition({ 434, 267 });
+    creationLab->setScale(0.8f);
+    creationLab->setOpacity(155);
+    creationLab->setID("timestamp-label");
+    this->m_mainLayer->addChild(creationLab);
+
     auto menu = CCMenu::create();
     menu->setPosition(0, 0);
-    menu->setID("social-menu");
+    menu->setID("interaction-menu");
 
     auto discordBtn = CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"),
+        CCSprite::createWithSpriteFrameName("discordBigger.png"_spr),
         this, menu_selector(PrivateServerPopup::onDiscord));
-    discordBtn->setPosition(419, 22);
+    discordBtn->setPosition(396, 75);
+    discordBtn->m_baseScale = 0.7;
+    discordBtn->setScale(0.7);
     discordBtn->setID("discord-button");
     menu->addChild(discordBtn);
-    
+
+    auto spr = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
+    spr->setScale(.7f);
+    auto viewBtn = CCMenuItemSpriteExtra::create(spr,
+        this,
+        menu_selector(PrivateServerPopup::viewServer));
+    viewBtn->setPosition({ 396, 145 });
+    viewBtn->setID("view-button");
+    if (server.url == "No URL provided.") {
+        viewBtn->setEnabled(false);
+        viewBtn->setColor({100, 100, 100});
+        viewBtn->setOpacity(100);
+    }
+    menu->addChild(viewBtn);
+
     this->m_mainLayer->addChild(menu);
 
     retain();
@@ -54,6 +101,20 @@ protected:
 
     return true;
   }
+
+  void viewServer(CCObject *) {
+    CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
+    GDPSHub::get()->beginPreview(this->server);
+  }
+
+  void onDiscord(CCObject *sender) {
+    if (server.dcUrl == "") {
+      return;
+    }
+    CCApplication::sharedApplication()->openURL(server.dcUrl.c_str());
+  }
+
+  // Icon stuff
 
   void startDownload() {
     std::string URL = server.pfp;
@@ -123,13 +184,6 @@ protected:
     image->setID("ps-logo");
     this->m_mainLayer->addChild(image);
     handleFinish();
-  }
-
-  void onDiscord(CCObject *sender) {
-    if (server.dcUrl == "") {
-      return;
-    }
-    CCApplication::sharedApplication()->openURL(server.dcUrl.c_str());
   }
 
 public:

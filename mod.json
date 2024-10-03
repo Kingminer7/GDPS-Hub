@@ -29,7 +29,7 @@
 	"resources": {
 		"spritesheets": {
 			"gdpsHubSheet01": [
-				"resources/*.png"
+				"resources/sprites/*.png"
 			]
 		}
 	},
