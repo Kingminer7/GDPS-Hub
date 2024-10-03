@@ -19,6 +19,14 @@ protected:
     LoadingCircle *m_loadingCircle = LoadingCircle::create();
     EventListener<web::WebTask> m_listener;
     CCLabelBMFont *m_infoLabel;
+    /*
+    top (default)
+    search
+    recent
+    */
+    std::string queryType = "top";
+    int page = 1;
+    int pages = 0;
 public:
     static CCScene *scene();
     void onGoBack(CCObject *);
