@@ -29,10 +29,7 @@ protected:
     auto desc = MDTextArea::create(server.description, ccp(420, 168));
     desc->setPosition(220, 131);
     desc->setID("server-description");
-    for (auto c : server.description) {
-      // 1234567890-=qwertyuiop[]\asdfghjkl;'/z.x,cmvnb!@#$%^&*()_+|}{POIUYTREWQASDFGHJKL:"?><MNBVCXZ
-      //  TODO: Use the suggested popup layout
-    }
+    // std::string availableChars = "1234567890-=qwertyuiop[]\\asdfghjkl;'/z.x,cmvnb!@#$%^&*()_+|}{POIUYTREWQASDFGHJKL:\"?><MNBVCXZ \n";
     this->m_mainLayer->addChild(desc);
 
     m_loadingIndicator = LoadingCircle::create();
