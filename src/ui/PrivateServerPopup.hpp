@@ -6,6 +6,7 @@
 #include <Geode/loader/Event.hpp>
 #include <Geode/ui/Popup.hpp>
 #include <Geode/utils/web.hpp>
+#include <matjson.hpp>
 
 using namespace geode::prelude;
 
@@ -121,7 +122,22 @@ protected:
   }
 
   void saveServer(CCObject *) {
-    FLAlertLayer::create("Error", "Not implemented.", "Close")->show();
+    auto gdpses = (dirs::getModConfigDir() / "km7dev.gdps-switcher" / "saved.json");
+    log::info("{}", gdpses);
+    if (std::filesystem::exists(gdpses)) {
+      std::string jsonText;
+      std::ifstream gdpsfile(gdpses);
+      std::string str;
+      while (std::getline(gdpsfile, str)) {
+        jsonText += str;
+      }
+      auto dat = matjson::parse(jsonText);
+      auto saved = dat.get<std::vector<Server>>("saved-servers");
+      saved.push_back(server);
+      dat.set("saved-servers", saved);
+      std::ofstream gdpsfile2(gdpses);
+      gdpsfile2 << dat.dump();
+    }
   }
 
   void onDiscord(CCObject *sender) {

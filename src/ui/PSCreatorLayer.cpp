@@ -139,13 +139,16 @@ bool PSCreatorLayer::init()
     buttonMenu->setLayout(layout);
 
     this->addChild(buttonMenu);
-
-    log::info("{}", GameLevelManager::get()->m_dailyID);
-    log::info("{}", GameLevelManager::get()->m_dailyIDUnk);
     
-    // GameLevelManager::get()->m_dailyID = -1;
-    // GameLevelManager::get()->m_weeklyID = -1;
-    // GameLevelManager::get()->m_eventID = -1;
+    GameLevelManager::get()->m_dailyID = -1;
+    GameLevelManager::get()->m_weeklyID = -1;
+    GameLevelManager::get()->m_eventID = -1;
+    GameLevelManager::get()->m_dailyIDUnk = -1;
+    GameLevelManager::get()->m_weeklyIDUnk = -1;
+    GameLevelManager::get()->m_eventIDUnk = -1;
+    GameLevelManager::get()->m_dailyTimeLeft = -1;
+    GameLevelManager::get()->m_weeklyTimeLeft = -1;
+    GameLevelManager::get()->m_eventTimeLeft = -1;
 
     return true;
 }
@@ -162,9 +165,15 @@ void PSCreatorLayer::onGoBack(CCObject *)
     GDPSHub::get()->psCLScene = nullptr;
     CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, GDPSHub::get()->hubScene));
     
-    // GameLevelManager::get()->m_dailyID = -1;
-    // GameLevelManager::get()->m_weeklyID = -1;
-    // GameLevelManager::get()->m_eventID = -1;
+    GameLevelManager::get()->m_dailyID = -1;
+    GameLevelManager::get()->m_weeklyID = -1;
+    GameLevelManager::get()->m_eventID = -1;
+    GameLevelManager::get()->m_dailyIDUnk = -1;
+    GameLevelManager::get()->m_weeklyIDUnk = -1;
+    GameLevelManager::get()->m_eventIDUnk = -1;
+    GameLevelManager::get()->m_dailyTimeLeft = -1;
+    GameLevelManager::get()->m_weeklyTimeLeft = -1;
+    GameLevelManager::get()->m_eventTimeLeft = -1;
 }
 
 PSCreatorLayer *PSCreatorLayer::create()
