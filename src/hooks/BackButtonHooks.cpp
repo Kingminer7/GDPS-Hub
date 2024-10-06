@@ -20,7 +20,7 @@ class $modify(GauntletSelectLayer) {
 
 class $modify(LevelBrowserLayer) {
     void onBack(CCObject* sender) {
-        if (GDPSHub::get()->isPreviewing() == true) {
+        if (GDPSHub::get()->isPreviewing() == true && GDPSHub::get()->fromLSL == false) {
             CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
             return;
         }
