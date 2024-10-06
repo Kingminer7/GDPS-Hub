@@ -15,6 +15,7 @@ class GDPSHub {
         std::vector<Server> servers;
         CCScene *hubScene = nullptr;
         CCScene *psCLScene = nullptr;
+        bool fromLSL = false;
         static GDPSHub *get() {
             if (!instance) instance = new GDPSHub();
             return instance;

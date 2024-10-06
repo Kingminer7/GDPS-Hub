@@ -1,5 +1,6 @@
 #include "PSCreatorLayer.hpp"
 #include "../utils/GDPSHub.hpp"
+#include "Geode/binding/AppDelegate.hpp"
 #include "Geode/binding/GameLevelManager.hpp"
 #include <Geode/binding/GauntletSelectLayer.hpp>
 #include <Geode/binding/LeaderboardsLayer.hpp>
@@ -36,12 +37,12 @@ bool PSCreatorLayer::init()
     menu->addChild(backBtn);
     this->addChild(menu);
 
-    auto debugBtn = CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("accountBtn_settings_001.png"),
-        this, menu_selector(PSCreatorLayer::onDebug));
-    debugBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2 - 60.f);
-    debugBtn->setID("debug-button");
-    menu->addChild(debugBtn);
+    // auto debugBtn = CCMenuItemSpriteExtra::create(
+    //     CCSprite::createWithSpriteFrameName("accountBtn_settings_001.png"),
+    //     this, menu_selector(PSCreatorLayer::onDebug));
+    // debugBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2 - 60.f);
+    // debugBtn->setID("debug-button");
+    // menu->addChild(debugBtn);
     this->addChild(menu);
 
     auto trCorner = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
@@ -204,6 +205,7 @@ void PSCreatorLayer::onMapPacks(CCObject *)
 {
     auto gjso = GJSearchObject::create(SearchType::MapPack);
     auto scene = LevelBrowserLayer::scene(gjso);
+    log::info("{}", AppDelegate::get()->m_runningScene->getChildren()->objectAtIndex(0));
     CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
@@ -242,17 +244,18 @@ void PSCreatorLayer::onSearch(CCObject *)
 {
     auto scene = LevelSearchLayer::scene(0);
     CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, scene));
+    GDPSHub::get()->fromLSL = true;
 }
 
-void PSCreatorLayer::onDebug(CCObject *)
-{
-    std::string str = "";
-    for (const auto &[uid, urlPrio] : ServerAPI::get()->getAllServers())
-    {
-        str += fmt::format("{}: {}\n", urlPrio.first, urlPrio.second);
-    }
-    geode::MDPopup::create("Server API Debug", str, "Close")->show();
-}
+// void PSCreatorLayer::onDebug(CCObject *)
+// {
+//     std::string str = "";
+//     for (const auto &[uid, urlPrio] : ServerAPI::get()->getAllServers())
+//     {
+//         str += fmt::format("{}: {}\n", urlPrio.first, urlPrio.second);
+//     }
+//     geode::MDPopup::create("Server API Debug", str, "Close")->show();
+// }
 
 CCScene *PSCreatorLayer::scene() {
     if (GDPSHub::get()->psCLScene != nullptr) return GDPSHub::get()->psCLScene;
