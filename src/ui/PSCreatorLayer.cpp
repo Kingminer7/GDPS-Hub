@@ -223,9 +223,6 @@ void PSCreatorLayer::onGauntlets(CCObject *) {
 void PSCreatorLayer::onMapPacks(CCObject *) {
   auto gjso = GJSearchObject::create(SearchType::MapPack);
   auto scene = LevelBrowserLayer::scene(gjso);
-  log::info(
-      "{}",
-      AppDelegate::get()->m_runningScene->getChildren()->objectAtIndex(0));
   CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
 }
 
