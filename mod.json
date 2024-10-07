@@ -39,5 +39,13 @@
 			"importance": "required",
 			"version": "1.0.0"
 		}
-	]
+	],
+	"settings": {
+		"hide-previewing": {
+			"name": "Hide Previewing Label",
+			"type": "bool",
+			"default": false,
+			"description": "Hides the 'Previewing' label when previewing a server."
+		}
+	}
 }

@@ -2,6 +2,7 @@
 
 #include <Geode/Geode.hpp>
 #include "../utils/Structs.hpp"
+#include "Geode/cocos/label_nodes/CCLabelBMFont.h"
 
 using namespace geode::prelude;
 
@@ -20,6 +21,7 @@ public:
     void onMapPacks(CCObject *);
     void onSearch(CCObject *);
     // void onDebug(CCObject *);
+    CCLabelBMFont *infoLabel;
 protected:
     Server m_server;
     static PSCreatorLayer *create();
