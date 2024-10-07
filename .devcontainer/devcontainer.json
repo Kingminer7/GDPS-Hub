@@ -22,7 +22,7 @@
         "geode.geodeCliPath": "/usr/local/bin/geode",
         "geode.geodeSdkPath": "~/geode",
         "cmake.environment": {
-          "GEODE_SDK": "~/geode"
+          "GEODE_SDK": "/home/vscode/geode"
         },
         "cmake.additionalKits": [
           "/workspaces/geode-container/.devcontainer/kits.json"
