@@ -59,4 +59,4 @@ build-*/
 
 # CLion
 /cmake-build-*/
-gdout/
+fakegd/
