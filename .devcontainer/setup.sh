@@ -31,8 +31,9 @@ rm geode-cli-v3.2.1-linux.zip
 
 # git clone https://github.com/matcool/clang-msvc-sdk.git toolchain
 
-geode sdk install ~/geode
-export GEODE_SDK=~/geode
+# we love that cmake tools refuses to use ~/geode
+geode sdk install /home/vscode/geode
+export GEODE_SDK=/home/vscode/geode
 geode sdk install-binaries
 
 geode sdk install-linux
@@ -40,5 +41,5 @@ geode sdk install-linux
 sudo apt-get clean
 sudo rm -rf /var/lib/apt/lists/*
 
-echo "export GEODE_SDK=~/geode" >> ~/.bashrc
-echo "export GEODE_SDK=~/geode" >> ~/.profile
+echo "export GEODE_SDK=/home/vscode/geode" >> ~/.bashrc
+echo "export GEODE_SDK=/home/vscode/geode" >> ~/.profile
