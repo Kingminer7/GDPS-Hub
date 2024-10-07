@@ -39,4 +39,5 @@ public:
     void fetchServers();
     void onLeftArrow(CCObject *);
     void onRightArrow(CCObject *);
+    void onSearch(CCObject *);
 };

@@ -4,6 +4,38 @@
 #include "PrivateServerNode.hpp"
 
 #include <Geode/utils/cocos.hpp>
+#include <Geode/ui/Popup.hpp>
+
+using namespace geode::prelude;
+
+class PSSearchPopup : public Popup<GDPSHubLayer *> {
+protected:
+  TextInput *m_query;
+  GDPSHubLayer *m_layer;
+  bool setup(GDPSHubLayer *layer) override {
+    this->setTitle("Search");
+
+    m_layer = layer;
+
+    m_query = TextInput::create(220.f, "Search...");
+    m_query->setPosition({0, 0});
+    this->m_mainLayer->addChild(m_query);
+
+    return true;
+  }
+
+public:
+  static PSSearchPopup *create(GDPSHubLayer *layer) {
+    auto ret = new PSSearchPopup();
+    if (ret->initAnchored(250.f, 150.f, layer)) {
+      ret->autorelease();
+      return ret;
+    }
+
+    delete ret;
+    return nullptr;
+  }
+};
 
 bool GDPSHubLayer::init() {
   if (!CCLayer::init())
@@ -53,9 +85,13 @@ bool GDPSHubLayer::init() {
   this->addChild(m_infoLabel);
 
   auto arrowMenu = CCMenu::create();
-  arrowMenu->setID("arrow-menu");
+  arrowMenu->setID("nav-menu");
   arrowMenu->setZOrder(10);
   this->addChild(arrowMenu);
+
+  auto searchBtn = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("gj_findBtn_001.png"), this, menu_selector(GDPSHubLayer::onSearch));
+  searchBtn->setPosition(winSize.width / 2 - 25.f, 70);
+  arrowMenu->addChild(searchBtn);
 
   auto leftArrowSpr =
       CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
@@ -218,4 +254,8 @@ void GDPSHubLayer::onRightArrow(CCObject *) {
     return;
   page++;
   fetchServers();
+}
+
+void GDPSHubLayer::onSearch(CCObject *) {
+  PSSearchPopup::create(this)->show();
 }
