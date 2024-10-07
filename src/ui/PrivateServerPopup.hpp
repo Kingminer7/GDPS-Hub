@@ -1,6 +1,8 @@
 #include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
 #include "Geode/binding/ButtonSprite.hpp"
+#include "Geode/binding/FLAlertLayer.hpp"
+// #include "Geode/loader/Dirs.hpp"
 #include "PSCreatorLayer.hpp"
 #include <Geode/binding/LoadingCircle.hpp>
 #include <Geode/loader/Event.hpp>
@@ -84,16 +86,17 @@ protected:
     auto viewBtn = CCMenuItemSpriteExtra::create(
         ButtonSprite::create("Play"), this,
         menu_selector(PrivateServerPopup::viewServer));
-    viewBtn->setPosition({175, 26});
+    // viewBtn->setPosition({175, 26});
+    viewBtn->setPosition({220, 26});
     viewBtn->setID("view-button");
     menu->addChild(viewBtn);
 
-    auto saveBtn = CCMenuItemSpriteExtra::create(
-        ButtonSprite::create("Save"), this,
-        menu_selector(PrivateServerPopup::saveServer));
-    saveBtn->setPosition({265, 26});
-    saveBtn->setID("save-button");
-    menu->addChild(saveBtn);
+    // auto saveBtn = CCMenuItemSpriteExtra::create(
+    //     ButtonSprite::create("Save"), this,
+    //     menu_selector(PrivateServerPopup::saveServer));
+    // saveBtn->setPosition({265, 26});
+    // saveBtn->setID("save-button");
+    // menu->addChild(saveBtn);
 
     auto trMenu = CCMenu::create();
     trMenu->setPosition(0, 0);
@@ -121,24 +124,29 @@ protected:
     GDPSHub::get()->beginPreview(this->server);
   }
 
-  void saveServer(CCObject *) {
-    auto gdpses = (dirs::getModConfigDir() / "km7dev.gdps-switcher" / "saved.json");
-    log::info("{}", gdpses);
-    if (std::filesystem::exists(gdpses)) {
-      std::string jsonText;
-      std::ifstream gdpsfile(gdpses);
-      std::string str;
-      while (std::getline(gdpsfile, str)) {
-        jsonText += str;
-      }
-      auto dat = matjson::parse(jsonText);
-      auto saved = dat.get<std::vector<Server>>("saved-servers");
-      saved.push_back(server);
-      dat.set("saved-servers", saved);
-      std::ofstream gdpsfile2(gdpses);
-      gdpsfile2 << dat.dump();
-    }
-  }
+  // void saveServer(CCObject *) {
+  //   auto gdpses = (dirs::getModsSaveDir()  / "km7dev.gdps-switcher" / "saved.json");
+  //   log::info("{}", gdpses);
+  //   if (std::filesystem::exists(gdpses)) {
+  //     std::string jsonText;
+  //     std::ifstream gdpsfile(gdpses);
+  //     std::string str;
+  //     while (std::getline(gdpsfile, str)) {
+  //       jsonText += str;
+  //     }
+  //     auto dat = matjson::parse(jsonText);
+  //     auto saved = dat.get<std::vector<Server>>("saved-servers");
+  //     saved.push_back(server);
+  //     dat.set("saved-servers", saved);
+  //     std::ofstream gdpsfile2(gdpses);
+  //     gdpsfile2 << dat.dump();
+  //     FLAlertLayer::create(
+  //         "Server Saved",
+  //         fmt::format("The server <cl>{}</c> has been saved.", server.title),
+  //         "Close")
+  //         ->show();
+  //   }
+  // }
 
   void onDiscord(CCObject *sender) {
     if (server.dcUrl == "") {

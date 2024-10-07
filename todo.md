@@ -1,0 +1,2 @@
+- [ ] search types
+- [ ] search query
