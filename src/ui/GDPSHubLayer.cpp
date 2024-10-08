@@ -1,6 +1,8 @@
 #include "GDPSHubLayer.hpp"
 #include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
+#include "Geode/binding/CCMenuItemToggler.hpp"
+#include "Geode/binding/GJDropDownLayer.hpp"
 #include "PrivateServerNode.hpp"
 
 #include <Geode/utils/cocos.hpp>
@@ -12,16 +14,44 @@ class PSSearchPopup : public Popup<GDPSHubLayer *> {
 protected:
   TextInput *m_query;
   GDPSHubLayer *m_layer;
+  CCMenuItemToggler *topSel;
+  CCMenuItemToggler *recentSel;
+  CCMenuItemToggler *searchSel;
   bool setup(GDPSHubLayer *layer) override {
-    this->setTitle("Search");
-
+    this->setTitle("Query Options");
     m_layer = layer;
 
+    auto menu = CCMenu::create();
+    
+    topSel = CCMenuItemToggler::createWithStandardSprites(this, menu_selector(PSSearchPopup::changeQueryType), 0.45f);
+    recentSel = CCMenuItemToggler::createWithStandardSprites(this, menu_selector(PSSearchPopup::changeQueryType), 0.45f);
+    searchSel = CCMenuItemToggler::createWithStandardSprites(this, menu_selector(PSSearchPopup::changeQueryType), 0.45f);
+    topSel->setID("top");
+    recentSel->setID("recent");
+    searchSel->setID("search");
+    topSel->toggle(m_layer->queryType == "top");
+    recentSel->toggle(m_layer->queryType == "recent");
+    searchSel->toggle(m_layer->queryType == "search");
+    menu->addChild(topSel);
+    menu->addChild(recentSel);
+    menu->addChild(searchSel);
+
+    this->m_mainLayer->addChild(menu);
+
     m_query = TextInput::create(220.f, "Search...");
-    m_query->setPosition({0, 0});
+    m_query->setPosition({125.f, 75.f});
     this->m_mainLayer->addChild(m_query);
 
     return true;
+  }
+
+  void changeQueryType(CCObject * sender) {
+    CCNode *node = static_cast<CCNode *>(sender);
+    m_layer->queryType = node->getID();
+    topSel->toggle(m_layer->queryType == "top");
+    recentSel->toggle(m_layer->queryType == "recent");
+    searchSel->toggle(m_layer->queryType == "search");
+    log::info("{}", (node->getID()));
   }
 
 public:
