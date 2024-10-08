@@ -21,6 +21,8 @@ protected:
     CCLabelBMFont *m_infoLabel;
     CCMenuItemSpriteExtra *leftArrow;
     CCMenuItemSpriteExtra *rightArrow;
+    bool fetching = false;
+public:
     /*
     top (default)
     search
@@ -30,8 +32,6 @@ protected:
     std::string search = "";
     int page = 1;
     int pages = 0;
-    bool fetching = false;
-public:
     static CCScene *scene();
     void onGoBack(CCObject *);
     ScrollLayer *scroll;
