@@ -45,7 +45,7 @@ protected:
   }
 
   void changeQueryType(CCObject * sender) {
-
+    m_layer->queryType = static_cast<CCNode *>(sender)->getID();
   }
 
 public:
