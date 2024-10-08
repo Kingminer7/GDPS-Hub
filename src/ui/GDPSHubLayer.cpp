@@ -14,29 +14,18 @@ class PSSearchPopup : public Popup<GDPSHubLayer *> {
 protected:
   TextInput *m_query;
   GDPSHubLayer *m_layer;
-  CCMenuItemToggler *topSel;
-  CCMenuItemToggler *recentSel;
-  CCMenuItemToggler *searchSel;
+  CCMenuItemSpriteExtra *topSel;
+  CCMenuItemSpriteExtra *recentSel;
+  CCMenuItemSpriteExtra *searchSel;
   bool setup(GDPSHubLayer *layer) override {
     this->setTitle("Query Options");
     m_layer = layer;
 
     auto menu = CCMenu::create();
-    
-    topSel = CCMenuItemToggler::createWithStandardSprites(this, menu_selector(PSSearchPopup::changeQueryType), 0.45f);
-    recentSel = CCMenuItemToggler::createWithStandardSprites(this, menu_selector(PSSearchPopup::changeQueryType), 0.45f);
-    searchSel = CCMenuItemToggler::createWithStandardSprites(this, menu_selector(PSSearchPopup::changeQueryType), 0.45f);
-    topSel->setID("top");
-    recentSel->setID("recent");
-    searchSel->setID("search");
-    topSel->toggle(m_layer->queryType == "top");
-    recentSel->toggle(m_layer->queryType == "recent");
-    searchSel->toggle(m_layer->queryType == "search");
-    menu->addChild(topSel);
-    menu->addChild(recentSel);
-    menu->addChild(searchSel);
 
-    this->m_mainLayer->addChild(menu);
+    topSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(""), this, menu_selector(PSSearchPopup::changeQueryType));
+
+    this->m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
 
     m_query = TextInput::create(220.f, "Search...");
     m_query->setPosition({125.f, 75.f});
@@ -46,12 +35,7 @@ protected:
   }
 
   void changeQueryType(CCObject * sender) {
-    CCNode *node = static_cast<CCNode *>(sender);
-    m_layer->queryType = node->getID();
-    topSel->toggle(m_layer->queryType == "top");
-    recentSel->toggle(m_layer->queryType == "recent");
-    searchSel->toggle(m_layer->queryType == "search");
-    log::info("{}", (node->getID()));
+
   }
 
 public:
