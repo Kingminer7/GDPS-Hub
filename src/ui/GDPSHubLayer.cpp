@@ -23,7 +23,17 @@ protected:
 
     auto menu = CCMenu::create();
 
-    topSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(""), this, menu_selector(PSSearchPopup::changeQueryType));
+    topSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(m_layer->queryType == "top" ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png"), this, menu_selector(PSSearchPopup::changeQueryType));
+    topSel->setID("top");
+    menu->addChildAtPosition(topSel, Anchor::Center, {-10, -10});
+
+    recentSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(m_layer->queryType == "recent" ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png"), this, menu_selector(PSSearchPopup::changeQueryType));
+    recentSel->setID("recent");
+    menu->addChildAtPosition(recentSel, Anchor::Center, {10, -10});
+
+    searchSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(m_layer->queryType == "search" ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png"), this, menu_selector(PSSearchPopup::changeQueryType));
+    searchSel->setID("search");
+    menu->addChildAtPosition(searchSel, Anchor::Center, {10, -10});
 
     this->m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
 
