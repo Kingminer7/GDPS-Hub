@@ -22,24 +22,24 @@ protected:
     m_layer = layer;
 
     auto menu = CCMenu::create();
+    menu->setContentSize({250, 150});
 
     topSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(m_layer->queryType == "top" ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png"), this, menu_selector(PSSearchPopup::changeQueryType));
     topSel->setID("top");
-    menu->addChildAtPosition(topSel, Anchor::Center, {-10, -10});
+    menu->addChildAtPosition(topSel, Anchor::Left, {25, 20});
 
     recentSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(m_layer->queryType == "recent" ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png"), this, menu_selector(PSSearchPopup::changeQueryType));
     recentSel->setID("recent");
-    menu->addChildAtPosition(recentSel, Anchor::Center, {10, -10});
+    menu->addChildAtPosition(recentSel, Anchor::Left, {25, -15});
 
     searchSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(m_layer->queryType == "search" ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png"), this, menu_selector(PSSearchPopup::changeQueryType));
     searchSel->setID("search");
-    menu->addChildAtPosition(searchSel, Anchor::Center, {10, -10});
+    menu->addChildAtPosition(searchSel, Anchor::Left, {25, -50});
 
     this->m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
 
-    m_query = TextInput::create(220.f, "Search...");
-    m_query->setPosition({125.f, 75.f});
-    this->m_mainLayer->addChild(m_query);
+    m_query = TextInput::create(190.f, "Search...");
+    this->m_mainLayer->addChildAtPosition(m_query, Anchor::Left, {144, -20});
 
     return true;
   }
