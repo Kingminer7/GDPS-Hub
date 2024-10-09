@@ -165,7 +165,7 @@ bool PSCreatorLayer::init() {
   if (!Mod::get()->getSettingValue<bool>("hide-previewing")) {
     infoLabel = CCLabelBMFont::create(
         std::string("Previewing " + m_server.title).c_str(), "bigFont.fnt");
-    infoLabel->setID("server-info-label");
+    infoLabel->setID("server-info-label"_spr);
     infoLabel->setPosition({winSize.width / 2, 20});
     infoLabel->setScale(0.5);
     infoLabel->setZOrder(10);

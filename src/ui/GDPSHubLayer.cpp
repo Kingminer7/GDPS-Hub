@@ -15,12 +15,19 @@ protected:
   CCMenuItemSpriteExtra *topSel;
   CCMenuItemSpriteExtra *recentSel;
   CCMenuItemSpriteExtra *searchSel;
+  bool changed = false;
   bool setup(GDPSHubLayer *layer) override {
-    this->setTitle("Query Options");
+    setTitle("Query Options");
+    setID("search-popup"_spr);
+    m_title->setID("title");
+    m_buttonMenu->setID("back-menu");
+    m_closeBtn->setID("close-btn");
+    m_mainLayer->setID("main-layer");
     m_layer = layer;
 
     auto menu = CCMenu::create();
     menu->setContentSize({250, 150});
+    menu->setID("button-layer");
 
     CCSprite *topOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
     topOn->setVisible(m_layer->queryType == "top");
@@ -32,6 +39,11 @@ protected:
     topSel->addChildAtPosition(topOff, Anchor::Center);
     topSel->setID("top");
     menu->addChildAtPosition(topSel, Anchor::Left, {25, 20});
+    auto topLab = CCLabelBMFont::create("Top Servers","bigFont.fnt");
+    topLab->setAnchorPoint({ 0, 0.5 });
+    topLab->setScale(0.7);
+    topLab->setID("top-label");
+    menu->addChildAtPosition(topLab, Anchor::Left, {52, 20});
 
     CCSprite *recentOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
     recentOn->setVisible(m_layer->queryType == "recent");
@@ -43,6 +55,11 @@ protected:
     recentSel->addChildAtPosition(recentOff, Anchor::Center);
     recentSel->setID("recent");
     menu->addChildAtPosition(recentSel, Anchor::Left, {25, -15});
+    auto recentLab = CCLabelBMFont::create("Recently Added","bigFont.fnt");
+    recentLab->setAnchorPoint({ 0, 0.5 });
+    recentLab->setScale(0.7);
+    recentLab->setID("recent-label");
+    menu->addChildAtPosition(recentLab, Anchor::Left, {52, -15});
 
     CCSprite *searchOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
     searchOn->setVisible(m_layer->queryType == "search");
@@ -55,13 +72,15 @@ protected:
     searchSel->setID("search");
     menu->addChildAtPosition(searchSel, Anchor::Left, {25, -50});
 
-    this->m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
+    m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
 
     m_query = TextInput::create(190.f, "Search");
     m_query->setString(m_layer->search);
-    this->m_mainLayer->addChildAtPosition(m_query, Anchor::Left, {144, -50});
+    m_query->setID("search-box");
+    menu->addChildAtPosition(m_query, Anchor::Left, {144, -50});
     std::function<void(const std::string&)> func = [this](const std::string& str){
       m_layer->search = str;
+      changed = true;
     };
     m_query->setCallback(func);
     m_query->setEnabled(m_layer->queryType == "search");
@@ -77,7 +96,12 @@ protected:
     recentSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "recent");
     topSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "top");
     topSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "top");
-    m_layer->fetchServers();
+    changed = true;
+  }
+
+  void onClose(CCObject * obj) override {
+    if (changed == true) m_layer->fetchServers();
+    Popup::onClose(obj);
   }
 
 public:
@@ -97,18 +121,18 @@ bool GDPSHubLayer::init() {
   if (!CCLayer::init())
     return false;
 
-  this->setID("GDPSHubLayer");
+  setID("gdps-hub-layer"_spr);
 
-  this->setKeypadEnabled(true);
+  setKeypadEnabled(true);
 
   auto background = createLayerBG();
   background->setID("background");
-  this->addChild(background);
+  addChild(background);
 
   auto winSize = CCDirector::get()->getWinSize();
 
   auto menu = CCMenu::create();
-  menu->setID("menu");
+  menu->setID("back-menu");
   menu->setZOrder(10);
 
   auto backBtn = CCMenuItemSpriteExtra::create(
@@ -117,7 +141,7 @@ bool GDPSHubLayer::init() {
   backBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2 - 25.f);
   backBtn->setID("back-button");
   menu->addChild(backBtn);
-  this->addChild(menu);
+  addChild(menu);
 
   auto scrollBg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
   scrollBg->setColor({0, 0, 0});
@@ -126,27 +150,28 @@ bool GDPSHubLayer::init() {
   scrollBg->setPosition(winSize / 2);
   scrollBg->ignoreAnchorPointForPosition(false);
   scrollBg->setID("server-scroll-bg");
-  this->addChild(scrollBg);
+  addChild(scrollBg);
 
   scroll = ScrollLayer::create({winSize.width - 100, winSize.height - 60});
   scroll->setPosition((winSize - scroll->getContentSize()) / 2);
   scroll->setID("server-scroll");
-  this->addChild(scroll);
+  addChild(scroll);
 
   m_infoLabel = CCLabelBMFont::create("", "bigFont.fnt");
   m_infoLabel->setPosition(winSize / 2);
   m_infoLabel->setID("info-label");
   m_infoLabel->setAnchorPoint({0.5, 0.5});
   m_infoLabel->setScale(0.5);
-  this->addChild(m_infoLabel);
+  addChild(m_infoLabel);
 
   auto arrowMenu = CCMenu::create();
   arrowMenu->setID("nav-menu");
   arrowMenu->setZOrder(10);
-  this->addChild(arrowMenu);
+  addChild(arrowMenu);
 
   auto searchBtn = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("gj_findBtn_001.png"), this, menu_selector(GDPSHubLayer::onSearch));
   searchBtn->setPosition(winSize.width / 2 - 25.f, 70);
+  searchBtn->setID("search-btn");
   arrowMenu->addChild(searchBtn);
 
   auto leftArrowSpr =
@@ -155,6 +180,7 @@ bool GDPSHubLayer::init() {
       leftArrowSpr, this, menu_selector(GDPSHubLayer::onLeftArrow));
   leftArrow->setPosition(-winSize.width / 2 + 25.f, 0);
   leftArrow->setVisible(false);
+  leftArrow->setID("left-btn");
   arrowMenu->addChild(leftArrow);
 
   auto rightArrowSpr =
@@ -164,12 +190,13 @@ bool GDPSHubLayer::init() {
       rightArrowSpr, this, menu_selector(GDPSHubLayer::onRightArrow));
   rightArrow->setPosition(winSize.width / 2 - 25.f, 0);
   rightArrow->setVisible(false);
+  rightArrow->setID("right-btn");
   arrowMenu->addChild(rightArrow);
 
   if (GDPSHub::get()->servers.size() == 0) {
-    this->fetchServers();
+    fetchServers();
   } else {
-    this->updateList();
+    updateList();
   }
 
   retain();
@@ -177,7 +204,7 @@ bool GDPSHubLayer::init() {
   return true;
 }
 
-void GDPSHubLayer::keyBackClicked() { this->onGoBack(nullptr); }
+void GDPSHubLayer::keyBackClicked() { onGoBack(nullptr); }
 
 void GDPSHubLayer::onGoBack(CCObject *) {
   release();
@@ -245,7 +272,7 @@ void GDPSHubLayer::fetchServers() {
   m_loadingCircle->setPosition({0, 0});
   m_loadingCircle->setScale(1.f);
   m_loadingCircle->show();
-  this->m_infoLabel->setString("");
+  m_infoLabel->setString("");
   fetching = true;
 
   m_listener.bind([this](web::WebTask::Event *e) {
@@ -255,8 +282,8 @@ void GDPSHubLayer::fetchServers() {
       auto data = opt.value_or("err");
       if (data == "err") {
         log::info("{}", err);
-        this->m_infoLabel->setString("Failed to fetch servers.");
-        this->pages = 0;
+        m_infoLabel->setString("Failed to fetch servers.");
+        pages = 0;
         fetching = false;
         m_loadingCircle->fadeAndRemove();
         m_loadingCircle = nullptr;
@@ -265,10 +292,10 @@ void GDPSHubLayer::fetchServers() {
       if (!data.contains("success") || data["success"].as_bool() == false ||
           !data.contains("data")) {
         if (data.contains("message"))
-          this->m_infoLabel->setString(data["message"].as_string().c_str());
+          m_infoLabel->setString(data["message"].as_string().c_str());
         else
-          this->m_infoLabel->setString("Failed to fetch servers.");
-        this->pages = 0;
+          m_infoLabel->setString("Failed to fetch servers.");
+        pages = 0;
         fetching = false;
         m_loadingCircle->fadeAndRemove();
         m_loadingCircle = nullptr;
@@ -314,5 +341,7 @@ void GDPSHubLayer::onRightArrow(CCObject *) {
 }
 
 void GDPSHubLayer::onSearch(CCObject *) {
+  if (fetching)
+    return;
   PSSearchPopup::create(this)->show();
 }

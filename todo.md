@@ -2,8 +2,7 @@
 
 ## Release
 
-- [ ] Search types
-- [ ] Search query
+- None
 
 ## Future Versions
 
