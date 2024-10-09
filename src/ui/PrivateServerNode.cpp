@@ -37,13 +37,14 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     name->setPosition(8, this->getContentHeight() - 15.f);
     name->setAnchorPoint({0, 0.5});
     name->limitLabelWidth(size.width - 124, 0.8f, 0.1f);
+    name->setID("name");
     this->addChild(name);
 
     auto idLab = CCLabelBMFont::create(fmt::format("id {}", entry.id).c_str(), "chatFont.fnt");
     idLab->setPosition(12 + name->getContentWidth() * name->getScaleX(), this->getContentHeight() - 15.f);
     idLab->setAnchorPoint({0, 0.5});
     idLab->limitLabelWidth(64, 0.5f, 0.1f);
-    // idLab->setColor();
+    idLab->setID("id");
     this->addChild(idLab);
 
     auto desc = SimpleTextArea::create(entry.description, "chatFont.fnt", .7);
@@ -53,11 +54,13 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     desc->setAnchorPoint({0, 1});
     desc->setMaxLines(3);
     desc->setWidth(size.width * .8);
+    desc->setID("description");
     this->addChild(desc);
 
     auto menu = CCMenu::create();
     menu->setContentSize(ccp(size.width * .2 - 16, size.height));
     menu->setPosition(size.width * .8 + 8, 0);
+    menu->setID("menu");
 
     auto spr = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
     spr->setScale(.7f);
@@ -70,6 +73,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
         viewBtn->setColor({100, 100, 100});
         viewBtn->setOpacity(100);
     }
+    viewBtn->setID("view-btn");
     menu->addChild(viewBtn);
 
     spr = CircleButtonSprite::createWithSpriteFrameName("info.png"_spr, 1.5, CircleBaseColor::Green, CircleBaseSize::Large);
@@ -78,6 +82,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
         this,
         menu_selector(PrivateServerNode::openPopup));
     infoBtn->setPosition(ccp(menu->getContentWidth() - 88.f, menu->getContentHeight() / 2));
+    infoBtn->setID("info-btn");
     menu->addChild(infoBtn);
 
     this->addChild(menu);

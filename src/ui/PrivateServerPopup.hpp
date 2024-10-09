@@ -89,6 +89,11 @@ protected:
     // viewBtn->setPosition({175, 26});
     viewBtn->setPosition({220, 26});
     viewBtn->setID("view-button");
+    if (server.url == "No URL provided.") {
+        viewBtn->setEnabled(false);
+        viewBtn->setColor({100, 100, 100});
+        viewBtn->setOpacity(100);
+    }
     menu->addChild(viewBtn);
 
     // auto saveBtn = CCMenuItemSpriteExtra::create(
