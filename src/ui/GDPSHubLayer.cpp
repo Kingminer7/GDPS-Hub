@@ -23,6 +23,7 @@ protected:
     m_buttonMenu->setID("back-menu");
     m_closeBtn->setID("close-btn");
     m_mainLayer->setID("main-layer");
+    m_bgSprite->setID("background");
     m_layer = layer;
 
     auto menu = CCMenu::create();

@@ -14,13 +14,13 @@ bool PSCreatorLayer::init() {
   if (!CCLayer::init())
     return false;
 
-  this->setID("PSCreatorLayer");
+  setID("PSCreatorLayer");
 
-  this->setKeypadEnabled(true);
+  setKeypadEnabled(true);
 
   auto background = createLayerBG();
   background->setID("background");
-  this->addChild(background);
+  addChild(background);
 
   auto winSize = CCDirector::get()->getWinSize();
 
@@ -34,14 +34,14 @@ bool PSCreatorLayer::init() {
   backBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2 - 25.f);
   backBtn->setID("back-button");
   menu->addChild(backBtn);
-  this->addChild(menu);
+  addChild(menu);
 
   // auto debugBtn = CCMenuItemSpriteExtra::create(
   //     CCSprite::createWithSpriteFrameName("accountBtn_settings_001.png"),
   //     this, menu_selector(PSCreatorLayer::onDebug));
   // debugBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2
   // - 60.f); debugBtn->setID("debug-button"); menu->addChild(debugBtn);
-  this->addChild(menu);
+  addChild(menu);
 
   auto trCorner = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
   trCorner->setAnchorPoint({1, 1});
@@ -49,27 +49,27 @@ bool PSCreatorLayer::init() {
   trCorner->setFlipY(true);
   trCorner->setID("top-right-corner");
   trCorner->setPosition({winSize.width + 1, winSize.height + 1});
-  this->addChild(trCorner);
+  addChild(trCorner);
 
   auto brCorner = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
   brCorner->setAnchorPoint({1, 0});
   brCorner->setID("bottom-right-corner");
   brCorner->setFlipX(true);
   brCorner->setPosition({winSize.width + 1, -1});
-  this->addChild(brCorner);
+  addChild(brCorner);
 
   auto tlCorner = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
   tlCorner->setAnchorPoint({0, 1});
   tlCorner->setFlipY(true);
   tlCorner->setID("top-left-corner");
   tlCorner->setPosition({-1, winSize.height + 1});
-  this->addChild(tlCorner);
+  addChild(tlCorner);
 
   auto blCorner = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
   blCorner->setAnchorPoint({0, 0});
   blCorner->setID("bottom-left-corner");
   blCorner->setPosition({-1, -1});
-  this->addChild(blCorner);
+  addChild(blCorner);
 
   auto buttonMenu = CCMenu::create();
   buttonMenu->setID("button-menu");
@@ -150,7 +150,7 @@ bool PSCreatorLayer::init() {
   layout->setAutoScale(false);
   buttonMenu->setLayout(layout);
 
-  this->addChild(buttonMenu);
+  addChild(buttonMenu);
 
   GameLevelManager::get()->m_dailyID = -1;
   GameLevelManager::get()->m_weeklyID = -1;
@@ -170,14 +170,14 @@ bool PSCreatorLayer::init() {
     infoLabel->setScale(0.5);
     infoLabel->setZOrder(10);
     infoLabel->setOpacity(155);
-    this->addChild(infoLabel);
+    addChild(infoLabel);
     SceneManager::get()->keepAcrossScenes(infoLabel);
   }
 
   return true;
 }
 
-void PSCreatorLayer::keyBackClicked() { this->onGoBack(nullptr); }
+void PSCreatorLayer::keyBackClicked() { onGoBack(nullptr); }
 
 void PSCreatorLayer::onGoBack(CCObject *) {
   GDPSHub::get()->psCLScene->release();
