@@ -1,8 +1,6 @@
 #include "GDPSHubLayer.hpp"
 #include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
-#include "Geode/binding/CCMenuItemToggler.hpp"
-#include "Geode/binding/GJDropDownLayer.hpp"
 #include "PrivateServerNode.hpp"
 
 #include <Geode/utils/cocos.hpp>
@@ -24,28 +22,62 @@ protected:
     auto menu = CCMenu::create();
     menu->setContentSize({250, 150});
 
-    topSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(m_layer->queryType == "top" ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png"), this, menu_selector(PSSearchPopup::changeQueryType));
+    CCSprite *topOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
+    topOn->setVisible(m_layer->queryType == "top");
+    topOn->setID("on-sprite");
+    CCSprite *topOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
+    topOff->setVisible(m_layer->queryType != "top");
+    topOff->setID("off-sprite");
+    topSel = CCMenuItemSpriteExtra::create(topOn, this, menu_selector(PSSearchPopup::changeQueryType));
+    topSel->addChildAtPosition(topOff, Anchor::Center);
     topSel->setID("top");
     menu->addChildAtPosition(topSel, Anchor::Left, {25, 20});
 
-    recentSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(m_layer->queryType == "recent" ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png"), this, menu_selector(PSSearchPopup::changeQueryType));
+    CCSprite *recentOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
+    recentOn->setVisible(m_layer->queryType == "recent");
+    recentOn->setID("on-sprite");
+    CCSprite *recentOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
+    recentOff->setVisible(m_layer->queryType != "recent");
+    recentOff->setID("off-sprite");
+    recentSel = CCMenuItemSpriteExtra::create(recentOn, this, menu_selector(PSSearchPopup::changeQueryType));
+    recentSel->addChildAtPosition(recentOff, Anchor::Center);
     recentSel->setID("recent");
     menu->addChildAtPosition(recentSel, Anchor::Left, {25, -15});
 
-    searchSel = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName(m_layer->queryType == "search" ? "GJ_checkOn_001.png" : "GJ_checkOff_001.png"), this, menu_selector(PSSearchPopup::changeQueryType));
+    CCSprite *searchOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
+    searchOn->setVisible(m_layer->queryType == "search");
+    searchOn->setID("on-sprite");
+    CCSprite *searchOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
+    searchOff->setVisible(m_layer->queryType != "search");
+    searchOff->setID("off-sprite");
+    searchSel = CCMenuItemSpriteExtra::create(searchOn, this, menu_selector(PSSearchPopup::changeQueryType));
+    searchSel->addChildAtPosition(searchOff, Anchor::Center);
     searchSel->setID("search");
     menu->addChildAtPosition(searchSel, Anchor::Left, {25, -50});
 
     this->m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
 
-    m_query = TextInput::create(190.f, "Search...");
-    this->m_mainLayer->addChildAtPosition(m_query, Anchor::Left, {144, -20});
-
+    m_query = TextInput::create(190.f, "Search");
+    m_query->setString(m_layer->search);
+    this->m_mainLayer->addChildAtPosition(m_query, Anchor::Left, {144, -50});
+    std::function<void(const std::string&)> func = [this](const std::string& str){
+      m_layer->search = str;
+    };
+    m_query->setCallback(func);
+    m_query->setEnabled(m_layer->queryType == "search");
     return true;
   }
 
   void changeQueryType(CCObject * sender) {
     m_layer->queryType = static_cast<CCNode *>(sender)->getID();
+    m_query->setEnabled(m_layer->queryType == "search");
+    searchSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "search");
+    searchSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "search");
+    recentSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "recent");
+    recentSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "recent");
+    topSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "top");
+    topSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "top");
+    m_layer->fetchServers();
   }
 
 public:
@@ -213,6 +245,7 @@ void GDPSHubLayer::fetchServers() {
   m_loadingCircle->setPosition({0, 0});
   m_loadingCircle->setScale(1.f);
   m_loadingCircle->show();
+  this->m_infoLabel->setString("");
   fetching = true;
 
   m_listener.bind([this](web::WebTask::Event *e) {
