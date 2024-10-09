@@ -19,6 +19,7 @@ class $modify(dLPage, DailyLevelPage) {
 			if (GDPSHub::get()->isPreviewing()) {
 				auto label = CCLabelBMFont::create("If this doesn't load, there may not be an event level.", "bigFont.fnt");
 				label->setScale(0.5);
+				label->setID("warning-label"_spr);
 				label->setPosition({CCDirector::get()->getWinSize().width / 2, label->getScaledContentHeight() / 2});
 				DailyLevelPage::m_mainLayer->addChild(label);
 			}
