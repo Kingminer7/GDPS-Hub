@@ -13,6 +13,11 @@ struct Server{
     int created_at;
 };
 
+struct ServerEntry {
+  std::string name;
+  std::string url;
+};
+
 template <>
 struct matjson::Serialize<Server>
 {
@@ -111,4 +116,18 @@ struct matjson::Serialize<Server>
         obj["created_at"] = value.created_at;
         return obj;
     }
+};
+
+template <> struct matjson::Serialize<ServerEntry> {
+  static ServerEntry from_json(matjson::Value const &value) {
+    return ServerEntry{.name = value["name"].as_string(),
+                       .url = value["url"].as_string()};
+  }
+
+  static matjson::Value to_json(ServerEntry const &value) {
+    auto obj = matjson::Object();
+    obj["name"] = value.name;
+    obj["url"] = value.url;
+    return obj;
+  }
 };
