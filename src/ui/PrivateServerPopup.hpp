@@ -131,7 +131,7 @@ protected:
     menu->addChild(webBtn);
 
     auto toolBtn = CCMenuItemSpriteExtra::create(
-        CCSprite::create("gdpsHubBtn.png"), this,
+        CCSprite::create("gdpsToolsBtn.png"), this,
         menu_selector(PrivateServerPopup::onTools));
     toolBtn->setPosition(350, 22);
     toolBtn->setID("tools-button");
