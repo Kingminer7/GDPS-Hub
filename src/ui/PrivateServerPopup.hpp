@@ -22,10 +22,18 @@ protected:
   bool setup(Server server) override {
     this->server = server;
     setTitle(server.title);
-    m_title->setPosition(245 - (m_title->getScaledContentWidth() / 2), 248);
+    m_title->setPosition(80, 254);
     m_title->setAnchorPoint({0, 0.5});
     m_title->setScale(0.9);
     m_title->setID("server-name");
+    setColor({ 14, 55, 190 });
+
+    auto author = CCLabelBMFont::create(fmt::format("by {}", server.owner).c_str(), "bigFont.fnt");
+    author->setPosition(80, 235);
+    author->setAnchorPoint({0, 0.5});
+    author->setScale(0.5);
+    author->setID("server-owner");
+    m_mainLayer->addChild(author);
 
     auto desc = MDTextArea::create(server.description, ccp(420, 168));
     desc->setPosition(220, 131);
@@ -35,7 +43,7 @@ protected:
     m_loadingIndicator = LoadingCircle::create();
     m_loadingIndicator->setParentLayer(m_mainLayer);
     m_loadingIndicator->setPosition(
-        {220 - (m_title->getScaledContentWidth() / 2), 245});
+        {47, 245});
     m_loadingIndicator->ignoreAnchorPointForPosition(false);
     m_loadingIndicator->setScale(0.75f);
     m_loadingIndicator->show();
@@ -44,6 +52,69 @@ protected:
     auto menu = CCMenu::create();
     menu->setPosition(0, 0);
     menu->setID("interaction-menu");
+
+
+    auto square = CCSprite::create("square02b_001.png");
+    square->setPosition(ccp(333, 245));
+    square->setScaleX(1.8f);
+    square->setScaleY(0.64f);
+    square->setColor({0, 0, 0});
+    square->setOpacity(75);
+    square->setID("dark-square");
+    menu->addChild(square);
+
+    float margin = 10.0f;
+
+    float squareWidth = square->getContentSize().width * square->getScaleX();
+    float squareHeight = square->getContentSize().height * square->getScaleY();
+    float startX = square->getPositionX() - squareWidth / 2 + margin;
+    float startY = square->getPositionY() + squareHeight * 1.2f / 2 - margin;
+
+    auto likeicon = CCSprite::createWithSpriteFrameName("GJ_likesIcon_001.png");
+    likeicon->setScale(0.7f);
+    likeicon->setPosition({startX + likeicon->getContentSize().width * 0.8f / 2, startY - likeicon->getContentSize().height * 0.1f / 2});
+    menu->addChild(likeicon);
+
+    auto likesn = CCLabelBMFont::create(fmt::format("{}", server.likes).c_str(), "bigFont.fnt");
+    likesn->setScale(0.5f);
+    float likesnX = likeicon->getPositionX() + likeicon->getContentSize().width * 1.8f / 2 + margin; 
+    likesn->setPosition({likesnX, likeicon->getPositionY()});
+    menu->addChild(likesn);
+
+    auto dislikeicon = CCSprite::createWithSpriteFrameName("GJ_dislikesIcon_001.png");
+    dislikeicon->setScale(0.7f);
+    float dislikeiconX = likesnX + likesn->getContentSize().width * 0.6f + margin; 
+    dislikeicon->setPosition({dislikeiconX, likeicon->getPositionY()});
+    menu->addChild(dislikeicon);
+
+    auto dislikesn = CCLabelBMFont::create(fmt::format("{}", server.dislikes).c_str(), "bigFont.fnt");
+    dislikesn->setScale(0.5f);
+    float dislikesnX = dislikeicon->getPositionX() + dislikeicon->getContentSize().width * 1.8f / 2 + margin; 
+    dislikesn->setPosition({dislikesnX, dislikeicon->getPositionY()});
+    menu->addChild(dislikesn);
+
+    auto downloadicon = CCSprite::createWithSpriteFrameName("GJ_downloadsIcon_001.png");
+    downloadicon->setScale(0.7f);
+    float downloadiconY = likeicon->getPositionY() - likeicon->getContentSize().height * 0.8f - margin;
+    downloadicon->setPosition({startX + downloadicon->getContentSize().width * 0.8f / 2, downloadiconY});
+    menu->addChild(downloadicon);
+
+    auto downloadsn = CCLabelBMFont::create(fmt::format("{}", server.views).c_str(), "bigFont.fnt");
+    downloadsn->setScale(0.5f);
+    float downloadsnX = downloadicon->getPositionX() + downloadicon->getContentSize().width * 1.8f / 2 + margin;
+    downloadsn->setPosition({downloadsnX, downloadicon->getPositionY()});
+    menu->addChild(downloadsn);
+
+    auto ratingicon = CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png");
+    ratingicon->setScale(0.7f);
+    ratingicon->setPosition({dislikeicon->getPositionX(), downloadicon->getPositionY()});
+    menu->addChild(ratingicon);
+
+    auto ratingn = CCLabelBMFont::create(fmt::format("{}/5", server.rating).c_str(), "bigFont.fnt");
+    ratingn->setScale(0.5f);
+    float ratingnX = ratingicon->getPositionX() + ratingicon->getContentSize().width * 1.8f / 2 + margin;
+    ratingn->setPosition({ratingnX, ratingicon->getPositionY()});
+    menu->addChild(ratingn);
 
     auto discordBtn = CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"), this,
@@ -55,9 +126,16 @@ protected:
     auto webBtn = CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("gdpsHubBtn.png"_spr), this,
         menu_selector(PrivateServerPopup::onWeb));
-    webBtn->setPosition(387, 22);
+    webBtn->setPosition(385, 22);
     webBtn->setID("web-button");
     menu->addChild(webBtn);
+
+    auto toolBtn = CCMenuItemSpriteExtra::create(
+        CCSprite::create("gdpsHubBtn.png"), this,
+        menu_selector(PrivateServerPopup::onTools));
+    toolBtn->setPosition(350, 22);
+    toolBtn->setID("tools-button");
+    menu->addChild(toolBtn);
 
     auto viewBtn = CCMenuItemSpriteExtra::create(
         ButtonSprite::create("Play"), this,
@@ -78,19 +156,15 @@ protected:
     saveBtn->setID("save-button");
     menu->addChild(saveBtn);
 
-    auto trMenu = CCMenu::create();
-    trMenu->setPosition(0, 0);
-    trMenu->setID("interaction-menu");
-
     auto infoBtn = CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png"), this,
         menu_selector(PrivateServerPopup::onInfo));
     infoBtn->setPosition(420, 260);
     infoBtn->setID("info-button");
     menu->addChild(infoBtn);
-
     m_mainLayer->addChild(menu);
-
+    m_mainLayer->setID("temporal");
+    
     retain();
 
     startDownload();
@@ -137,6 +211,13 @@ protected:
       return;
     }
     web::openLinkInBrowser(server.dcUrl);
+  }
+
+  void onTools(CCObject *sender) {
+    if (server.toolsUrl == "") {
+      return;
+    }
+    web::openLinkInBrowser(server.toolsUrl);
   }
 
   void onWeb(CCObject *sender) {
@@ -203,7 +284,7 @@ protected:
 
   void onDownloadFailed() {
     auto label = CCLabelBMFont::create("N/A", "bigFont.fnt");
-    label->setPosition({220 - (m_title->getScaledContentWidth() / 2), 245});
+    label->setPosition({47, 245});
     label->setScale(0.82f);
     label->setAnchorPoint({0.5, 0.5});
     label->setOpacity(150);
@@ -221,7 +302,7 @@ protected:
 
     float imgScale = 50 / image->getContentSize().height;
     image->setScale(imgScale);
-    image->setPosition({220 - (m_title->getScaledContentWidth() / 2), 245});
+    image->setPosition({47, 245});
     image->setID("ps-logo");
     m_mainLayer->addChild(image);
     handleFinish();
@@ -230,6 +311,7 @@ protected:
 public:
   static PrivateServerPopup *create(Server server) {
     auto ret = new PrivateServerPopup();
+    ret->setColor({ 14, 55, 190 });
     if (ret->initAnchored(440.f, 280.f, server)) {
       ret->autorelease();
       return ret;

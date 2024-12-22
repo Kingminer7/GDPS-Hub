@@ -14,6 +14,7 @@ protected:
   GDPSHubLayer *m_layer;
   CCMenuItemSpriteExtra *topSel;
   CCMenuItemSpriteExtra *recentSel;
+  CCMenuItemSpriteExtra *allSel;
   CCMenuItemSpriteExtra *searchSel;
   bool changed = false;
   bool setup(GDPSHubLayer *layer) override {
@@ -30,6 +31,7 @@ protected:
     menu->setContentSize({250, 150});
     menu->setID("button-layer");
 
+    // Top Selection
     CCSprite *topOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
     topOn->setVisible(m_layer->queryType == "top");
     topOn->setID("on-sprite");
@@ -39,13 +41,14 @@ protected:
     topSel = CCMenuItemSpriteExtra::create(topOn, this, menu_selector(PSSearchPopup::changeQueryType));
     topSel->addChildAtPosition(topOff, Anchor::Center);
     topSel->setID("top");
-    menu->addChildAtPosition(topSel, Anchor::Left, {25, 20});
+    menu->addChildAtPosition(topSel, Anchor::Left, {25, 40});
     auto topLab = CCLabelBMFont::create("Top Servers","bigFont.fnt");
     topLab->setAnchorPoint({ 0, 0.5 });
     topLab->setScale(0.7);
     topLab->setID("top-label");
-    menu->addChildAtPosition(topLab, Anchor::Left, {52, 20});
+    menu->addChildAtPosition(topLab, Anchor::Left, {52, 40});
 
+    // Recent Selection
     CCSprite *recentOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
     recentOn->setVisible(m_layer->queryType == "recent");
     recentOn->setID("on-sprite");
@@ -55,53 +58,66 @@ protected:
     recentSel = CCMenuItemSpriteExtra::create(recentOn, this, menu_selector(PSSearchPopup::changeQueryType));
     recentSel->addChildAtPosition(recentOff, Anchor::Center);
     recentSel->setID("recent");
-    menu->addChildAtPosition(recentSel, Anchor::Left, {25, -15});
+    menu->addChildAtPosition(recentSel, Anchor::Left, {25, 5});
     auto recentLab = CCLabelBMFont::create("Recently Added","bigFont.fnt");
     recentLab->setAnchorPoint({ 0, 0.5 });
     recentLab->setScale(0.7);
     recentLab->setID("recent-label");
-    menu->addChildAtPosition(recentLab, Anchor::Left, {52, -15});
+    menu->addChildAtPosition(recentLab, Anchor::Left, {52, 5});
 
-    CCSprite *searchOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
-    searchOn->setVisible(m_layer->queryType == "search");
-    searchOn->setID("on-sprite");
-    CCSprite *searchOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
-    searchOff->setVisible(m_layer->queryType != "search");
-    searchOff->setID("off-sprite");
-    searchSel = CCMenuItemSpriteExtra::create(searchOn, this, menu_selector(PSSearchPopup::changeQueryType));
-    searchSel->addChildAtPosition(searchOff, Anchor::Center);
-    searchSel->setID("search");
-    menu->addChildAtPosition(searchSel, Anchor::Left, {25, -50});
+    // All Selection
+    CCSprite *allOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
+    allOn->setVisible(m_layer->queryType == "all");
+    allOn->setID("on-sprite");
+    CCSprite *allOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
+    allOff->setVisible(m_layer->queryType != "all");
+    allOff->setID("off-sprite");
+    allSel = CCMenuItemSpriteExtra::create(allOn, this, menu_selector(PSSearchPopup::changeQueryType));
+    allSel->addChildAtPosition(allOff, Anchor::Center);
+    allSel->setID("all");
+    menu->addChildAtPosition(allSel, Anchor::Left, {25, -30});
+    auto allLab = CCLabelBMFont::create("All Servers","bigFont.fnt");
+    allLab->setAnchorPoint({ 0, 0.5 });
+    allLab->setScale(0.7);
+    allLab->setID("all-label");
+    menu->addChildAtPosition(allLab, Anchor::Left, {52, -30});
 
-    m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
-
+    // Search Box
     m_query = TextInput::create(190.f, "Search");
+    m_query->setWidth(250.f); // Configurable width for scalability
     m_query->setString(m_layer->search);
     m_query->setID("search-box");
-    menu->addChildAtPosition(m_query, Anchor::Left, {144, -50});
+    menu->addChildAtPosition(m_query, Anchor::Left, {144, -65});
     std::function<void(const std::string&)> func = [this](const std::string& str){
       m_layer->search = str;
       changed = true;
     };
     m_query->setCallback(func);
-    m_query->setEnabled(m_layer->queryType == "search");
+    m_query->setEnabled(true);
+
+    m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
     return true;
   }
 
   void changeQueryType(CCObject * sender) {
-    m_layer->queryType = static_cast<CCNode *>(sender)->getID();
-    m_query->setEnabled(m_layer->queryType == "search");
-    searchSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "search");
-    searchSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "search");
-    recentSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "recent");
-    recentSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "recent");
+    std::string id = static_cast<CCNode *>(sender)->getID();
+    if (id == "search") return;
+    if (id == "all") m_layer->queryType = "all";
+    else if (id == "top") m_layer->queryType = "top";
+    else if (id == "recent") m_layer->queryType = "recent";
+
+    allSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "all");
+    allSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "all");
     topSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "top");
     topSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "top");
+    recentSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "recent");
+    recentSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "recent");
+
     changed = true;
   }
 
   void onClose(CCObject * obj) override {
-    if (changed == true) m_layer->fetchServers();
+    if (changed) m_layer->fetchServers();
     Popup::onClose(obj);
   }
 
@@ -118,17 +134,21 @@ public:
   }
 };
 
+
 bool GDPSHubLayer::init() {
   if (!CCLayer::init())
     return false;
 
-  setID("gdps-hub-layer"_spr);
+  setID("gdps-hub-layer");
 
   setKeypadEnabled(true);
 
-  auto background = createLayerBG();
-  background->setID("background");
-  addChild(background);
+    auto background = CCSprite::create("bg.png");
+    background->setScale(0.7f);
+    background->setPosition({258,148});
+    background->setZOrder(-1);
+    background->setID("background");
+    addChild(background);
 
   auto winSize = CCDirector::get()->getWinSize();
 
