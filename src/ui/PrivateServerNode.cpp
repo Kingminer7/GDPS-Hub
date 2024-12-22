@@ -62,6 +62,9 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     menu->setPosition(size.width * .8 + 8, 0);
     menu->setID("menu");
 
+
+
+
     auto spr = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
     spr->setScale(.7f);
     auto viewBtn = CCMenuItemSpriteExtra::create(spr,
@@ -84,6 +87,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     infoBtn->setPosition(ccp(menu->getContentWidth() - 88.f, menu->getContentHeight() / 2));
     infoBtn->setID("info-btn");
     menu->addChild(infoBtn);
+
 
     addChild(menu);
 

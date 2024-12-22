@@ -1,51 +1,43 @@
 {
-	"geode": "3.8.1",
-	"gd": {
-		"win": "2.206",
-		"android": "2.206",
-		"mac": "2.206"
-	},
-	"version": "v1.0.0-alpha.1",
-	"id": "km7dev.gdps_hub",
-	"name": "GDPS Hub",
-	"developers": [
-		"GDPS Hub Team",
-		"km7dev"
-	],
-	"description": "Preview private servers from GDPS Hub",
-	"tags": [
-		"online",
-		"content"
-	],
-	"links": {
-		"source": "https://github.com/kingminer7/gdps-hub",
-		"community": "https://discord.gg/AeVS5J9bcy",
-		"homepage": "https://gdpshub.com/"
-	},
-	"issues": {
-		"info": "Report issues on the github issues page.",
-		"url": "https://github.com/kingminer7/gdps-hub/issues"
-	},
-	"resources": {
-		"spritesheets": {
-			"gdpsHubSheet01": [
-				"resources/sprites/*.png"
-			]
-		}
-	},
-	"dependencies": [
-		{
-			"id": "km7dev.server_api",
-			"importance": "required",
-			"version": "1.0.0"
-		}
-	],
-	"settings": {
-		"hide-previewing": {
-			"name": "Hide Previewing Label",
-			"type": "bool",
-			"default": false,
-			"description": "Hides the 'Previewing' label when previewing a server."
-		}
-	}
+  "geode": "4.1.1",
+  "gd": {
+    "win": "2.2074",
+    "android": "2.2074",
+    "mac": "2.2074"
+  },
+  "version": "v1.0.0-alpha.3",
+  "id": "lblazen.gdps_hub",
+  "name": "GDPS Hub",
+  "developers": ["GDPS Hub Team", "km7dev"],
+  "description": "Preview private servers from GDPS Hub",
+  "tags": ["online", "content"],
+  "links": {
+    "source": "https://github.com/kingminer7/gdps-hub",
+    "community": "https://discord.gg/AeVS5J9bcy",
+    "homepage": "https://gdpshub.com/"
+  },
+  "issues": {
+    "info": "Report issues on the github issues page.",
+    "url": "https://github.com/kingminer7/gdps-hub/issues"
+  },
+  "resources": {
+    "spritesheets": {
+      "gdpsHubSheet01": ["resources/sprites/*.png"]
+    }
+  },
+  "dependencies": [
+    {
+      "id": "km7dev.server_api",
+      "importance": "required",
+      "version": "1.0.0"
+    }
+  ],
+  "settings": {
+    "hide-previewing": {
+      "name": "Hide Previewing Label",
+      "type": "bool",
+      "default": false,
+      "description": "Hides the 'Previewing' label when previewing a server."
+    }
+  }
 }

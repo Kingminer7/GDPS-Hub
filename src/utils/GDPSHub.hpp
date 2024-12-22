@@ -1,7 +1,7 @@
 #pragma once
 
 #include "./Structs.hpp"
-#include <km7dev.server_api/include/ServerAPI.hpp>
+#include "../../include/ServerAPI.hpp"
 
 using namespace geode::prelude;
 
