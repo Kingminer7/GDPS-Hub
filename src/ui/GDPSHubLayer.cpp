@@ -76,7 +76,7 @@ protected:
     allSel->addChildAtPosition(allOff, Anchor::Center);
     allSel->setID("all");
     menu->addChildAtPosition(allSel, Anchor::Left, {25, -30});
-    auto allLab = CCLabelBMFont::create("All Servers","bigFont.fnt");
+    auto allLab = CCLabelBMFont::create("All Versions (BETA)","bigFont.fnt");
     allLab->setAnchorPoint({ 0, 0.5 });
     allLab->setScale(0.7);
     allLab->setID("all-label");
