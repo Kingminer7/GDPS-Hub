@@ -27,6 +27,6 @@ class $modify(menuLayer, MenuLayer) {
 	}
 
 	void onGdpsHub(CCObject*) {
-		CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, GDPSHubLayer::scene()));
+		CCDirector::sharedDirector()->pushScene(CCTransitionFade::create(0.5, GDPSHubLayer::scene()));
 	}
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "./Structs.hpp"
-#include "../../include/ServerAPI.hpp"
+#include <km7dev.server_api/include/ServerAPIEvents.hpp>
 
 using namespace geode::prelude;
 
@@ -13,8 +13,6 @@ class GDPSHub {
         Server *server;
     public:
         std::vector<Server> servers;
-        CCScene *hubScene = nullptr;
-        CCScene *psCLScene = nullptr;
         bool fromLSL = false;
         static GDPSHub *get() {
             if (!instance) instance = new GDPSHub();
@@ -25,12 +23,12 @@ class GDPSHub {
             log::info("{}", server.url);
             if (this->serverId != -1) return;
             this->server = &server;
-            this->serverId = ServerAPI::get()->registerURL(server.url, 5);
+            this->serverId = ServerAPIEvents::registerServer(server.url, 5).id;
         }
         
         void endPreview() {
             if (this->serverId == -1) return;
-            ServerAPI::get()->removeURL(this->serverId);
+            ServerAPIEvents::removeServer(this->serverId);
             this->serverId = -1;
             this->server = nullptr;
         }
@@ -38,7 +36,7 @@ class GDPSHub {
         void switchPreview(Server server) {
             if (this->serverId == -1) return;
             this->server = &server;
-            ServerAPI::get()->updateURL(this->serverId, server.url);
+            ServerAPIEvents::updateServer(this->serverId, server.url);
         }
 
         Server *getCurrentServer() {

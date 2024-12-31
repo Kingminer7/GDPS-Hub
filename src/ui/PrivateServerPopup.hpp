@@ -26,9 +26,10 @@ protected:
     m_title->setAnchorPoint({0, 0.5});
     m_title->setScale(0.9);
     m_title->setID("server-name");
-    setColor({ 14, 55, 190 });
+    setColor({14, 55, 190});
 
-    auto author = CCLabelBMFont::create(fmt::format("by {}", server.owner).c_str(), "bigFont.fnt");
+    auto author = CCLabelBMFont::create(
+        fmt::format("by {}", server.owner).c_str(), "bigFont.fnt");
     author->setPosition(80, 235);
     author->setAnchorPoint({0, 0.5});
     author->setScale(0.5);
@@ -42,8 +43,7 @@ protected:
 
     m_loadingIndicator = LoadingCircle::create();
     m_loadingIndicator->setParentLayer(m_mainLayer);
-    m_loadingIndicator->setPosition(
-        {47, 245});
+    m_loadingIndicator->setPosition({47, 245});
     m_loadingIndicator->ignoreAnchorPointForPosition(false);
     m_loadingIndicator->setScale(0.75f);
     m_loadingIndicator->show();
@@ -53,68 +53,73 @@ protected:
     menu->setPosition(0, 0);
     menu->setID("interaction-menu");
 
-
-    auto square = CCSprite::create("square02b_001.png");
-    square->setPosition(ccp(333, 245));
-    square->setScaleX(1.8f);
-    square->setScaleY(0.64f);
-    square->setColor({0, 0, 0});
-    square->setOpacity(75);
-    square->setID("dark-square");
-    menu->addChild(square);
-
-    float margin = 10.0f;
-
-    float squareWidth = square->getContentSize().width * square->getScaleX();
-    float squareHeight = square->getContentSize().height * square->getScaleY();
-    float startX = square->getPositionX() - squareWidth / 2 + margin;
-    float startY = square->getPositionY() + squareHeight * 1.2f / 2 - margin;
+    auto infoBox = CCScale9Sprite::create("square02_small.png", {0, 0, 40, 40});
+    infoBox->setPosition(ccp(333, 245));
+    infoBox->setContentSize(ccp(144, 51.2));
+    infoBox->setColor({0, 0, 0});
+    infoBox->setOpacity(75);
+    infoBox->setID("server-info");
+    m_mainLayer->addChild(infoBox);
 
     auto likeicon = CCSprite::createWithSpriteFrameName("GJ_likesIcon_001.png");
     likeicon->setScale(0.7f);
-    likeicon->setPosition({startX + likeicon->getContentSize().width * 0.8f / 2, startY - likeicon->getContentSize().height * 0.1f / 2});
-    menu->addChild(likeicon);
+    likeicon->setPosition({13, 38});
+    likeicon->setID("like-icon");
+    infoBox->addChild(likeicon);
 
     auto likesn = CCLabelBMFont::create(fmt::format("{}", server.likes).c_str(), "bigFont.fnt");
-    likesn->setScale(0.5f);
-    float likesnX = likeicon->getPositionX() + likeicon->getContentSize().width * 1.8f / 2 + margin; 
-    likesn->setPosition({likesnX, likeicon->getPositionY()});
-    menu->addChild(likesn);
+    likesn->setAnchorPoint({0, 0.5f});
+    likesn->setPosition({likeicon->getPositionX() + 12, 38});
+    likesn->setID("likes-label");
+    likesn->limitLabelWidth(87, .5, .1);
+    infoBox->addChild(likesn);
 
-    auto dislikeicon = CCSprite::createWithSpriteFrameName("GJ_dislikesIcon_001.png");
+    auto dislikeicon =
+        CCSprite::createWithSpriteFrameName("GJ_dislikesIcon_001.png");
     dislikeicon->setScale(0.7f);
-    float dislikeiconX = likesnX + likesn->getContentSize().width * 0.6f + margin; 
-    dislikeicon->setPosition({dislikeiconX, likeicon->getPositionY()});
-    menu->addChild(dislikeicon);
+    dislikeicon->setPosition(
+        {81, 36});
+        dislikeicon->setContentSize(likeicon->getContentSize());
+    dislikeicon->setID("dislike-icon");
+    infoBox->addChild(dislikeicon);
 
-    auto dislikesn = CCLabelBMFont::create(fmt::format("{}", server.dislikes).c_str(), "bigFont.fnt");
-    dislikesn->setScale(0.5f);
-    float dislikesnX = dislikeicon->getPositionX() + dislikeicon->getContentSize().width * 1.8f / 2 + margin; 
-    dislikesn->setPosition({dislikesnX, dislikeicon->getPositionY()});
-    menu->addChild(dislikesn);
+    auto dislikesn = CCLabelBMFont::create(
+        fmt::format("{}", server.dislikes).c_str(), "bigFont.fnt");
+    dislikesn->limitLabelWidth(87, .5, .1); 
+    dislikesn->setAnchorPoint({0, 0.5f});
+    dislikesn->setPosition({dislikeicon->getPositionX() + 12, 38});
+    dislikesn->setID("dislikes-label");
+    infoBox->addChild(dislikesn);
 
-    auto downloadicon = CCSprite::createWithSpriteFrameName("GJ_downloadsIcon_001.png");
+    auto downloadicon =
+        CCSprite::createWithSpriteFrameName("GJ_downloadsIcon_001.png");
     downloadicon->setScale(0.7f);
-    float downloadiconY = likeicon->getPositionY() - likeicon->getContentSize().height * 0.8f - margin;
-    downloadicon->setPosition({startX + downloadicon->getContentSize().width * 0.8f / 2, downloadiconY});
-    menu->addChild(downloadicon);
+    downloadicon->setPosition({13, 14});
+    downloadicon->setID("download-icon");
+    infoBox->addChild(downloadicon);
 
-    auto downloadsn = CCLabelBMFont::create(fmt::format("{}", server.views).c_str(), "bigFont.fnt");
-    downloadsn->setScale(0.5f);
-    float downloadsnX = downloadicon->getPositionX() + downloadicon->getContentSize().width * 1.8f / 2 + margin;
-    downloadsn->setPosition({downloadsnX, downloadicon->getPositionY()});
-    menu->addChild(downloadsn);
+    auto downloadsn = CCLabelBMFont::create(
+        fmt::format("{}", server.views).c_str(), "bigFont.fnt");
+    downloadsn->limitLabelWidth(87, .5, .1);
+    downloadsn->setAnchorPoint({0, 0.5f});
+    downloadsn->setPosition({downloadicon->getPositionX() + 12, downloadicon->getPositionY()});
+    downloadsn->setID("downloads-label");
+    infoBox->addChild(downloadsn);
 
-    auto ratingicon = CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png");
+    auto ratingicon =
+        CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png");
     ratingicon->setScale(0.7f);
-    ratingicon->setPosition({dislikeicon->getPositionX(), downloadicon->getPositionY()});
-    menu->addChild(ratingicon);
+    ratingicon->setPosition({81,  14});
+    ratingicon->setID("rating-icon");
+    infoBox->addChild(ratingicon);
 
-    auto ratingn = CCLabelBMFont::create(fmt::format("{}/5", server.rating).c_str(), "bigFont.fnt");
-    ratingn->setScale(0.5f);
-    float ratingnX = ratingicon->getPositionX() + ratingicon->getContentSize().width * 1.8f / 2 + margin;
-    ratingn->setPosition({ratingnX, ratingicon->getPositionY()});
-    menu->addChild(ratingn);
+    auto ratingn = CCLabelBMFont::create(
+        fmt::format("{}/5", server.rating).c_str(), "bigFont.fnt");
+    ratingn->limitLabelWidth(87, .5, .1);
+    ratingn->setAnchorPoint({0, 0.5f});
+    ratingn->setPosition({ratingicon->getPositionX() + 12, ratingicon->getPositionY()});
+    ratingn->setID("rating-label");
+    infoBox->addChild(ratingn);
 
     auto discordBtn = CCMenuItemSpriteExtra::create(
         CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"), this,
@@ -131,7 +136,7 @@ protected:
     menu->addChild(webBtn);
 
     auto toolBtn = CCMenuItemSpriteExtra::create(
-        CCSprite::create("gdpsToolsBtn.png"), this,
+        CCSprite::createWithSpriteFrameName("gdpsToolsBtn.png"_spr), this,
         menu_selector(PrivateServerPopup::onTools));
     toolBtn->setPosition(350, 22);
     toolBtn->setID("tools-button");
@@ -163,8 +168,8 @@ protected:
     infoBtn->setID("info-button");
     menu->addChild(infoBtn);
     m_mainLayer->addChild(menu);
-    m_mainLayer->setID("temporal");
-    
+    m_mainLayer->setID("main-layer");
+
     retain();
 
     startDownload();
@@ -173,7 +178,7 @@ protected:
   }
 
   void viewServer(CCObject *) {
-    CCDirector::sharedDirector()->replaceScene(
+    CCDirector::sharedDirector()->pushScene(
         CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
     GDPSHub::get()->beginPreview(server);
   }
@@ -187,6 +192,7 @@ protected:
           ->show();
       return;
     }
+    // temp'ly remove this
     auto gdpsSwitcher = Loader::get()->getLoadedMod("km7dev.gdps-switcher");
 
     auto servers =
@@ -226,10 +232,10 @@ protected:
   }
 
   void onInfo(CCObject *) {
+    log::info("{}", server.created_at);
     FLAlertLayer::create(
         "Server Info",
-        fmt::format("<cl>ID: {}</c>\n<cg>Views: {}</c>\n<cy>Created: {}</c>",
-                    server.id, server.views,
+        fmt::format("<cl>ID: {}</c>\n<cy>Created: {}</c>", server.id,
                     GDPSHub::stampToDateTime(server.created_at)),
         "Close")
         ->show();
@@ -311,7 +317,7 @@ protected:
 public:
   static PrivateServerPopup *create(Server server) {
     auto ret = new PrivateServerPopup();
-    ret->setColor({ 14, 55, 190 });
+    ret->setColor({14, 55, 190});
     if (ret->initAnchored(440.f, 280.f, server)) {
       ret->autorelease();
       return ret;
