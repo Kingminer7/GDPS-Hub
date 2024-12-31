@@ -1,5 +1,5 @@
 {
-  "geode": "4.1.1",
+  "geode": "4.1.2",
   "gd": {
     "win": "2.2074",
     "android": "2.2074",
@@ -22,14 +22,22 @@
   },
   "resources": {
     "spritesheets": {
-      "gdpsHubSheet01": ["resources/sprites/*.png"]
-    }
+      "gdpsHubSheet01": [
+        "resources/sprites/gdps_hub.png",
+        "resources/sprites/gdpsHubBtn.png",
+        "resources/sprites/gdpsToolsBtn.png",
+        "resources/sprites/info.png"
+      ]
+    },
+    "sprites": [
+      "resources/sprites/bg.png"
+    ]
   },
   "dependencies": [
     {
       "id": "km7dev.server_api",
       "importance": "required",
-      "version": "1.0.0"
+      "version": "1.0.4"
     }
   ],
   "settings": {

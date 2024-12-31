@@ -1,6 +1,7 @@
 #include "PSCreatorLayer.hpp"
 #include "../utils/GDPSHub.hpp"
 #include "Geode/binding/GameLevelManager.hpp"
+#include "Geode/cocos/CCDirector.h"
 #include "Geode/ui/SceneManager.hpp"
 #include <Geode/binding/GauntletSelectLayer.hpp>
 #include <Geode/binding/LeaderboardsLayer.hpp>
@@ -180,12 +181,9 @@ bool PSCreatorLayer::init() {
 void PSCreatorLayer::keyBackClicked() { onGoBack(nullptr); }
 
 void PSCreatorLayer::onGoBack(CCObject *) {
-  GDPSHub::get()->psCLScene->release();
   GDPSHub::get()->endPreview();
-  GDPSHub::get()->psCLScene = nullptr;
   SceneManager::get()->forget(infoLabel);
-  CCDirector::sharedDirector()->replaceScene(
-      CCTransitionFade::create(0.5, GDPSHub::get()->hubScene));
+  CCDirector::sharedDirector()->popSceneWithTransition(.5, PopTransition::kPopTransitionFade);
 
   GameLevelManager::get()->m_dailyID = -1;
   GameLevelManager::get()->m_weeklyID = -1;
@@ -210,20 +208,20 @@ PSCreatorLayer *PSCreatorLayer::create() {
 
 void PSCreatorLayer::onScores(CCObject *) {
   auto scene = LeaderboardsLayer::scene(LeaderboardState::Default);
-  CCDirector::sharedDirector()->replaceScene(
+  CCDirector::sharedDirector()->pushScene(
       CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onGauntlets(CCObject *) {
   auto scene = GauntletSelectLayer::scene(0);
-  CCDirector::sharedDirector()->replaceScene(
+  CCDirector::sharedDirector()->pushScene(
       CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onMapPacks(CCObject *) {
   auto gjso = GJSearchObject::create(SearchType::MapPack);
   auto scene = LevelBrowserLayer::scene(gjso);
-  CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+  CCDirector::get()->pushScene(CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onDaily(CCObject *) {
@@ -242,19 +240,19 @@ void PSCreatorLayer::onEvent(CCObject *) {
 void PSCreatorLayer::onFeatured(CCObject *) {
   auto gjso = GJSearchObject::create(SearchType::Featured);
   auto scene = LevelBrowserLayer::scene(gjso);
-  CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+  CCDirector::get()->pushScene(CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onLists(CCObject *) {
   auto gjso = GJSearchObject::create(SearchType::Featured);
   gjso->m_searchMode = 1;
   auto scene = LevelBrowserLayer::scene(gjso);
-  CCDirector::get()->replaceScene(CCTransitionFade::create(0.5, scene));
+  CCDirector::get()->pushScene(CCTransitionFade::create(0.5, scene));
 }
 
 void PSCreatorLayer::onSearch(CCObject *) {
   auto scene = LevelSearchLayer::scene(0);
-  CCDirector::sharedDirector()->replaceScene(
+  CCDirector::sharedDirector()->pushScene(
       CCTransitionFade::create(0.5, scene));
   GDPSHub::get()->fromLSL = true;
 }
@@ -270,11 +268,7 @@ void PSCreatorLayer::onSearch(CCObject *) {
 // }
 
 CCScene *PSCreatorLayer::scene() {
-  if (GDPSHub::get()->psCLScene != nullptr)
-    return GDPSHub::get()->psCLScene;
   auto scene = CCScene::create();
   scene->addChild(PSCreatorLayer::create());
-  GDPSHub::get()->psCLScene = scene;
-  scene->retain();
   return scene;
 }

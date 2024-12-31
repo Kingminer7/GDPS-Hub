@@ -62,9 +62,6 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     menu->setPosition(size.width * .8 + 8, 0);
     menu->setID("menu");
 
-
-
-
     auto spr = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
     spr->setScale(.7f);
     auto viewBtn = CCMenuItemSpriteExtra::create(spr,
@@ -88,14 +85,13 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     infoBtn->setID("info-btn");
     menu->addChild(infoBtn);
 
-
     addChild(menu);
 
     return true;
 }
 
 void PrivateServerNode::viewServer(CCObject *) {
-	CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
+	CCDirector::sharedDirector()->pushScene(CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
     GDPSHub::get()->beginPreview(server);
 }
 

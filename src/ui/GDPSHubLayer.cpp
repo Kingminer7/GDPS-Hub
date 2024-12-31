@@ -143,12 +143,13 @@ bool GDPSHubLayer::init() {
 
   setKeypadEnabled(true);
 
-    auto background = CCSprite::create("bg.png");
-    background->setScale(0.7f);
-    background->setPosition({258,148});
-    background->setZOrder(-1);
-    background->setID("background");
-    addChild(background);
+  auto background = CCSprite::create("bg.png"_spr);
+
+  background->setScale(0.7f);
+  background->setPosition({258,148});
+  background->setZOrder(-1);
+  background->setID("background");
+  addChild(background);
 
   auto winSize = CCDirector::get()->getWinSize();
 
@@ -220,19 +221,14 @@ bool GDPSHubLayer::init() {
     updateList();
   }
 
-  retain();
-
   return true;
 }
 
 void GDPSHubLayer::keyBackClicked() { onGoBack(nullptr); }
 
 void GDPSHubLayer::onGoBack(CCObject *) {
-  release();
-  GDPSHub::get()->hubScene = nullptr;
   GDPSHub::get()->servers = {};
-  CCDirector::get()->replaceScene(
-      CCTransitionFade::create(0.5, MenuLayer::scene(false)));
+  CCDirector::sharedDirector()->popSceneWithTransition(.5, PopTransition::kPopTransitionFade);
 }
 
 GDPSHubLayer *GDPSHubLayer::create() {
@@ -246,12 +242,8 @@ GDPSHubLayer *GDPSHubLayer::create() {
 }
 
 CCScene *GDPSHubLayer::scene() {
-  if (GDPSHub::get()->hubScene != nullptr)
-    return GDPSHub::get()->hubScene;
   auto scene = CCScene::create();
   scene->addChild(GDPSHubLayer::create());
-  GDPSHub::get()->hubScene = scene;
-  scene->retain();
   return scene;
 }
 
@@ -284,6 +276,7 @@ void GDPSHubLayer::updateList() {
 }
 
 void GDPSHubLayer::fetchServers() {
+  retain();
   GDPSHub::get()->servers.clear();
   scroll->m_contentLayer->removeAllChildren();
   if (m_loadingCircle == nullptr) {
@@ -300,7 +293,7 @@ void GDPSHubLayer::fetchServers() {
     if (web::WebResponse *res = e->getValue()) {
       std::string err;
       auto opt = res->json();
-      auto data = opt.value_or("err");
+      auto data = opt.unwrapOr("err");
       if (data == "err") {
         log::info("{}", err);
         m_infoLabel->setString("Failed to fetch servers.");
@@ -310,10 +303,10 @@ void GDPSHubLayer::fetchServers() {
         m_loadingCircle = nullptr;
         return;
       }
-      if (!data.contains("success") || data["success"].as_bool() == false ||
+      if (!data.contains("success") || data["success"].asBool().unwrapOrDefault() == false ||
           !data.contains("data")) {
         if (data.contains("message"))
-          m_infoLabel->setString(data["message"].as_string().c_str());
+          m_infoLabel->setString(data["message"].asString().unwrapOrDefault().c_str());
         else
           m_infoLabel->setString("Failed to fetch servers.");
         pages = 0;
@@ -322,15 +315,14 @@ void GDPSHubLayer::fetchServers() {
         m_loadingCircle = nullptr;
         return;
       }
-      auto servers = data["data"].as_array();
 
-      for (matjson::Value val : servers) {
-        auto server = val.as<Server>();
+      for (auto val : data["data"]) {
+        auto server = val.as<Server>().unwrapOrDefault();
         GDPSHub::get()->servers.push_back(server);
       }
       updateList();
       if (data.contains("totalPages")) {
-        pages = data["totalPages"].as_int();
+        pages = data["totalPages"].asInt().unwrapOrDefault();
       }
 
       leftArrow->setVisible(page > 1);

@@ -1,5 +1,5 @@
 #pragma once
-#include "matjson.hpp"  // Include matjson's header
+#include "matjson.hpp"
 
 using namespace geode::prelude;
 
@@ -24,133 +24,36 @@ struct ServerEntry {
   std::string url;
 };
 
+
+
 template <>
 struct matjson::Serialize<Server>
 {
-    static Server from_json(matjson::Value const &value)
+    static Result<Server> fromJson(matjson::Value const &value)
     {
         Server server = Server();
-        if (!value["id"].is_number()) {
-            server.id = 0;
-        } else {
-            server.id = value["id"].as_int();
-        }
-        
-        if (!value["title"].is_string()) {
-            server.title = "No title provided";
-        } else {
-            if (value["title"].as_string() == "") {
-                server.title = "No title provided";
-            } else {
-                server.title = value["title"].as_string();
-            }
-        }
-
-        if (!value["owner"].is_string()) {
-            server.owner = "No owner provided";
-        } else {
-            if (value["owner"].as_string() == "") {
-                server.owner = "No owner provided";
-            } else {
-                server.owner = value["owner"].as_string();
-            }
-        }
-        
-        if (!value["description"].is_string()) {
-            server.description =  "No description provided.";
-        } else {
-            if (value["description"].as_string() == "") {
-                server.description = "No description provided.";
-            } else {
-                server.description = value["description"].as_string();
-            }
-        }
-        
-        if (!value["gdpsdb"].is_string()) {
-            server.url = "No URL provided.";
-        } else {
-            if (value["gdpsdb"].as_string() == "") {
-                server.url = "No URL provided.";
-            } else {
-                server.url = value["gdpsdb"].as_string();
-            }
-        }
-        
-        if (!value["discord_url"].is_string()) {
-            server.dcUrl = "No discord provided.";
-        } else {
-            if (value["discord_url"].as_string() == "") {
-                server.dcUrl = "No discord provided.";
-            } else {
-                server.dcUrl = value["discord_url"].as_string();
-            }
-        }
-
-        if (!value["toolpage"].is_string()) {
-            server.toolsUrl = "No toolpage provided.";
-        } else {
-            if (value["toolpage"].as_string() == "") {
-                server.toolsUrl = "No toolpage provided.";
-            } else {
-                server.toolsUrl = value["toolpage"].as_string();
-            }
-        }
-
-        if (!value["pfp"].is_string()) {
-            server.pfp =  "No PFP provided";
-        } else {
-            if (value["pfp"].as_string() == "") {
-                server.pfp = "No PFP provided";
-            } else {
-                server.pfp = value["pfp"].as_string();
-            }
-        }
-        
-        if (!value["views"].is_number()) {
-            server.views =  0;
-        } else {
-            server.views = value["views"].as_int();
-        }
-
-        if (!value["likes"].is_number()) {
-            server.likes =  0;
-        } else {
-            server.likes = value["likes"].as_int();
-        }
-
-        if (!value["rating"].is_number()) {
-            server.rating =  0;
-        } else {
-            server.rating = value["rating"].as_int();
-        }
-
-
-        if (!value["dislikes"].is_number()) {
-            server.dislikes =  0;
-        } else {
-            server.dislikes = value["dislikes"].as_int();
-        }
-        
-        if (!value["created_at"].is_string()) {
-            server.created_at =  0;
-        } else {
-            if (value["created_at"].as_string() == "") {
-                server.created_at = 0;
-            } else {
-                auto num = utils::numFromString<int>(value["created_at"].as_string());
-                server.created_at = num.isOk() ? num.unwrap() : 0;
-            }
-        }
-
-        return server;
+        server.id = value["id"].asInt().unwrapOrDefault();
+        server.title = value["title"].asString().unwrapOr("No title provided");
+        server.owner = value["owner"].asString().unwrapOr("No owner provided");
+        server.description = value["description"].asString().unwrapOr("No description provided.");
+        server.url = value["gdpsdb"].asString().unwrapOr("No URL provided.");
+        server.pfp = value["pfp"].asString().unwrapOr("No PFP provided");
+        server.dcUrl = value["discord_url"].asString().unwrapOr("No discord provided.");
+        server.toolsUrl = value["toolpage"].asString().unwrapOr("No toolpage provided.");
+        server.views = value["views"].asInt().unwrapOrDefault();
+        server.rating = value["rating"].asInt().unwrapOrDefault();
+        server.likes = value["likes"].asInt().unwrapOrDefault();
+        server.dislikes = value["dislikes"].asInt().unwrapOrDefault();
+        server.created_at = std::stoi(value["created_at"].asString().unwrapOrDefault());
+        return Ok(server);
     }
     /*
     {"id":2392,"title":"SurgeryGDPS","description":"The invite should hopefully work now","gdpsdb":"https://surgery.ps.fhgdps.com/dashboard/","pfp":null,"discord_url":"https://discord.com/Rb3zAVuQNN","views":1,"created_at":"1725482475"}
     */
 
-    static matjson::Value to_json(Server const &value)
+    static matjson::Value toJson(Server const &value)
     {
-        auto obj = matjson::Object();
+        auto obj = matjson::Value();
         obj["id"] = value.id;
         obj["title"] = value.title;
         obj["owner"] = value.owner;
@@ -168,16 +71,20 @@ struct matjson::Serialize<Server>
     }
 };
 
-template <> struct matjson::Serialize<ServerEntry> {
-  static ServerEntry from_json(matjson::Value const &value) {
-    return ServerEntry{.name = value["name"].as_string(),
-                       .url = value["url"].as_string()};
-  }
+template <>
+struct matjson::Serialize<ServerEntry>
+{
+    static Result<ServerEntry> fromJson(matjson::Value const &value)
+    {
+        return Ok(ServerEntry{
+            .name = value["name"].asString().unwrapOr("Failed to load name."),
+            .url = value["url"].asString().unwrapOr("Failed to load url.")
+        });
+    }
 
-  static matjson::Value to_json(ServerEntry const &value) {
-    auto obj = matjson::Object();
-    obj["name"] = value.name;
-    obj["url"] = value.url;
-    return obj;
-  }
+    static matjson::Value toJson(ServerEntry const &value)
+    {
+        auto obj = matjson::makeObject({{"name", value.name}, {"url", value.url}});
+        return obj;
+    }
 };
