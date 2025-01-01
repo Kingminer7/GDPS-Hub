@@ -1,15 +1,15 @@
 # GDPS Hub
 
-Preview private servers from GDPS Hub.
-
-If you have GDPS Switcher installed, you can save a server to it.
+Preview private servers on GDPS Hub and play levels, or just take a look at what a server has to offer. If you have the GDPS Switcher mod enabled, you can save mods to it.
 
 ## Notes/Known Issues
 
 - Some descriptions may not render due to unsupported characters, such as cyrillic characters (can not fix)
-- You can't rate or comment on levels - since you're technically on an account from another server.
+- You can't rate or comment on levels - While previewing servers, you're basically viewing without an account.
 - Completions will not save - This is intentional, although in the future it may be changed.
+- Levels save to the save file - This is an issue i have not been able to fix so far.
 - If daily, weekly, or event levels don't load, the server may not have them set.
+- Servers not supporting 2.2 may not work.
 
 ## Credit
 

@@ -100,7 +100,7 @@ protected:
       changed = true;
     };
     m_query->setCallback(func);
-    m_query->setEnabled(true);
+    m_query->setVisible(m_layer->queryType == "all");
 
     m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
     return true;
@@ -119,6 +119,7 @@ protected:
     topSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "top");
     recentSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "recent");
     recentSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "recent");
+    m_query->setVisible(m_layer->queryType == "all");
 
     changed = true;
   }

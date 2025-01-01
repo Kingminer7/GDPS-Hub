@@ -47,15 +47,35 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     idLab->setID("id");
     addChild(idLab);
 
-    auto desc = SimpleTextArea::create(entry.description, "chatFont.fnt", .7);
-    desc->setContentSize(ccp(size.width * .65, size.height - 30.f));
-    desc->setWrappingMode(WrappingMode::WORD_WRAP);
-    desc->setPosition(ccp(8, size.height - 30));
+    // auto desc = SimpleTextArea::create(entry.description, "chatFont.fnt", .7);
+    // desc->setContentSize(ccp(size.width * .65, size.height - 30.f));
+    // desc->setWrappingMode(WrappingMode::WORD_WRAP);
+    // desc->setPosition(ccp(8, size.height - 30));
+    // desc->setAnchorPoint({0, 1});
+    // desc->setMaxLines(3);
+    // desc->setWidth(size.width * .8);
+    // desc->setID("description");
+    // addChild(desc);
+
+    auto desc = TextArea::create(entry.description, "chatFont.fnt", .7, size.width * .65, {0, 1}, 10, false);
+    desc->setPosition({0, 40});
+    desc->setContentSize({size.width * .65f, desc->getContentHeight()});
     desc->setAnchorPoint({0, 1});
-    desc->setMaxLines(3);
-    desc->setWidth(size.width * .8);
     desc->setID("description");
-    addChild(desc);
+
+    CCLayerColor* mask = CCLayerColor::create({255, 255, 255});
+    mask->setContentSize({size.width * .65f, size.height - 40});
+    mask->setPosition({0, 0});
+
+    auto clip = CCClippingNode::create();
+    clip->setContentSize({size.width * .65f, size.height - 40});
+    clip->setStencil(mask);
+    clip->setZOrder(1);
+    clip->setPosition(ccp(8, size.height - 30));
+    clip->setAnchorPoint({0, 1});
+    clip->addChild(desc);
+
+    addChild(clip);
 
     auto menu = CCMenu::create();
     menu->setContentSize(ccp(size.width * .2 - 16, size.height));
