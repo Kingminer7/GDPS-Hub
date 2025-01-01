@@ -21,6 +21,7 @@ protected:
     setTitle("Query Options");
     setID("search-popup"_spr);
     m_title->setID("title");
+    m_title->setPositionY(135);
     m_buttonMenu->setID("back-menu");
     m_closeBtn->setID("close-btn");
     m_mainLayer->setID("main-layer");
@@ -41,12 +42,14 @@ protected:
     topSel = CCMenuItemSpriteExtra::create(topOn, this, menu_selector(PSSearchPopup::changeQueryType));
     topSel->addChildAtPosition(topOff, Anchor::Center);
     topSel->setID("top");
-    menu->addChildAtPosition(topSel, Anchor::Left, {25, 40});
+    topSel->m_baseScale = 0.75f;
+    topSel->setScale(0.75f);
+    menu->addChildAtPosition(topSel, Anchor::Left, {25, 35});
     auto topLab = CCLabelBMFont::create("Top Servers","bigFont.fnt");
     topLab->setAnchorPoint({ 0, 0.5 });
-    topLab->setScale(0.7);
+    topLab->setScale(0.575);
     topLab->setID("top-label");
-    menu->addChildAtPosition(topLab, Anchor::Left, {52, 40});
+    menu->addChildAtPosition(topLab, Anchor::Left, {40, 35});
 
     // Recent Selection
     CCSprite *recentOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
@@ -58,12 +61,14 @@ protected:
     recentSel = CCMenuItemSpriteExtra::create(recentOn, this, menu_selector(PSSearchPopup::changeQueryType));
     recentSel->addChildAtPosition(recentOff, Anchor::Center);
     recentSel->setID("recent");
-    menu->addChildAtPosition(recentSel, Anchor::Left, {25, 5});
+    recentSel->m_baseScale = 0.75f;
+    recentSel->setScale(0.75f);
+    menu->addChildAtPosition(recentSel, Anchor::Left, {25, 8});
     auto recentLab = CCLabelBMFont::create("Recently Added","bigFont.fnt");
     recentLab->setAnchorPoint({ 0, 0.5 });
-    recentLab->setScale(0.7);
+    recentLab->setScale(0.575);
     recentLab->setID("recent-label");
-    menu->addChildAtPosition(recentLab, Anchor::Left, {52, 5});
+    menu->addChildAtPosition(recentLab, Anchor::Left, {40, 8});
 
     // All Selection
     CCSprite *allOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
@@ -75,19 +80,21 @@ protected:
     allSel = CCMenuItemSpriteExtra::create(allOn, this, menu_selector(PSSearchPopup::changeQueryType));
     allSel->addChildAtPosition(allOff, Anchor::Center);
     allSel->setID("all");
-    menu->addChildAtPosition(allSel, Anchor::Left, {25, -30});
+    allSel->m_baseScale = 0.75f;
+    allSel->setScale(0.75f);
+    menu->addChildAtPosition(allSel, Anchor::Left, {25, -19});
     auto allLab = CCLabelBMFont::create("All Versions (BETA)","bigFont.fnt");
     allLab->setAnchorPoint({ 0, 0.5 });
-    allLab->setScale(0.7);
+    allLab->setScale(0.575);
     allLab->setID("all-label");
-    menu->addChildAtPosition(allLab, Anchor::Left, {52, -30});
+    menu->addChildAtPosition(allLab, Anchor::Left, {40, -19});
 
     // Search Box
-    m_query = TextInput::create(190.f, "Search");
-    m_query->setWidth(250.f); // Configurable width for scalability
+    m_query = TextInput::create(250.f, "Search");
+    m_query->setScale(.85); 
     m_query->setString(m_layer->search);
     m_query->setID("search-box");
-    menu->addChildAtPosition(m_query, Anchor::Left, {144, -65});
+    menu->addChildAtPosition(m_query, Anchor::Bottom, {0, 25});
     std::function<void(const std::string&)> func = [this](const std::string& str){
       m_layer->search = str;
       changed = true;
