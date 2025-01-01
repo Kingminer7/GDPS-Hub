@@ -24,15 +24,15 @@ protected:
     setTitle(server.title);
     m_title->setPosition(80, 254);
     m_title->setAnchorPoint({0, 0.5});
-    m_title->setScale(0.9);
+    m_title->limitLabelWidth(173, 0.9, 0.1);
     m_title->setID("server-name");
     setColor({14, 55, 190});
 
     auto author = CCLabelBMFont::create(
         fmt::format("by {}", server.owner).c_str(), "bigFont.fnt");
     author->setPosition(80, 235);
+    author->limitLabelWidth(173, 0.5, 0.05);
     author->setAnchorPoint({0, 0.5});
-    author->setScale(0.5);
     author->setID("server-owner");
     m_mainLayer->addChild(author);
 
