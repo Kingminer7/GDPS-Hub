@@ -313,8 +313,13 @@ void GDPSHubLayer::fetchServers() {
       }
       if (!data.contains("success") || data["success"].asBool().unwrapOrDefault() == false ||
           !data.contains("data")) {
-        if (data.contains("message"))
-          m_infoLabel->setString(data["message"].asString().unwrapOrDefault().c_str());
+        if (data.contains("message")) {
+          if (data["message"].asString().unwrapOrDefault() == "Invalid filter option." && queryType == "all" && search.empty()) {
+            m_infoLabel->setString("No search specified.");
+          } else {
+            m_infoLabel->setString(data["message"].asString().unwrapOrDefault().c_str());
+          }
+        }
         else
           m_infoLabel->setString("Failed to fetch servers.");
         pages = 0;
