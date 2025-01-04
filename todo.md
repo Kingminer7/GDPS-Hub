@@ -1,7 +1,5 @@
 # Todo list
 
-- [ ] Save level progress
-- [ ] Likes, downloads, etc.
-- [ ] Probably redo UI
+- [ ] Save level progress?
 - [ ] Endpoint checking
-- [ ] Level info save only for server
+- [ ] Level save only for server
