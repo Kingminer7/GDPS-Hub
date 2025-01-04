@@ -39,7 +39,7 @@ class $modify(CCHttpClient) {
                 newReqData += d + "&";
             }
             newReqData.pop_back();
-            req->setRequestData(newReqData.c_str(), newReqData.size());
+            req->setRequestData(newReqData.c_str(), newReqData.size() - shortenBy);
         }
         CCHttpClient::send(req);
     }
