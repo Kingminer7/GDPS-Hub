@@ -19,16 +19,20 @@ class $modify(CCHttpClient) {
                 data.push_back(s);
             }
 
+	    int shortenBy = 0;
             std::string newReqData = "";
             for (auto &d : data) {
                 if (d.find("accountID=") != std::string::npos) {
+            	    shortenBy += d.size();
                     continue;
                 }
                 if (d.find("gjp2=") != std::string::npos) {
+            	    shortenBy += d.size();
                     continue;
                 }
                 
                 if (d.find("uuid=") != std::string::npos) {
+            	    shortenBy += d.size() - 7;
                     newReqData += "uuid=0&";
                     continue;
                 }
