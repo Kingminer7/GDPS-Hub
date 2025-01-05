@@ -99,7 +99,7 @@ protected:
       m_layer->search = str;
       changed = true;
     };
-    m_query->setAllowedChars("`1234567890-=qwertyuiop[]\\asdfghjkl;'cxzvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>? ");
+    m_query->getInputNode()->setAllowedChars("`1234567890-=qwertyuiop[]\\asdfghjkl;'cxzvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>? ");
     m_query->setCallback(func);
     m_query->setVisible(m_layer->queryType == "all");
 
