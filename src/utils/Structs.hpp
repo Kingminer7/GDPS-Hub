@@ -17,6 +17,7 @@ struct Server{
     int likes;
     int dislikes;
     int created_at;
+    std::string version;
 };
 
 struct ServerEntry {
@@ -45,6 +46,7 @@ struct matjson::Serialize<Server>
         server.likes = value["likes"].asInt().unwrapOrDefault();
         server.dislikes = value["dislikes"].asInt().unwrapOrDefault();
         server.created_at = std::stoi(value["created_at"].asString().unwrapOrDefault());
+        server.version = value["version"].asString().unwrapOr("No version provided.");
         return Ok(server);
     }
     /*
@@ -67,6 +69,7 @@ struct matjson::Serialize<Server>
         obj["likes"] = value.likes;
         obj["dislikes"] = value.dislikes;
         obj["created_at"] = value.created_at;
+        obj["version"] = value.version;
         return obj;
     }
 };

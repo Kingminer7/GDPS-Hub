@@ -254,7 +254,6 @@ void PSCreatorLayer::onSearch(CCObject *) {
   auto scene = LevelSearchLayer::scene(0);
   CCDirector::sharedDirector()->pushScene(
       CCTransitionFade::create(0.5, scene));
-  GDPSHub::get()->fromLSL = true;
 }
 
 // void PSCreatorLayer::onDebug(CCObject *)

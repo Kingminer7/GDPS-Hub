@@ -235,8 +235,8 @@ protected:
     log::info("{}", server.created_at);
     FLAlertLayer::create(
         "Server Info",
-        fmt::format("<cl>ID: {}</c>\n<cy>Created: {}</c>", server.id,
-                    GDPSHub::stampToDateTime(server.created_at)),
+        fmt::format("<cl>ID: {}</c>\n<cy>Created: {}</c>\n<cg>Recommended Version: {}</c>", server.id,
+                    GDPSHub::stampToDateTime(server.created_at), server.version),
         "Close")
         ->show();
   }
@@ -255,7 +255,7 @@ protected:
         } else {
           auto data = res->data();
 
-          std::thread imageThread = std::thread([data, this]() {
+          // std::thread imageThread = std::thread([data, this]() {
             m.lock();
             m_image = new CCImage();
             m_image->initWithImageData(const_cast<uint8_t *>(data.data()),
@@ -265,8 +265,8 @@ protected:
               imageCreationFinished(m_image);
             });
             m.unlock();
-          });
-          imageThread.detach();
+          // });
+          // imageThread.detach();
         }
       } else if (web::WebProgress *progress = e->getProgress()) {
         if (!progress->downloadProgress().has_value()) {
