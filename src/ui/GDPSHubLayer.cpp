@@ -152,15 +152,15 @@ bool GDPSHubLayer::init() {
 
   setKeypadEnabled(true);
 
+  auto winSize = CCDirector::get()->getWinSize();
+
   auto background = CCSprite::create("bg.png"_spr);
 
-  background->setScale(0.7f);
-  background->setPosition({258,148});
+  background->setScale(std::clamp(winSize.width / background->getContentWidth(), .75f, FLT_MAX));
+  background->setPosition(winSize / 2);
   background->setZOrder(-1);
   background->setID("background");
   addChild(background);
-
-  auto winSize = CCDirector::get()->getWinSize();
 
   auto menu = CCMenu::create();
   menu->setID("back-menu");
