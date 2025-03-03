@@ -19,7 +19,7 @@ class $modify(menuLayer, MenuLayer) {
 		auto menu = this->getChildByID("bottom-menu");
 		menu->addChild(gdpsHubBtn);
 
-		gdpsHubBtn->setID("gdps-hub-btn"_spr);
+		gdpsHubBtn->setID("gdps-hub"_spr);
 
 		menu->updateLayout();
 
