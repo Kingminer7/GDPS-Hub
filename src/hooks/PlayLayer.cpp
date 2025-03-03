@@ -4,32 +4,34 @@
 using namespace geode::prelude;
 
 class $modify (PlayLayer) {
-    static void onModify(auto& self) {
-        // i dont want your stupid warning so have an "auto hook = "
-        auto hook = self.setHookPriority("PlayLayer::levelComplete", 10000);
-    }
 
     void levelComplete() {
         if (GDPSHub::get()->isPreviewing()) {
+            bool was = m_isTestMode;
             m_isTestMode = true;
-            // Notification::create("You are previewing this server. Data won't save.", NotificationIcon::Info, 1.5f)->show();
-        }
-        PlayLayer::levelComplete();
+            PlayLayer::levelComplete();
+            m_isTestMode = was;
+        } else 
+            PlayLayer::levelComplete();
     }
 
     void destroyPlayer(PlayerObject* player, GameObject* object) {
         if (GDPSHub::get()->isPreviewing()) {
+            bool was = m_isTestMode;
             m_isTestMode = true;
-            // Notification::create("You are previewing this server. Data won't save.", NotificationIcon::Info, 1.5f)->show();
-        }
-        PlayLayer::destroyPlayer(player, object);
+            PlayLayer::destroyPlayer(player, object);
+            m_isTestMode = was;
+        } else 
+            PlayLayer::destroyPlayer(player, object);
     }
 
     void resetLevel() {
         if (GDPSHub::get()->isPreviewing()) {
+            bool was = m_isTestMode;
             m_isTestMode = true;
-          //  Notification::create("You are previewing this server. Data won't save.", NotificationIcon::Info, 1.5f)->show();
-        }
-        PlayLayer::resetLevel();
+            PlayLayer::resetLevel();
+            m_isTestMode = was;
+        } else 
+            PlayLayer::resetLevel();
     }
 };

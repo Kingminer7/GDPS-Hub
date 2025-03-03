@@ -1,5 +1,5 @@
 #pragma once
-#include "matjson.hpp"
+#include <Geode/Geode.hpp>
 
 using namespace geode::prelude;
 
@@ -49,9 +49,6 @@ struct matjson::Serialize<Server>
         server.version = value["version"].asString().unwrapOr("No version provided.");
         return Ok(server);
     }
-    /*
-    {"id":2392,"title":"SurgeryGDPS","description":"The invite should hopefully work now","gdpsdb":"https://surgery.ps.fhgdps.com/dashboard/","pfp":null,"discord_url":"https://discord.com/Rb3zAVuQNN","views":1,"created_at":"1725482475"}
-    */
 
     static matjson::Value toJson(Server const &value)
     {

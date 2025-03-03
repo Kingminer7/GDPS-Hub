@@ -7,10 +7,9 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 project(GDPSHub VERSION 1.0.0)
 
 file(GLOB SOURCES
-    src/utils/*.hpp
+    src/utils/*.cpp
     src/hooks/*.cpp
     src/ui/*.cpp
-    src/ui/*.hpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
