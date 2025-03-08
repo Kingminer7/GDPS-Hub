@@ -15,7 +15,7 @@ bool PSCreatorLayer::init() {
   if (!CCLayer::init())
     return false;
 
-  setID("PSCreatorLayer");
+  setID("PSCreatorLayer"_spr);
 
   setKeypadEnabled(true);
 
@@ -35,13 +35,6 @@ bool PSCreatorLayer::init() {
   backBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2 - 25.f);
   backBtn->setID("back-button");
   menu->addChild(backBtn);
-  addChild(menu);
-
-  // auto debugBtn = CCMenuItemSpriteExtra::create(
-  //     CCSprite::createWithSpriteFrameName("accountBtn_settings_001.png"),
-  //     this, menu_selector(PSCreatorLayer::onDebug));
-  // debugBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2
-  // - 60.f); debugBtn->setID("debug-button"); menu->addChild(debugBtn);
   addChild(menu);
 
   auto trCorner = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
@@ -256,18 +249,14 @@ void PSCreatorLayer::onSearch(CCObject *) {
       CCTransitionFade::create(0.5, scene));
 }
 
-// void PSCreatorLayer::onDebug(CCObject *)
-// {
-//     std::string str = "";
-//     for (const auto &[uid, urlPrio] : ServerAPI::get()->getAllServers())
-//     {
-//         str += fmt::format("{}: {}\n", urlPrio.first, urlPrio.second);
-//     }
-//     geode::MDPopup::create("Server API Debug", str, "Close")->show();
-// }
-
 CCScene *PSCreatorLayer::scene() {
   auto scene = CCScene::create();
   scene->addChild(PSCreatorLayer::create());
+  if (!Mod::get()->getSavedValue<bool>("has-seen", false)) {
+    auto alert = FLAlertLayer::create("GDPS Hub", "You are previewing a server. Any progress you make on levels will not save.", "Ok");
+    alert->m_scene = scene;
+    alert->show();
+    Mod::get()->setSavedValue<bool>("has-seen", true);
+  }
   return scene;
 }
