@@ -68,6 +68,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     mask->setPosition({0, 0});
 
     auto clip = CCClippingNode::create();
+    clip->setID("description-clip");
     clip->setContentSize({size.width * .65f, size.height - 40});
     clip->setStencil(mask);
     clip->setZOrder(1);

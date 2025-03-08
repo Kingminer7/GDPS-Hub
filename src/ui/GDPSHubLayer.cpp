@@ -148,7 +148,7 @@ bool GDPSHubLayer::init() {
   if (!CCLayer::init())
     return false;
 
-  setID("gdps-hub-layer");
+  setID("gdps-hub-layer"_spr);
 
   setKeypadEnabled(true);
 

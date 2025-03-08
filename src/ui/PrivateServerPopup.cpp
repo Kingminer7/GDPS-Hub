@@ -3,6 +3,10 @@
 #include "../utils/GDPSHub.hpp"
 
 bool PrivateServerPopup::setup(Server server) {
+  setID("ps-popup"_spr);
+  this->m_bgSprite->setID("background");
+  this->m_buttonMenu->setID("back-menu");
+  this->m_closeBtn->setID("back-button");
   this->server = server;
   setTitle(server.title);
   m_title->setPosition(80, 254);
