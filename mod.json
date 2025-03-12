@@ -1,11 +1,11 @@
 {
-  "geode": "4.2.0",
+  "geode": "4.3.0",
   "gd": {
     "win": "2.2074",
     "android": "2.2074",
     "mac": "2.2074"
   },
-  "version": "v1.0.0-beta.1",
+  "version": "v1.0.0-beta.2",
   "id": "lblazen.gdps_hub",
   "name": "GDPS Hub",
   "developers": ["GDPS Hub Team", "km7dev"],
@@ -13,7 +13,7 @@
   "tags": ["online", "content"],
   "links": {
     "source": "https://github.com/kingminer7/gdps-hub",
-    "community": "https://discord.gg/AeVS5J9bcy",
+    "community": "https://gdpshub.com/discord",
     "homepage": "https://gdpshub.com/"
   },
   "issues": {
