@@ -24,8 +24,10 @@ protected:
 
   // Icon stuff
 
+  void loadIcon();
+
   void startDownload();
-  void imageCreationFinished(CCImage *image);
+  void addImage(CCImage *image);
   void onDownloadFailed();
   void handleFinish();
   void onDownloadFinished(CCSprite *image);

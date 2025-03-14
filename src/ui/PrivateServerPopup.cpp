@@ -1,6 +1,7 @@
 #include "PrivateServerPopup.hpp"
 #include "PSCreatorLayer.hpp"
 #include "../utils/GDPSHub.hpp"
+#include "../utils/Images.hpp"
 
 bool PrivateServerPopup::setup(Server server) {
   setID("ps-popup"_spr);
@@ -33,7 +34,7 @@ bool PrivateServerPopup::setup(Server server) {
   m_loadingIndicator->setPosition({47, 245});
   m_loadingIndicator->ignoreAnchorPointForPosition(false);
   m_loadingIndicator->setScale(0.75f);
-  m_loadingIndicator->show();
+  // m_loadingIndicator->show();
   m_loadingIndicator->setID("loading-circle");
 
   auto menu = CCMenu::create();
@@ -157,9 +158,7 @@ bool PrivateServerPopup::setup(Server server) {
   m_mainLayer->addChild(menu);
   m_mainLayer->setID("main-layer");
 
-  retain();
-
-  startDownload();
+  loadIcon();
 
   return true;
 }
@@ -217,9 +216,23 @@ void PrivateServerPopup::onInfo(CCObject *) {
 
 // Icon stuff
 
+void PrivateServerPopup::loadIcon() {
+  // auto image = ImageCache::get()->getImage(fmt::format("{}", server.id));
+  // log::info("{}", image == nullptr);
+  // if (image) {
+  //   m_image = image;
+  //   addImage(image);
+  // } else {
+  //   startDownload();
+  // }
+  auto node = IconNode::create(fmt::format("{}", server.id), server.pfp);
+  node->setPosition({47, 245});
+  node->setID("ps-logo");
+  m_mainLayer->addChild(node);
+}
+
 void PrivateServerPopup::startDownload() {
   std::string URL = server.pfp;
-  log::info("{}", URL);
 
   auto req = web::WebRequest();
   m_downloadListener.bind([this](web::WebTask::Event *e) {
@@ -236,7 +249,8 @@ void PrivateServerPopup::startDownload() {
                                      data.size());
           geode::Loader::get()->queueInMainThread([data, this]() {
             m_image->release();
-            imageCreationFinished(m_image);
+            ImageCache::get()->addImage(fmt::format("{}", server.id), m_image);
+            addImage(m_image);
           });
           m.unlock();
         // });
@@ -254,8 +268,7 @@ void PrivateServerPopup::startDownload() {
   m_downloadListener.setFilter(downloadTask);
 }
 
-void PrivateServerPopup::imageCreationFinished(CCImage *image) {
-
+void PrivateServerPopup::addImage(CCImage *image) {
   CCTexture2D *texture = new CCTexture2D();
   texture->initWithImage(image);
   onDownloadFinished(CCSprite::createWithTexture(texture));
@@ -275,7 +288,6 @@ void PrivateServerPopup::onDownloadFailed() {
 
 void PrivateServerPopup::handleFinish() {
   m_loadingIndicator->fadeAndRemove();
-  release();
 }
 
 void PrivateServerPopup::onDownloadFinished(CCSprite *image) {

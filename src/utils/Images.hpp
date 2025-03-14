@@ -1,0 +1,38 @@
+#include "Geode/cocos/platform/CCImage.h"
+#include "Geode/utils/web.hpp"
+using namespace geode::prelude;
+
+class ImageCache {
+    protected:
+        static ImageCache *m_instance;
+        CCDictionary *m_cache = CCDictionary::create();
+
+        ImageCache() {}
+    public:
+        CCImage *getImage(std::string id);
+        bool addImage(std::string id, CCImage *image);
+        bool hasImage(std::string id);
+        bool removeImage(std::string id);
+
+        static ImageCache *get();
+};
+class IconNode : public CCLayer {
+    protected:
+        LoadingCircle *m_loadingWheel = nullptr;
+        CCSprite *m_sprite = nullptr;
+        CCLabelBMFont *m_naLabel = nullptr;
+        bool m_loaded = false;
+
+        EventListener<web::WebTask> m_downloadListener;
+        std::mutex m_mutex;
+
+        void loadFinished();
+        void downloadImage(std::string id, std::string url);
+
+        bool init(std::string id, std::string url);
+    public:
+        /**
+        * @brief Creating without a URL just loads from cache, or N/A if not in cache.
+        */
+        static IconNode *create(std::string id, std::string url = "");
+};
