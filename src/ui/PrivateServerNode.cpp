@@ -3,6 +3,34 @@
 #include "PrivateServerPopup.hpp"
 #include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
+#include <regex>
+
+std::string removeMarkdown(const std::string& str) {
+    static const std::vector<std::pair<std::regex, std::string>> patterns = {
+        {std::regex(R"(\*\*(.+?)\*\*)"), "$1"},
+        {std::regex(R"(__(.+?)__)"), "$1"},
+        {std::regex(R"(_(.+?)_)"), "$1"},
+        {std::regex(R"(\*(.+?)\*)"), "$1"},
+        {std::regex(R"(~~(.+?)~~)"), "$1"},
+        {std::regex(R"(`(.+?)`)"), "$1"},
+        {std::regex(R"(```[\s\S]*?```)"), "$1"},
+        {std::regex(R"(\[(.+?)\]\((.+?)\))"), "$1"},
+        {std::regex(R"(!\[(.+?)\]\((.+?)\))"), "$1"},
+        {std::regex(R"(^#+\s+(.+?)\s*$)"), "$1"},
+        {std::regex(R"(^\s*=+\s*$)"), "$1"},
+        {std::regex(R"(^\s*-+\s*$)"), "$1"},
+        {std::regex(R"(^\s*>\s+(.+?)\s*$)"), "$1"},
+        {std::regex(R"(^\s*[\*\+-]\s+(.+?)\s*$)"), "$1"},
+        {std::regex(R"(^\s*\d+\.\s+(.+?)\s*$)"), "$1"},
+        {std::regex(R"(^\s*[-*_]{3,}\s*$)"), "$1"}
+    };
+
+    std::string result = str;
+    for (const auto& pattern : patterns) {
+        result = std::regex_replace(result, pattern.first, pattern.second);
+    }
+    return result;
+}
 
 PrivateServerNode *PrivateServerNode::create(GDPSHubLayer *layer, Server entry, CCSize size)
 {
@@ -57,7 +85,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     // desc->setID("description");
     // addChild(desc);
 
-    auto desc = TextArea::create(entry.description, "chatFont.fnt", .7, size.width * .65, {0, 1}, 10, false);
+    auto desc = TextArea::create(removeMarkdown(entry.description), "chatFont.fnt", .7, size.width * .65, {0, 1}, 10, false);
     desc->setPosition({0, 40});
     desc->setContentSize({size.width * .65f, desc->getContentHeight()});
     desc->setAnchorPoint({0, 1});
