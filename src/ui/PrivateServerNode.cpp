@@ -55,7 +55,9 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
 
     setID(fmt::format("gdps-{}", server.id));
 
-    auto bg = CCScale9Sprite::create("GJ_square02.png", {0, 0, 80, 80});
+    auto bg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
+    bg->setColor({0,0,0});
+    bg->setOpacity(90);
     bg->setContentSize(size);
     bg->setID("server-node-bg");
     addChildAtPosition(bg, Anchor::Center);
