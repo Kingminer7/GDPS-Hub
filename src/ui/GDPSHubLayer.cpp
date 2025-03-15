@@ -6,6 +6,7 @@
 
 #include <Geode/utils/cocos.hpp>
 #include <Geode/ui/Popup.hpp>
+#include <random>
 
 using namespace geode::prelude;
 
@@ -143,7 +144,6 @@ public:
   }
 };
 
-
 bool GDPSHubLayer::init() {
   if (!CCLayer::init())
     return false;
@@ -156,12 +156,145 @@ bool GDPSHubLayer::init() {
 
   auto winSize = CCDirector::get()->getWinSize();
 
-  auto background = CCSprite::create("bg.png"_spr);
-  if (winSize.height > 320) background->setScale(winSize.height / background->getContentHeight());
-  else background->setScale(winSize.width / background->getContentWidth());
-  background->setZOrder(-1);
+  auto background = CCLayerColor::create({25,35,47});
+  background->setOpacity(255);
   background->setID("background");
-  addChildAtPosition(background, Anchor::Center);
+  this->addChildAtPosition(background,Anchor::BottomLeft);
+
+  auto swelvyNode = CCNode::create();
+  swelvyNode->setID("swelvy-node");
+  addChildAtPosition(swelvyNode, Anchor::Center);
+
+  auto bottomGlow = CCSprite::createWithSpriteFrameName("chest_glow_bg_001.png");
+  auto topGlow = CCSprite::createWithSpriteFrameName("chest_glow_bg_001.png");
+  swelvyNode->addChild(bottomGlow);
+  swelvyNode->addChild(topGlow);
+
+  auto layers = std::initializer_list<std::pair<ccColor4B, const char*>> {
+    { ccc4(255, 255, 255,255), "geode.loader/swelve-layer0.png" },
+    { ccc4(255, 255, 255,100), "geode.loader/swelve-layer1.png" },
+    { ccc4(255, 255, 255,50), "geode.loader/swelve-layer2.png" },
+    { ccc4(43,127,252,255), "geode.loader/swelve-layer0.png" },
+    { ccc4(46, 92, 247,255), "geode.loader/swelve-layer0.png" },
+    { ccc4(43,127,252,255), "geode.loader/swelve-layer0.png" },
+    { ccc4(46, 92, 247,255), "geode.loader/swelve-layer0.png" },
+};
+  int layerIndex = 1;
+  for (auto layer : layers){
+    auto swelveLayer = CCSprite::create(layer.second);
+    ccTexParams params = {GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT};
+    swelveLayer->getTexture()->setTexParameters(&params);
+    auto rect = swelveLayer->getTextureRect();
+    rect.size.width = winSize.width*1.75f;
+    swelveLayer->setTextureRect(rect);
+    swelveLayer->setAnchorPoint({0.5,0});
+    swelveLayer->setColor({layer.first.r,layer.first.g,layer.first.b});
+    swelveLayer->setOpacity(layer.first.a);
+    if (layerIndex < 4){
+      swelveLayer->setScale(0.675f);
+      swelveLayer->setPosition({0, -(winSize.height/2+60-2*(layerIndex-1))});
+      float moveBy = rand() % 50 - 20;
+      float moveTime = rand() % 5 + 2;
+      auto action = CCSequence::create(
+        CCEaseSineInOut::create(CCMoveBy::create(moveTime, {moveBy, 0})),
+        CCEaseSineInOut::create(CCMoveBy::create(moveTime, {-moveBy, 0})),
+        nullptr
+      );
+      swelveLayer->runAction(CCRepeatForever::create(action));
+    }
+    else {
+    geode::log::info("{}",layerIndex);
+    switch (layerIndex){
+      case 4: {
+        swelveLayer->setPosition({0, -(winSize.height/2+110)});  
+        swelveLayer->setScale(1.25f);
+        swelveLayer->setRotation(5.f);
+        swelveLayer->setZOrder(-1);
+        auto action = CCSequence::create(
+          CCEaseInOut::create(CCMoveBy::create(4, {-5, -7}),2),
+          CCEaseInOut::create(CCMoveBy::create(4, {5, 7}),2),
+          nullptr
+        );
+        swelveLayer->runAction(CCRepeatForever::create(action));
+        break;
+      }
+      case 5: {
+        swelveLayer->setPosition({0, -(winSize.height/2+95)});  
+        swelveLayer->setScale(1.25f);
+        swelveLayer->setFlipX(true);
+        swelveLayer->setRotation(-5.f);
+        swelveLayer->setZOrder(-2);
+        auto action = CCSequence::create(
+          CCEaseInOut::create(CCMoveBy::create(4, {5, -10}),2),
+          CCEaseInOut::create(CCMoveBy::create(4, {-5, 10}),2),
+          nullptr
+        );
+        swelveLayer->runAction(CCRepeatForever::create(action));
+        break;
+      }
+      case 6: {
+        swelveLayer->setPosition({0, winSize.height/2-25});  
+        swelveLayer->setScale(1.25f);
+        swelveLayer->setFlipY(true);
+        swelveLayer->setFlipX(true);
+        swelveLayer->setRotation(5.f);
+        swelveLayer->setZOrder(-1);
+        auto action = CCSequence::create(
+          CCEaseInOut::create(CCMoveBy::create(4, {5, 7}),2),
+          CCEaseInOut::create(CCMoveBy::create(4, {-5, -7}),2),
+          nullptr
+        );
+        swelveLayer->runAction(CCRepeatForever::create(action));
+        break;
+      }
+      case 7: {
+        swelveLayer->setPosition({0, winSize.height/2-45});  
+        swelveLayer->setScale(1.25f);
+        swelveLayer->setFlipY(true);
+        swelveLayer->setRotation(-5.f);
+        swelveLayer->setZOrder(-2);
+        auto action = CCSequence::create(
+          CCEaseInOut::create(CCMoveBy::create(4, {-5, 10}),2),
+          CCEaseInOut::create(CCMoveBy::create(4, {5, -10}),2),
+          nullptr
+        );
+        swelveLayer->runAction(CCRepeatForever::create(action));
+        break;
+        }
+      }
+    }
+    swelvyNode->addChild(swelveLayer);
+    layerIndex++;
+  }
+
+  bottomGlow->setColor({43,127,252});
+  bottomGlow->setAnchorPoint({0,0});
+  bottomGlow->setPosition({(-winSize.width/2)-15.f, -winSize.height/2});
+  bottomGlow->setScaleX((winSize.width/bottomGlow->getContentSize().width)*4);
+  bottomGlow->setScaleY(5.f);
+  bottomGlow->setOpacity(50);
+
+  topGlow->setColor({43,127,252});
+  topGlow->setAnchorPoint({0,0});
+  topGlow->setPosition({(-winSize.width/2)-15.f, (winSize.height/2)+20});
+  topGlow->setScaleX((winSize.width/bottomGlow->getContentSize().width)*4);
+  topGlow->setScaleY(-5.f);
+  topGlow->setOpacity(50);
+
+  auto action = CCSequence::create(
+    CCEaseSineInOut::create(CCMoveBy::create(4,{0,-20.f})),
+    CCEaseSineInOut::create(CCMoveBy::create(4,{0,20.f})),
+    nullptr
+  );
+  auto actionInverted = CCSequence::create(
+    CCEaseSineInOut::create(CCMoveBy::create(4,{0,20.f})),
+    CCEaseSineInOut::create(CCMoveBy::create(4,{0,-20.f})),
+    nullptr
+  );
+
+  bottomGlow->runAction(CCRepeatForever::create(action));
+  topGlow->runAction(CCRepeatForever::create(actionInverted));
+
 
   auto menu = CCMenu::create();
   menu->setID("main-menu");
@@ -182,6 +315,11 @@ bool GDPSHubLayer::init() {
   scrollBg->ignoreAnchorPointForPosition(false);
   scrollBg->setID("server-scroll-bg");
 
+  auto scrollBg2 = CCScale9Sprite::create("GJ_square02.png", {0, 0, 80, 80});
+  scrollBg2->setContentSize({400, 260});
+  scrollBg2->ignoreAnchorPointForPosition(false);
+  scrollBg2->setID("server-scroll-bg");
+
   m_serverList = CCClippingNode::create();
   m_serverList->setID("server-list");
   m_serverList->setContentSize({380, 240});
@@ -193,6 +331,7 @@ bool GDPSHubLayer::init() {
   m_scroll->ignoreAnchorPointForPosition(false);
   m_serverList->addChildAtPosition(m_scroll, Anchor::Center, {-5, 0});
   m_serverList->addChildAtPosition(scrollBg, Anchor::Center);
+  m_serverList->addChildAtPosition(scrollBg2, Anchor::Center);
   addChildAtPosition(m_serverList, Anchor::Center, {0, 0});
 
   m_scrollbar = Scrollbar::create(m_scroll);
