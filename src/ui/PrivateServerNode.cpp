@@ -69,7 +69,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     name->setAnchorPoint({0, 0.5});
     name->limitLabelWidth(210, .9f, 0.1f);
     name->setID("name");
-    addChildAtPosition(name, Anchor::Left, {75,20});
+    addChildAtPosition(name, Anchor::Left, {75,25});
 
     // auto idLab = CCLabelBMFont::create(fmt::format("id {}", entry.id).c_str(), "chatFont.fnt");
     // idLab->setPosition(12 + name->getContentWidth() * name->getScaleX(), getContentHeight() - 15.f);
@@ -86,6 +86,15 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     std::transform(descStr.begin(), descStr.end(), descStr.begin(), [&](char c) {
         return (c < 0) ? '?' : c;
     });
+
+    // transparent black
+    auto descBg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
+    descBg->setColor({0, 0, 0});
+    descBg->setOpacity(90);
+    descBg->setContentSize({205, 45});
+    descBg->setID("description-bg");
+    descBg->setAnchorPoint({0, 1});
+    addChildAtPosition(descBg, Anchor::Left, {75, 12.5});
 
     auto desc = TextArea::create(descStr, "chatFont.fnt", .7, 180, {0, 1}, 10, false);
     desc->setContentSize({180, desc->getContentHeight()});
@@ -104,7 +113,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     clip->setAnchorPoint({0, 1});
     clip->addChildAtPosition(desc, Anchor::TopLeft, {0, 0});
 
-    addChildAtPosition(clip, Anchor::Left, {75,7});
+    addChildAtPosition(clip, Anchor::Left, {77.5, 10});
 
     // auto menu = CCMenu::create();
     // menu->setContentSize(ccp(size.width * .2 - 16, size.height));
