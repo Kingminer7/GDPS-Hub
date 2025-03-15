@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Geode/binding/LoadingCircle.hpp"
 #include "Geode/cocos/platform/CCImage.h"
 #include "Geode/utils/web.hpp"
@@ -7,12 +9,10 @@ class ImageCache {
     protected:
         static ImageCache *m_instance;
         CCDictionary *m_cache;
-
         ImageCache() {
             m_cache = CCDictionary::create();
             m_cache->retain();
         }
-
         ~ImageCache() {
             m_cache->release();
         }
@@ -29,12 +29,10 @@ class IconNode : public CCLayer {
         LoadingCircle *m_loadingWheel = nullptr;
         CCSprite *m_sprite = nullptr;
         CCLabelBMFont *m_naLabel = nullptr;
-        bool m_loaded = false;
 
         EventListener<web::WebTask> m_downloadListener;
         std::mutex m_mutex;
 
-        void loadFinished();
         void downloadImage(std::string id, std::string url);
 
         bool init(std::string id, std::string url);

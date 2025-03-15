@@ -1,4 +1,5 @@
 #include "Images.hpp"
+#include "Geode/loader/Mod.hpp"
 #include "Geode/ui/Layout.hpp"
 
 ImageCache *ImageCache::m_instance = nullptr;
@@ -11,17 +12,18 @@ CCImage *ImageCache::getImage(std::string id) {
 bool ImageCache::addImage(std::string id, CCImage *image) {
     if (m_cache->objectForKey(id)) return false;
     if (!image) return false;
-    log::debug(":fish:");
-    image->retain();
-    log::debug(":fish~1:");
+
+    // @geode-ignore(unknown-setting)
+    if (m_cache->count() >= Mod::get()->getSettingValue<int>("max-image")) {
+      m_cache->removeObjectForKey(static_cast<CCString*>(m_cache->allKeys()->objectAtIndex(0))->getCString());
+    }
+
     m_cache->setObject(image, id);
-    log::debug(":fish~2:");
     return true;
 }
 
 bool ImageCache::removeImage(std::string id) {
     if (auto image = m_cache->objectForKey(id)) {
-      image->release();
       m_cache->removeObjectForKey(id);
       return true;
     }
@@ -42,11 +44,6 @@ ImageCache *ImageCache::get() {
 
 // IconNode
 
-void IconNode::loadFinished() {
-    if (m_loadingWheel) m_loadingWheel->fadeAndRemove();
-    release();
-}
-
 void IconNode::downloadImage(std::string id, std::string url) {
   retain();
   auto req = web::WebRequest();
@@ -59,7 +56,8 @@ void IconNode::downloadImage(std::string id, std::string url) {
         m_naLabel->setOpacity(150);
         m_naLabel->setID("no-icon");
         addChildAtPosition(m_naLabel, Anchor::Center);
-        loadFinished();
+        if (m_loadingWheel) m_loadingWheel->fadeAndRemove();
+        release();
       } else {
         auto data = res->data();
         std::thread imageThread = std::thread([data, this, id]() {
@@ -73,13 +71,14 @@ void IconNode::downloadImage(std::string id, std::string url) {
             image->release();
             CCTexture2D *texture = new CCTexture2D();
             texture->initWithImage(image);
-            auto sprite = CCSprite::createWithTexture(texture);
-            float imgScale = 50 / sprite->getContentSize().height;
-            sprite->setScale(imgScale);
-            sprite->setID("ps-logo");
-            addChildAtPosition(sprite, Anchor::Center);
-            loadFinished();
+            m_sprite = CCSprite::createWithTexture(texture);
+            float imgScale = 50 / m_sprite->getContentSize().height;
+            m_sprite->setScale(imgScale);
+            m_sprite->setID("ps-logo");
+            addChildAtPosition(m_sprite, Anchor::Center);
+            if (m_loadingWheel) m_loadingWheel->fadeAndRemove();
             texture->release();
+            release();
           });
           m_mutex.unlock();
         });
@@ -102,11 +101,11 @@ bool IconNode::init(std::string id, std::string url) {
     if (auto image = ImageCache::get()->getImage(id)) {
         CCTexture2D *texture = new CCTexture2D();
         texture->initWithImage(image);
-        auto sprite = CCSprite::createWithTexture(texture);
-        float imgScale = 50 / sprite->getContentSize().height;
-        sprite->setScale(imgScale);
-        sprite->setID("ps-logo");
-        addChildAtPosition(sprite, Anchor::Center);
+        m_sprite = CCSprite::createWithTexture(texture);
+        float imgScale = 50 / m_sprite->getContentSize().height;
+        m_sprite->setScale(imgScale);
+        m_sprite->setID("ps-logo");
+        addChildAtPosition(m_sprite, Anchor::Center);
         texture->release();
     } else {
       m_loadingWheel = LoadingCircle::create();
