@@ -6,7 +6,6 @@
 
 #include <Geode/utils/cocos.hpp>
 #include <Geode/ui/Popup.hpp>
-#include <random>
 
 using namespace geode::prelude;
 
@@ -82,6 +81,12 @@ protected:
       changed = true;
     });
 
+    auto clearBtn = CCMenuItemSpriteExtra::create(
+      CCSprite::createWithSpriteFrameName("GJ_longBtn07_001.png"), this, menu_selector(PSSearchPopup::resetSearch)
+    );
+    clearBtn->setID("clear-btn");
+    
+    menu->addChildAtPosition(clearBtn, Anchor::BottomRight, {-35, 25});
     m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
     return true;
   }
@@ -150,12 +155,19 @@ bool GDPSHubLayer::init() {
   swelvyNode->addChild(topGlow);
 
   auto layers = std::initializer_list<std::pair<ccColor4B, const char*>> {
+    // @geode-ignore(unknown-resource)
     { ccc4(255, 255, 255,255), "geode.loader/swelve-layer0.png" },
+    // @geode-ignore(unknown-resource)
     { ccc4(255, 255, 255,100), "geode.loader/swelve-layer1.png" },
+    // @geode-ignore(unknown-resource)
     { ccc4(255, 255, 255,50), "geode.loader/swelve-layer2.png" },
+    // @geode-ignore(unknown-resource)
     { ccc4(43,127,252,255), "geode.loader/swelve-layer0.png" },
+    // @geode-ignore(unknown-resource)
     { ccc4(46, 92, 247,255), "geode.loader/swelve-layer0.png" },
+    // @geode-ignore(unknown-resource)
     { ccc4(43,127,252,255), "geode.loader/swelve-layer0.png" },
+    // @geode-ignore(unknown-resource)
     { ccc4(46, 92, 247,255), "geode.loader/swelve-layer0.png" },
 };
   int layerIndex = 1;
