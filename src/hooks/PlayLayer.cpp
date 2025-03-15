@@ -1,3 +1,4 @@
+#include <Geode/Geode.hpp>
 #include <Geode/modify/PlayLayer.hpp>
 #include "../utils/GDPSHub.hpp"
 

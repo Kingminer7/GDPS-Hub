@@ -1,16 +1,21 @@
 #include "Images.hpp"
+#include "Geode/ui/Layout.hpp"
 
 ImageCache *ImageCache::m_instance = nullptr;
 
 CCImage *ImageCache::getImage(std::string id) {
+  log::info("{}", static_cast<CCImage*>(m_cache->objectForKey(id)));
   return static_cast<CCImage*>(m_cache->objectForKey(id));
 }
 
 bool ImageCache::addImage(std::string id, CCImage *image) {
-    if (!m_cache->objectForKey(id)) return false;
+    if (m_cache->objectForKey(id)) return false;
     if (!image) return false;
-    m_cache->setObject(image, id);
+    log::debug(":fish:");
     image->retain();
+    log::debug(":fish~1:");
+    m_cache->setObject(image, id);
+    log::debug(":fish~2:");
     return true;
 }
 
@@ -97,7 +102,11 @@ bool IconNode::init(std::string id, std::string url) {
     if (auto image = ImageCache::get()->getImage(id)) {
         CCTexture2D *texture = new CCTexture2D();
         texture->initWithImage(image);
-        m_sprite = CCSprite::createWithTexture(texture);
+        auto sprite = CCSprite::createWithTexture(texture);
+        float imgScale = 50 / sprite->getContentSize().height;
+        sprite->setScale(imgScale);
+        sprite->setID("ps-logo");
+        addChildAtPosition(sprite, Anchor::Center);
         texture->release();
     } else {
       m_loadingWheel = LoadingCircle::create();

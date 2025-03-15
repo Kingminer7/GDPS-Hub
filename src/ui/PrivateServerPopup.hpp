@@ -8,11 +8,7 @@ using namespace geode::prelude;
 
 class PrivateServerPopup : public Popup<Server> {
 protected:
-  Ref<LoadingCircle> m_loadingIndicator;
-  EventListener<web::WebTask> m_downloadListener;
-  Ref<CCImage> m_image;
-  Server server;
-  std::mutex m;
+  Server m_server;
 
   bool setup(Server server) override;
   void viewServer(CCObject *);
@@ -25,12 +21,6 @@ protected:
   // Icon stuff
 
   void loadIcon();
-
-  void startDownload();
-  void addImage(CCImage *image);
-  void onDownloadFailed();
-  void handleFinish();
-  void onDownloadFinished(CCSprite *image);
 
 public:
   static PrivateServerPopup *create(Server server);
