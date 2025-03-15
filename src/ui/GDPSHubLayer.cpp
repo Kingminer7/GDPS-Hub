@@ -180,14 +180,14 @@ bool GDPSHubLayer::init() {
   scrollBg->setID("server-scroll-bg");
   addChildAtPosition(scrollBg, Anchor::Center);
 
-  m_scroll = ScrollLayer::create({340, 240});
+  m_scroll = ScrollLayer::create({355, 240});
   m_scroll->setID("server-scroll");
   addChildAtPosition(m_scroll, Anchor::Center, -m_scroll->getContentSize() / 2);
 
   m_scrollbar = Scrollbar::create(m_scroll);
   m_scrollbar->setID("scrollbar");
   m_scrollbar->setScaleY(.95f);
-  addChildAtPosition(m_scrollbar, Anchor::Center, {180, 0});
+  addChildAtPosition(m_scrollbar, Anchor::Center, {183, 0});
 
   m_infoLabel = CCLabelBMFont::create("", "bigFont.fnt");
   m_infoLabel->setID("info-label");

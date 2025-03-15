@@ -152,7 +152,7 @@ bool PrivateServerPopup::setup(Server server) {
 
   auto icon = IconNode::create(fmt::format("{}", server.id), server.pfp);
   icon->setPosition({47, 245});
-  icon->setID("ps-logo");
+  icon->setID("server-icon");
   m_mainLayer->addChild(icon);
 
   return true;
