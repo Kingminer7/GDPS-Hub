@@ -43,6 +43,18 @@ ImageCache *ImageCache::get() {
 
 // IconNode
 
+void IconNode::setupSprite(CCImage *image) {
+    auto texture = new CCTexture2D();
+    texture->initWithImage(image);
+    m_sprite = CCSprite::createWithTexture(texture);
+    texture->release();
+    float imgScale = 50 / m_sprite->getContentHeight();
+    m_sprite->setScale(imgScale);
+    m_sprite->setScaleX(m_sprite->getContentHeight() / m_sprite->getContentWidth() * imgScale);
+    m_sprite->setID("ps-logo");
+    addChildAtPosition(m_sprite, Anchor::Center);
+}
+
 void IconNode::downloadImage(std::string id, std::string url) {
   retain();
   auto req = web::WebRequest();
@@ -67,16 +79,9 @@ void IconNode::downloadImage(std::string id, std::string url) {
           image->retain();
           geode::Loader::get()->queueInMainThread([this, data, image, id]() {
             ImageCache::get()->addImage(id, image);
+            setupSprite(image);
             image->release();
-            CCTexture2D *texture = new CCTexture2D();
-            texture->initWithImage(image);
-            m_sprite = CCSprite::createWithTexture(texture);
-            float imgScale = 50 / m_sprite->getContentSize().height;
-            m_sprite->setScale(imgScale);
-            m_sprite->setID("ps-logo");
-            addChildAtPosition(m_sprite, Anchor::Center);
             if (m_loadingWheel) m_loadingWheel->fadeAndRemove();
-            texture->release();
             release();
           });
           m_mutex.unlock();
@@ -100,14 +105,7 @@ bool IconNode::init(std::string id, std::string url) {
     ignoreAnchorPointForPosition(false);
     setContentSize({50.f, 50.f});
     if (auto image = ImageCache::get()->getImage(id)) {
-        CCTexture2D *texture = new CCTexture2D();
-        texture->initWithImage(image);
-        m_sprite = CCSprite::createWithTexture(texture);
-        float imgScale = 50 / m_sprite->getContentSize().height;
-        m_sprite->setScale(imgScale);
-        m_sprite->setID("ps-logo");
-        addChildAtPosition(m_sprite, Anchor::Center);
-        texture->release();
+      setupSprite(image);
     } else {
       m_loadingWheel = LoadingCircle::create();
       m_loadingWheel->ignoreAnchorPointForPosition(false);

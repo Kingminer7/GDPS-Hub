@@ -55,7 +55,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
 
     setID(fmt::format("gdps-{}", server.id));
 
-    auto bg = CCScale9Sprite::create("GJ_square01.png", {0, 0, 80, 80});
+    auto bg = CCScale9Sprite::create("GJ_square02.png", {0, 0, 80, 80});
     bg->setContentSize(size);
     bg->setID("server-node-bg");
     addChildAtPosition(bg, Anchor::Center);
@@ -78,7 +78,16 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     // idLab->setID("id");
     // addChild(idLab);
 
-    auto desc = TextArea::create(removeMarkdown(entry.description), "chatFont.fnt", .7, 180, {0, 1}, 10, false);
+
+    auto descStr = removeMarkdown(entry.description);
+    if (descStr.size() > 150) {
+        descStr = descStr.substr(0, 150) + "...";
+    }
+    std::transform(descStr.begin(), descStr.end(), descStr.begin(), [&](char c) {
+        return (c < 0) ? '?' : c;
+    });
+
+    auto desc = TextArea::create(descStr, "chatFont.fnt", .7, 180, {0, 1}, 10, false);
     desc->setContentSize({180, desc->getContentHeight()});
     desc->setAnchorPoint({0, 1});
     desc->setID("description");

@@ -1,6 +1,7 @@
 #include "GDPSHubLayer.hpp"
 #include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
+#include "Geode/cocos/misc_nodes/CCClippingNode.h"
 #include "PrivateServerNode.hpp"
 
 #include <Geode/utils/cocos.hpp>
@@ -156,7 +157,8 @@ bool GDPSHubLayer::init() {
   auto winSize = CCDirector::get()->getWinSize();
 
   auto background = CCSprite::create("bg.png"_spr);
-  background->setScale(std::clamp(winSize.width / background->getContentWidth(), .75f, FLT_MAX));
+  if (winSize.height > 320) background->setScale(winSize.height / background->getContentHeight());
+  else background->setScale(winSize.width / background->getContentWidth());
   background->setZOrder(-1);
   background->setID("background");
   addChildAtPosition(background, Anchor::Center);
@@ -175,14 +177,23 @@ bool GDPSHubLayer::init() {
   auto scrollBg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
   scrollBg->setColor({0, 0, 0});
   scrollBg->setOpacity(90);
+  scrollBg->setZOrder(-1);
   scrollBg->setContentSize({380, 240});
   scrollBg->ignoreAnchorPointForPosition(false);
   scrollBg->setID("server-scroll-bg");
-  addChildAtPosition(scrollBg, Anchor::Center);
 
-  m_scroll = ScrollLayer::create({355, 240});
+  auto clip = CCClippingNode::create();
+  clip->setID("server-list");
+  clip->setContentSize({380, 240});
+  clip->setAnchorPoint({0.5, 0.5});
+  clip->setStencil(scrollBg);
+  clip->setAlphaThreshold(0.05f);
+  m_scroll = ScrollLayer::create({365, 240});
   m_scroll->setID("server-scroll");
-  addChildAtPosition(m_scroll, Anchor::Center, -m_scroll->getContentSize() / 2);
+  m_scroll->ignoreAnchorPointForPosition(false);
+  clip->addChildAtPosition(m_scroll, Anchor::Center);
+  clip->addChildAtPosition(scrollBg, Anchor::Center, {-3, 0});
+  addChildAtPosition(clip, Anchor::Center);
 
   m_scrollbar = Scrollbar::create(m_scroll);
   m_scrollbar->setID("scrollbar");

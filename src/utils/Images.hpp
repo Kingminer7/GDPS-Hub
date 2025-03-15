@@ -34,7 +34,7 @@ class IconNode : public CCLayer {
         std::mutex m_mutex;
 
         void downloadImage(std::string id, std::string url);
-
+        void setupSprite(CCImage *image);
         bool init(std::string id, std::string url);
     public:
         /**
