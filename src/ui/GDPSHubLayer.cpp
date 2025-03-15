@@ -83,7 +83,7 @@ protected:
     allSel->m_baseScale = 0.75f;
     allSel->setScale(0.75f);
     menu->addChildAtPosition(allSel, Anchor::Left, {25, -19});
-    auto allLab = CCLabelBMFont::create("All Versions (BETA)","bigFont.fnt");
+    auto allLab = CCLabelBMFont::create("Search","bigFont.fnt");
     allLab->setAnchorPoint({ 0, 0.5 });
     allLab->setScale(0.575);
     allLab->setID("all-label");
@@ -95,12 +95,11 @@ protected:
     m_query->setString(m_layer->search);
     m_query->setID("search-box");
     menu->addChildAtPosition(m_query, Anchor::Bottom, {0, 25});
-    std::function<void(const std::string&)> func = [this](const std::string& str){
+    m_query->getInputNode()->setAllowedChars("`1234567890-=qwertyuiop[]\\asdfghjkl;'cxzvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>? ");
+    m_query->setCallback([this](const std::string& str){
       m_layer->search = str;
       changed = true;
-    };
-    m_query->getInputNode()->setAllowedChars("`1234567890-=qwertyuiop[]\\asdfghjkl;'cxzvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>? ");
-    m_query->setCallback(func);
+    });
     m_query->setVisible(m_layer->queryType == "all");
 
     m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
@@ -347,10 +346,27 @@ void GDPSHubLayer::fetchServers() {
       fetching = false;
     }
   });
+  auto urlEncode = [](const std::string &value) -> std::string {
+    std::ostringstream escaped;
+    escaped.fill('0');
+    escaped << std::hex;
+
+    for (char c : value) {
+      if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+        escaped << c;
+      } else {
+        escaped << '%' << std::setw(2) << int((unsigned char)c);
+      }
+    }
+
+    return escaped.str();
+  };
+
+  std::string safeSearch = urlEncode(search);
   auto req = web::WebRequest();
   m_listener.setFilter(req.get(
       fmt::format("https://api.gdpshub.com/geode/get?page={}&type={}&search={}",
-                  page, queryType, search)));
+                  page, queryType, safeSearch)));
 }
 
 void GDPSHubLayer::onLeftArrow(CCObject *) {

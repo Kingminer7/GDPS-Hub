@@ -8,7 +8,7 @@ bool PrivateServerPopup::setup(Server server) {
   this->m_bgSprite->setID("background");
   this->m_buttonMenu->setID("back-menu");
   this->m_closeBtn->setID("back-button");
-  this->server = server;
+  this->m_server = server;
   setTitle(server.title);
   m_title->setPosition(80, 254);
   m_title->setAnchorPoint({0, 0.5});
@@ -28,14 +28,6 @@ bool PrivateServerPopup::setup(Server server) {
   desc->setPosition(220, 131);
   desc->setID("server-description");
   m_mainLayer->addChild(desc);
-
-  m_loadingIndicator = LoadingCircle::create();
-  m_loadingIndicator->setParentLayer(m_mainLayer);
-  m_loadingIndicator->setPosition({47, 245});
-  m_loadingIndicator->ignoreAnchorPointForPosition(false);
-  m_loadingIndicator->setScale(0.75f);
-  // m_loadingIndicator->show();
-  m_loadingIndicator->setID("loading-circle");
 
   auto menu = CCMenu::create();
   menu->setPosition(0, 0);
@@ -158,7 +150,10 @@ bool PrivateServerPopup::setup(Server server) {
   m_mainLayer->addChild(menu);
   m_mainLayer->setID("main-layer");
 
-  loadIcon();
+  auto icon = IconNode::create(fmt::format("{}", server.id), server.pfp);
+  icon->setPosition({47, 245});
+  icon->setID("ps-logo");
+  m_mainLayer->addChild(icon);
 
   return true;
 }
@@ -166,7 +161,7 @@ bool PrivateServerPopup::setup(Server server) {
 void PrivateServerPopup::viewServer(CCObject *) {
   CCDirector::sharedDirector()->pushScene(
       CCTransitionFade::create(0.5, PSCreatorLayer::scene()));
-  GDPSHub::get()->beginPreview(server);
+  GDPSHub::get()->beginPreview(m_server);
 }
 
 void PrivateServerPopup::saveServer(CCObject *) {
@@ -179,125 +174,39 @@ void PrivateServerPopup::saveServer(CCObject *) {
     return;
   }
 
-  if (GDPSUtils::createServer(server.title, server.url))
+  if (GDPSUtils::createServer(m_server.title, m_server.url))
     FLAlertLayer::create("Success", "Server saved to GDPS Switcher.", "OK")->show();
   else
     FLAlertLayer::create("Error", "This server is already saved.","OK")->show();
 }
 
 void PrivateServerPopup::onDiscord(CCObject *sender) {
-  if (server.dcUrl == "") {
+  if (m_server.dcUrl == "") {
     return;
   }
-  web::openLinkInBrowser(server.dcUrl);
+  web::openLinkInBrowser(m_server.dcUrl);
 }
 
 void PrivateServerPopup::onTools(CCObject *sender) {
-  if (server.toolsUrl == "") {
+  if (m_server.toolsUrl == "") {
     return;
   }
-  web::openLinkInBrowser(server.toolsUrl);
+  web::openLinkInBrowser(m_server.toolsUrl);
 }
 
 void PrivateServerPopup::onWeb(CCObject *sender) {
   web::openLinkInBrowser(
-      fmt::format("https://gdpshub.com/gdps/{}", server.id));
+      fmt::format("https://gdpshub.com/gdps/{}", m_server.id));
 }
 
 void PrivateServerPopup::onInfo(CCObject *) {
-  log::info("{}", server.created_at);
+  log::info("{}", m_server.created_at);
   FLAlertLayer::create(
       "Server Info",
-      fmt::format("<cl>ID: {}</c>\n<cy>Created: {}</c>\n<cg>Recommended Version: {}</c>", server.id,
-                  GDPSHub::stampToDateTime(server.created_at), server.version),
+      fmt::format("<cl>ID: {}</c>\n<cy>Created: {}</c>\n<cg>Recommended Version: {}</c>", m_server.id,
+                  GDPSHub::stampToDateTime(m_server.created_at), m_server.version),
       "Close")
       ->show();
-}
-
-// Icon stuff
-
-void PrivateServerPopup::loadIcon() {
-  // auto image = ImageCache::get()->getImage(fmt::format("{}", server.id));
-  // log::info("{}", image == nullptr);
-  // if (image) {
-  //   m_image = image;
-  //   addImage(image);
-  // } else {
-  //   startDownload();
-  // }
-  auto node = IconNode::create(fmt::format("{}", server.id), server.pfp);
-  node->setPosition({47, 245});
-  node->setID("ps-logo");
-  m_mainLayer->addChild(node);
-}
-
-void PrivateServerPopup::startDownload() {
-  std::string URL = server.pfp;
-
-  auto req = web::WebRequest();
-  m_downloadListener.bind([this](web::WebTask::Event *e) {
-    if (auto res = e->getValue()) {
-      if (!res->ok()) {
-        onDownloadFailed();
-      } else {
-        auto data = res->data();
-
-        // std::thread imageThread = std::thread([data, this]() {
-          m.lock();
-          m_image = new CCImage();
-          m_image->initWithImageData(const_cast<uint8_t *>(data.data()),
-                                     data.size());
-          geode::Loader::get()->queueInMainThread([data, this]() {
-            m_image->release();
-            ImageCache::get()->addImage(fmt::format("{}", server.id), m_image);
-            addImage(m_image);
-          });
-          m.unlock();
-        // });
-        // imageThread.detach();
-      }
-    } else if (web::WebProgress *progress = e->getProgress()) {
-      if (!progress->downloadProgress().has_value()) {
-        return;
-      }
-    } else if (e->isCancelled()) {
-      geode::log::warn("Exited before finishing");
-    }
-  });
-  auto downloadTask = req.get(URL);
-  m_downloadListener.setFilter(downloadTask);
-}
-
-void PrivateServerPopup::addImage(CCImage *image) {
-  CCTexture2D *texture = new CCTexture2D();
-  texture->initWithImage(image);
-  onDownloadFinished(CCSprite::createWithTexture(texture));
-  texture->release();
-}
-
-void PrivateServerPopup::onDownloadFailed() {
-  auto label = CCLabelBMFont::create("N/A", "bigFont.fnt");
-  label->setPosition({47, 245});
-  label->setScale(0.82f);
-  label->setAnchorPoint({0.5, 0.5});
-  label->setOpacity(150);
-  label->setID("no-icon");
-  m_mainLayer->addChild(label);
-  handleFinish();
-}
-
-void PrivateServerPopup::handleFinish() {
-  m_loadingIndicator->fadeAndRemove();
-}
-
-void PrivateServerPopup::onDownloadFinished(CCSprite *image) {
-
-  float imgScale = 50 / image->getContentSize().height;
-  image->setScale(imgScale);
-  image->setPosition({47, 245});
-  image->setID("ps-logo");
-  m_mainLayer->addChild(image);
-  handleFinish();
 }
 
 PrivateServerPopup *PrivateServerPopup::create(Server server) {

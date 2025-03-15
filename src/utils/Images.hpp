@@ -1,3 +1,4 @@
+#include "Geode/binding/LoadingCircle.hpp"
 #include "Geode/cocos/platform/CCImage.h"
 #include "Geode/utils/web.hpp"
 using namespace geode::prelude;
@@ -5,9 +6,16 @@ using namespace geode::prelude;
 class ImageCache {
     protected:
         static ImageCache *m_instance;
-        CCDictionary *m_cache = CCDictionary::create();
+        CCDictionary *m_cache;
 
-        ImageCache() {}
+        ImageCache() {
+            m_cache = CCDictionary::create();
+            m_cache->retain();
+        }
+
+        ~ImageCache() {
+            m_cache->release();
+        }
     public:
         CCImage *getImage(std::string id);
         bool addImage(std::string id, CCImage *image);
