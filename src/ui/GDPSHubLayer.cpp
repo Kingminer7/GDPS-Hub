@@ -191,14 +191,14 @@ bool GDPSHubLayer::init() {
   m_scroll = ScrollLayer::create({365, 240});
   m_scroll->setID("server-scroll");
   m_scroll->ignoreAnchorPointForPosition(false);
-  m_serverList->addChildAtPosition(m_scroll, Anchor::Center);
-  m_serverList->addChildAtPosition(scrollBg, Anchor::Center, {-3, 0});
-  addChildAtPosition(m_serverList, Anchor::Center);
+  m_serverList->addChildAtPosition(m_scroll, Anchor::Center, {-5, 0});
+  m_serverList->addChildAtPosition(scrollBg, Anchor::Center);
+  addChildAtPosition(m_serverList, Anchor::Center, {0, 0});
 
   m_scrollbar = Scrollbar::create(m_scroll);
   m_scrollbar->setID("scrollbar");
   m_scrollbar->setScaleY(.95f);
-  addChildAtPosition(m_scrollbar, Anchor::Center, {183, 0});
+  m_serverList->addChildAtPosition(m_scrollbar, Anchor::Center, {184, 0});
 
   m_infoLabel = CCLabelBMFont::create("", "bigFont.fnt");
   m_infoLabel->setID("info-label");
