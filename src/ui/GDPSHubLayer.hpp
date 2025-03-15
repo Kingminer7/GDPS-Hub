@@ -7,6 +7,7 @@
 #include <Geode/utils/web.hpp>
 
 #include "./PrivateServerNode.hpp"
+#include "Geode/ui/Scrollbar.hpp"
 
 using namespace geode::prelude;
 
@@ -19,25 +20,26 @@ protected:
     LoadingCircle *m_loadingCircle = LoadingCircle::create();
     EventListener<web::WebTask> m_listener;
     CCLabelBMFont *m_infoLabel;
-    CCMenuItemSpriteExtra *leftArrow;
-    CCMenuItemSpriteExtra *rightArrow;
-    bool fetching = false;
+    Scrollbar *m_scrollbar;
+    CCMenuItemSpriteExtra *m_leftArrow;
+    CCMenuItemSpriteExtra *m_rightArrow;
+    bool m_fetching = false;
 public:
     /*
     top (default)
     search
     recent
     */
-    std::string queryType = "top";
-    std::string search = "";
-    int page = 1;
-    int pages = 0;
+    std::string m_queryType = "top";
+    std::string m_search = "";
+    int m_page = 1;
+    int m_pages = 0;
     static CCScene *scene();
     void onGoBack(CCObject *);
-    ScrollLayer *scroll;
+    ScrollLayer *m_scroll;
     void updateList();
     void fetchServers();
     void onLeftArrow(CCObject *);
     void onRightArrow(CCObject *);
     void onSearch(CCObject *);
-};
+}; 

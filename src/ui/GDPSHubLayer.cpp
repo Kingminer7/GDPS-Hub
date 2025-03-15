@@ -34,10 +34,10 @@ protected:
 
     // Top Selection
     CCSprite *topOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
-    topOn->setVisible(m_layer->queryType == "top");
+    topOn->setVisible(m_layer->m_queryType == "top");
     topOn->setID("on-sprite");
     CCSprite *topOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
-    topOff->setVisible(m_layer->queryType != "top");
+    topOff->setVisible(m_layer->m_queryType != "top");
     topOff->setID("off-sprite");
     topSel = CCMenuItemSpriteExtra::create(topOn, this, menu_selector(PSSearchPopup::changeQueryType));
     topSel->addChildAtPosition(topOff, Anchor::Center);
@@ -53,10 +53,10 @@ protected:
 
     // Recent Selection
     CCSprite *recentOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
-    recentOn->setVisible(m_layer->queryType == "recent");
+    recentOn->setVisible(m_layer->m_queryType == "recent");
     recentOn->setID("on-sprite");
     CCSprite *recentOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
-    recentOff->setVisible(m_layer->queryType != "recent");
+    recentOff->setVisible(m_layer->m_queryType != "recent");
     recentOff->setID("off-sprite");
     recentSel = CCMenuItemSpriteExtra::create(recentOn, this, menu_selector(PSSearchPopup::changeQueryType));
     recentSel->addChildAtPosition(recentOff, Anchor::Center);
@@ -72,10 +72,10 @@ protected:
 
     // All Selection
     CCSprite *allOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
-    allOn->setVisible(m_layer->queryType == "all");
+    allOn->setVisible(m_layer->m_queryType == "all");
     allOn->setID("on-sprite");
     CCSprite *allOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
-    allOff->setVisible(m_layer->queryType != "all");
+    allOff->setVisible(m_layer->m_queryType != "all");
     allOff->setID("off-sprite");
     allSel = CCMenuItemSpriteExtra::create(allOn, this, menu_selector(PSSearchPopup::changeQueryType));
     allSel->addChildAtPosition(allOff, Anchor::Center);
@@ -92,15 +92,15 @@ protected:
     // Search Box
     m_query = TextInput::create(250.f, "Search");
     m_query->setScale(.85); 
-    m_query->setString(m_layer->search);
+    m_query->setString(m_layer->m_search);
     m_query->setID("search-box");
     menu->addChildAtPosition(m_query, Anchor::Bottom, {0, 25});
     m_query->getInputNode()->setAllowedChars("`1234567890-=qwertyuiop[]\\asdfghjkl;'cxzvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>? ");
     m_query->setCallback([this](const std::string& str){
-      m_layer->search = str;
+      m_layer->m_search = str;
       changed = true;
     });
-    m_query->setVisible(m_layer->queryType == "all");
+    m_query->setVisible(m_layer->m_queryType == "all");
 
     m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
     return true;
@@ -109,17 +109,17 @@ protected:
   void changeQueryType(CCObject * sender) {
     std::string id = static_cast<CCNode *>(sender)->getID();
     if (id == "search") return;
-    if (id == "all") m_layer->queryType = "all";
-    else if (id == "top") m_layer->queryType = "top";
-    else if (id == "recent") m_layer->queryType = "recent";
+    if (id == "all") m_layer->m_queryType = "all";
+    else if (id == "top") m_layer->m_queryType = "top";
+    else if (id == "recent") m_layer->m_queryType = "recent";
 
-    allSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "all");
-    allSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "all");
-    topSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "top");
-    topSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "top");
-    recentSel->getChildByID("on-sprite")->setVisible(m_layer->queryType == "recent");
-    recentSel->getChildByID("off-sprite")->setVisible(m_layer->queryType != "recent");
-    m_query->setVisible(m_layer->queryType == "all");
+    allSel->getChildByID("on-sprite")->setVisible(m_layer->m_queryType == "all");
+    allSel->getChildByID("off-sprite")->setVisible(m_layer->m_queryType != "all");
+    topSel->getChildByID("on-sprite")->setVisible(m_layer->m_queryType == "top");
+    topSel->getChildByID("off-sprite")->setVisible(m_layer->m_queryType != "top");
+    recentSel->getChildByID("on-sprite")->setVisible(m_layer->m_queryType == "recent");
+    recentSel->getChildByID("off-sprite")->setVisible(m_layer->m_queryType != "recent");
+    m_query->setVisible(m_layer->m_queryType == "all");
 
     changed = true;
   }
@@ -147,6 +147,8 @@ bool GDPSHubLayer::init() {
   if (!CCLayer::init())
     return false;
 
+  setAnchorPoint({0, 0});
+
   setID("gdps-hub-layer"_spr);
 
   setKeypadEnabled(true);
@@ -154,74 +156,65 @@ bool GDPSHubLayer::init() {
   auto winSize = CCDirector::get()->getWinSize();
 
   auto background = CCSprite::create("bg.png"_spr);
-
   background->setScale(std::clamp(winSize.width / background->getContentWidth(), .75f, FLT_MAX));
-  background->setPosition(winSize / 2);
   background->setZOrder(-1);
   background->setID("background");
-  addChild(background);
+  addChildAtPosition(background, Anchor::Center);
 
   auto menu = CCMenu::create();
-  menu->setID("back-menu");
+  menu->setID("main-menu");
   menu->setZOrder(10);
+  addChildAtPosition(menu, Anchor::Center);
 
   auto backBtn = CCMenuItemSpriteExtra::create(
       CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png"), this,
       menu_selector(GDPSHubLayer::onGoBack));
-  backBtn->setPosition(-winSize.width / 2 + 25.f, winSize.height / 2 - 25.f);
   backBtn->setID("back-button");
-  menu->addChild(backBtn);
-  addChild(menu);
+  menu->addChildAtPosition(backBtn, Anchor::TopLeft, {25.f, -25.f});
 
   auto scrollBg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
   scrollBg->setColor({0, 0, 0});
   scrollBg->setOpacity(90);
-  scrollBg->setContentSize({winSize.width - 100, winSize.height - 60});
-  scrollBg->setPosition(winSize / 2);
+  scrollBg->setContentSize({380, 240});
   scrollBg->ignoreAnchorPointForPosition(false);
   scrollBg->setID("server-scroll-bg");
-  addChild(scrollBg);
+  addChildAtPosition(scrollBg, Anchor::Center);
 
-  scroll = ScrollLayer::create({winSize.width - 100, winSize.height - 60});
-  scroll->setPosition((winSize - scroll->getContentSize()) / 2);
-  scroll->setID("server-scroll");
-  addChild(scroll);
+  m_scroll = ScrollLayer::create({340, 240});
+  m_scroll->setID("server-scroll");
+  addChildAtPosition(m_scroll, Anchor::Center, -m_scroll->getContentSize() / 2);
+
+  m_scrollbar = Scrollbar::create(m_scroll);
+  m_scrollbar->setID("scrollbar");
+  m_scrollbar->setScaleY(.95f);
+  addChildAtPosition(m_scrollbar, Anchor::Center, {180, 0});
 
   m_infoLabel = CCLabelBMFont::create("", "bigFont.fnt");
-  m_infoLabel->setPosition(winSize / 2);
   m_infoLabel->setID("info-label");
   m_infoLabel->setAnchorPoint({0.5, 0.5});
   m_infoLabel->setScale(0.5);
-  addChild(m_infoLabel);
-
-  auto arrowMenu = CCMenu::create();
-  arrowMenu->setID("nav-menu");
-  arrowMenu->setZOrder(10);
-  addChild(arrowMenu);
+  addChildAtPosition(m_infoLabel, Anchor::Center);
 
   auto searchBtn = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("gj_findBtn_001.png"), this, menu_selector(GDPSHubLayer::onSearch));
-  searchBtn->setPosition(winSize.width / 2 - 25.f, 70);
   searchBtn->setID("search-btn");
-  arrowMenu->addChild(searchBtn);
+  menu->addChildAtPosition(searchBtn, Anchor::Right, {-25, 70});
 
   auto leftArrowSpr =
       CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
-  leftArrow = CCMenuItemSpriteExtra::create(
+  m_leftArrow = CCMenuItemSpriteExtra::create(
       leftArrowSpr, this, menu_selector(GDPSHubLayer::onLeftArrow));
-  leftArrow->setPosition(-winSize.width / 2 + 25.f, 0);
-  leftArrow->setVisible(false);
-  leftArrow->setID("left-btn");
-  arrowMenu->addChild(leftArrow);
+  m_leftArrow->setVisible(false);
+  m_leftArrow->setID("left-btn");
+  menu->addChildAtPosition(m_leftArrow, Anchor::Left, {25.f, 0});
 
   auto rightArrowSpr =
       CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
   rightArrowSpr->setFlipX(true);
-  rightArrow = CCMenuItemSpriteExtra::create(
+  m_rightArrow = CCMenuItemSpriteExtra::create(
       rightArrowSpr, this, menu_selector(GDPSHubLayer::onRightArrow));
-  rightArrow->setPosition(winSize.width / 2 - 25.f, 0);
-  rightArrow->setVisible(false);
-  rightArrow->setID("right-btn");
-  arrowMenu->addChild(rightArrow);
+  m_rightArrow->setVisible(false);
+  m_rightArrow->setID("right-btn");
+  menu->addChildAtPosition(m_rightArrow, Anchor::Right, {-25.f, 0});
 
   if (GDPSHub::get()->servers.size() == 0) {
     fetchServers();
@@ -231,6 +224,8 @@ bool GDPSHubLayer::init() {
 
   return true;
 }
+
+
 
 void GDPSHubLayer::keyBackClicked() { onGoBack(nullptr); }
 
@@ -256,37 +251,39 @@ CCScene *GDPSHubLayer::scene() {
 }
 
 void GDPSHubLayer::updateList() {
-  scroll->m_contentLayer->removeAllChildren();
-  scroll->moveToTop();
+  m_scroll->m_contentLayer->removeAllChildren();
 
-  float totalHeight = 0.f;
+  // For neat little pad
+  float totalHeight = 3.f;
   std::vector<PrivateServerNode *> rendered;
   for (Server server : GDPSHub::get()->servers) {
     auto node = PrivateServerNode::create(this, server,
-                                          ccp(scroll->getContentWidth(), 80));
+                                          ccp(m_scroll->getContentWidth(), 80));
     node->setPosition(0, totalHeight);
-    scroll->m_contentLayer->addChild(node);
-    totalHeight += 80;
+    m_scroll->m_contentLayer->addChild(node);
+    totalHeight += 83;
     rendered.push_back(node);
   }
 
-  if (totalHeight < scroll->getContentSize().height) {
-    totalHeight = scroll->getContentSize().height;
+  if (totalHeight < m_scroll->getContentSize().height) {
+    totalHeight = m_scroll->getContentSize().height;
   }
 
   for (auto &node : rendered) {
     node->setPositionY(totalHeight - node->getPositionY() - 80);
   }
 
-  scroll->m_contentLayer->setContentSize(
-      {scroll->m_contentLayer->getContentWidth(), totalHeight});
-  scroll->moveToTop();
+  m_scroll->m_contentLayer->setContentSize(
+      {m_scroll->m_contentLayer->getContentWidth(), totalHeight});
+  m_scroll->moveToTop();
+  m_scrollbar->setVisible(true);
 }
 
 void GDPSHubLayer::fetchServers() {
   retain();
+  m_scrollbar->setVisible(false);
   GDPSHub::get()->servers.clear();
-  scroll->m_contentLayer->removeAllChildren();
+  m_scroll->m_contentLayer->removeAllChildren();
   if (m_loadingCircle == nullptr) {
     m_loadingCircle = LoadingCircle::create();
   }
@@ -295,7 +292,7 @@ void GDPSHubLayer::fetchServers() {
   m_loadingCircle->setScale(1.f);
   m_loadingCircle->show();
   m_infoLabel->setString("");
-  fetching = true;
+  m_fetching = true;
 
   m_listener.bind([this](web::WebTask::Event *e) {
     if (web::WebResponse *res = e->getValue()) {
@@ -305,8 +302,8 @@ void GDPSHubLayer::fetchServers() {
       if (data == "err") {
         log::info("{}", err);
         m_infoLabel->setString("Failed to fetch servers.");
-        pages = 0;
-        fetching = false;
+        m_pages = 0;
+        m_fetching = false;
         m_loadingCircle->fadeAndRemove();
         m_loadingCircle = nullptr;
         return;
@@ -314,7 +311,7 @@ void GDPSHubLayer::fetchServers() {
       if (!data.contains("success") || data["success"].asBool().unwrapOrDefault() == false ||
           !data.contains("data")) {
         if (data.contains("message")) {
-          if (data["message"].asString().unwrapOrDefault() == "Invalid filter option." && queryType == "all" && search.empty()) {
+          if (data["message"].asString().unwrapOrDefault() == "Invalid filter option." && m_queryType == "all" && m_search.empty()) {
             m_infoLabel->setString("No search specified.");
           } else {
             m_infoLabel->setString(data["message"].asString().unwrapOrDefault().c_str());
@@ -322,8 +319,8 @@ void GDPSHubLayer::fetchServers() {
         }
         else
           m_infoLabel->setString("Failed to fetch servers.");
-        pages = 0;
-        fetching = false;
+        m_pages = 0;
+        m_fetching = false;
         m_loadingCircle->fadeAndRemove();
         m_loadingCircle = nullptr;
         return;
@@ -335,15 +332,15 @@ void GDPSHubLayer::fetchServers() {
       }
       updateList();
       if (data.contains("totalPages")) {
-        pages = data["totalPages"].asInt().unwrapOrDefault();
+        m_pages = data["totalPages"].asInt().unwrapOrDefault();
       }
 
-      leftArrow->setVisible(page > 1);
-      rightArrow->setVisible(page < pages);
+      m_leftArrow->setVisible(m_page > 1);
+      m_rightArrow->setVisible(m_page < m_pages);
 
       m_loadingCircle->fadeAndRemove();
       m_loadingCircle = nullptr;
-      fetching = false;
+      m_fetching = false;
     }
   });
   auto urlEncode = [](const std::string &value) -> std::string {
@@ -362,29 +359,29 @@ void GDPSHubLayer::fetchServers() {
     return escaped.str();
   };
 
-  std::string safeSearch = urlEncode(search);
+  std::string safeSearch = urlEncode(m_search);
   auto req = web::WebRequest();
   m_listener.setFilter(req.get(
       fmt::format("https://api.gdpshub.com/geode/get?page={}&type={}&search={}",
-                  page, queryType, safeSearch)));
+                  m_page, m_queryType, safeSearch)));
 }
 
 void GDPSHubLayer::onLeftArrow(CCObject *) {
-  if (fetching || page == 1)
+  if (m_fetching || m_page == 1)
     return;
-  page--;
+  m_page--;
   fetchServers();
 }
 
 void GDPSHubLayer::onRightArrow(CCObject *) {
-  if (fetching || page == pages)
+  if (m_fetching || m_page == m_pages)
     return;
-  page++;
+  m_page++;
   fetchServers();
 }
 
 void GDPSHubLayer::onSearch(CCObject *) {
-  if (fetching)
+  if (m_fetching)
     return;
   PSSearchPopup::create(this)->show();
 }
