@@ -182,18 +182,18 @@ bool GDPSHubLayer::init() {
   scrollBg->ignoreAnchorPointForPosition(false);
   scrollBg->setID("server-scroll-bg");
 
-  auto clip = CCClippingNode::create();
-  clip->setID("server-list");
-  clip->setContentSize({380, 240});
-  clip->setAnchorPoint({0.5, 0.5});
-  clip->setStencil(scrollBg);
-  clip->setAlphaThreshold(0.05f);
+  m_serverList = CCClippingNode::create();
+  m_serverList->setID("server-list");
+  m_serverList->setContentSize({380, 240});
+  m_serverList->setAnchorPoint({0.5, 0.5});
+  m_serverList->setStencil(scrollBg);
+  m_serverList->setAlphaThreshold(0.05f);
   m_scroll = ScrollLayer::create({365, 240});
   m_scroll->setID("server-scroll");
   m_scroll->ignoreAnchorPointForPosition(false);
-  clip->addChildAtPosition(m_scroll, Anchor::Center);
-  clip->addChildAtPosition(scrollBg, Anchor::Center, {-3, 0});
-  addChildAtPosition(clip, Anchor::Center);
+  m_serverList->addChildAtPosition(m_scroll, Anchor::Center);
+  m_serverList->addChildAtPosition(scrollBg, Anchor::Center, {-3, 0});
+  addChildAtPosition(m_serverList, Anchor::Center);
 
   m_scrollbar = Scrollbar::create(m_scroll);
   m_scrollbar->setID("scrollbar");

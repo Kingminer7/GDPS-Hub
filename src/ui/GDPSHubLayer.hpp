@@ -36,6 +36,7 @@ public:
     int m_pages = 0;
     static CCScene *scene();
     void onGoBack(CCObject *);
+    CCClippingNode *m_serverList;
     ScrollLayer *m_scroll;
     void updateList();
     void fetchServers();
