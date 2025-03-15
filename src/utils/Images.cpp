@@ -5,7 +5,6 @@
 ImageCache *ImageCache::m_instance = nullptr;
 
 CCImage *ImageCache::getImage(std::string id) {
-  log::info("{}", static_cast<CCImage*>(m_cache->objectForKey(id)));
   return static_cast<CCImage*>(m_cache->objectForKey(id));
 }
 
@@ -98,6 +97,8 @@ void IconNode::downloadImage(std::string id, std::string url) {
 
 bool IconNode::init(std::string id, std::string url) {
     if (!CCNode::init()) return false;
+    ignoreAnchorPointForPosition(false);
+    setContentSize({50.f, 50.f});
     if (auto image = ImageCache::get()->getImage(id)) {
         CCTexture2D *texture = new CCTexture2D();
         texture->initWithImage(image);
@@ -111,6 +112,7 @@ bool IconNode::init(std::string id, std::string url) {
       m_loadingWheel = LoadingCircle::create();
       m_loadingWheel->ignoreAnchorPointForPosition(false);
       m_loadingWheel->setScale(0.75f);
+      m_loadingWheel->setPosition({25.f, 25.f});
       m_loadingWheel->setParentLayer(this);
       m_loadingWheel->show();
       m_loadingWheel->setID("loading-circle");
