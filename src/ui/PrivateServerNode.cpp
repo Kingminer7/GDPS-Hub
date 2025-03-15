@@ -89,14 +89,6 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
         return (c < 0) ? '?' : c;
     });
 
-    // transparent black
-    auto descBg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
-    descBg->setColor({0, 0, 0});
-    descBg->setOpacity(90);
-    descBg->setContentSize({205, 45});
-    descBg->setID("description-bg");
-    descBg->setAnchorPoint({0, 1});
-    addChildAtPosition(descBg, Anchor::Left, {75, 12.5});
 
     auto desc = TextArea::create(descStr, "chatFont.fnt", .7, 180, {0, 1}, 10, false);
     desc->setContentSize({180, desc->getContentHeight()});

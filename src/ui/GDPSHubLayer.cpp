@@ -16,8 +16,6 @@ protected:
   GDPSHubLayer *m_layer;
   CCMenuItemSpriteExtra *topSel;
   CCMenuItemSpriteExtra *recentSel;
-  CCMenuItemSpriteExtra *allSel;
-  CCMenuItemSpriteExtra *searchSel;
   bool changed = false;
   bool setup(GDPSHubLayer *layer) override {
     setTitle("Query Options");
@@ -72,37 +70,17 @@ protected:
     recentLab->setID("recent-label");
     menu->addChildAtPosition(recentLab, Anchor::Left, {40, 8});
 
-    // All Selection
-    CCSprite *allOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
-    allOn->setVisible(m_layer->m_queryType == "all");
-    allOn->setID("on-sprite");
-    CCSprite *allOff = CCSprite::createWithSpriteFrameName("GJ_checkOff_001.png");
-    allOff->setVisible(m_layer->m_queryType != "all");
-    allOff->setID("off-sprite");
-    allSel = CCMenuItemSpriteExtra::create(allOn, this, menu_selector(PSSearchPopup::changeQueryType));
-    allSel->addChildAtPosition(allOff, Anchor::Center);
-    allSel->setID("all");
-    allSel->m_baseScale = 0.75f;
-    allSel->setScale(0.75f);
-    menu->addChildAtPosition(allSel, Anchor::Left, {25, -19});
-    auto allLab = CCLabelBMFont::create("Search","bigFont.fnt");
-    allLab->setAnchorPoint({ 0, 0.5 });
-    allLab->setScale(0.575);
-    allLab->setID("all-label");
-    menu->addChildAtPosition(allLab, Anchor::Left, {40, -19});
-
     // Search Box
-    m_query = TextInput::create(250.f, "Search");
+    m_query = TextInput::create(200.f, "Search");
     m_query->setScale(.85); 
     m_query->setString(m_layer->m_search);
     m_query->setID("search-box");
-    menu->addChildAtPosition(m_query, Anchor::Bottom, {0, 25});
+    menu->addChildAtPosition(m_query, Anchor::BottomLeft, {100 , 25});
     m_query->getInputNode()->setAllowedChars("`1234567890-=qwertyuiop[]\\asdfghjkl;'cxzvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>? ");
     m_query->setCallback([this](const std::string& str){
       m_layer->m_search = str;
       changed = true;
     });
-    m_query->setVisible(m_layer->m_queryType == "all");
 
     m_mainLayer->addChildAtPosition(menu, Anchor::Center, {0, 0});
     return true;
@@ -110,18 +88,13 @@ protected:
 
   void changeQueryType(CCObject * sender) {
     std::string id = static_cast<CCNode *>(sender)->getID();
-    if (id == "search") return;
-    if (id == "all") m_layer->m_queryType = "all";
-    else if (id == "top") m_layer->m_queryType = "top";
+    if (id == "top") m_layer->m_queryType = "top";
     else if (id == "recent") m_layer->m_queryType = "recent";
 
-    allSel->getChildByID("on-sprite")->setVisible(m_layer->m_queryType == "all");
-    allSel->getChildByID("off-sprite")->setVisible(m_layer->m_queryType != "all");
     topSel->getChildByID("on-sprite")->setVisible(m_layer->m_queryType == "top");
     topSel->getChildByID("off-sprite")->setVisible(m_layer->m_queryType != "top");
     recentSel->getChildByID("on-sprite")->setVisible(m_layer->m_queryType == "recent");
     recentSel->getChildByID("off-sprite")->setVisible(m_layer->m_queryType != "recent");
-    m_query->setVisible(m_layer->m_queryType == "all");
 
     changed = true;
   }
@@ -141,6 +114,12 @@ public:
 
     delete ret;
     return nullptr;
+  }
+
+  void resetSearch(CCObject *sender) {
+    m_query->setString("");
+    m_layer->m_search = "";
+    changed = true;
   }
 };
 
@@ -319,6 +298,7 @@ bool GDPSHubLayer::init() {
   scrollBg2->setContentSize({400, 260});
   scrollBg2->ignoreAnchorPointForPosition(false);
   scrollBg2->setID("server-scroll-bg");
+  addChildAtPosition(scrollBg2, Anchor::Center);
 
   m_serverList = CCClippingNode::create();
   m_serverList->setID("server-list");
@@ -331,7 +311,6 @@ bool GDPSHubLayer::init() {
   m_scroll->ignoreAnchorPointForPosition(false);
   m_serverList->addChildAtPosition(m_scroll, Anchor::Center, {-5, 0});
   m_serverList->addChildAtPosition(scrollBg, Anchor::Center);
-  m_serverList->addChildAtPosition(scrollBg2, Anchor::Center);
   addChildAtPosition(m_serverList, Anchor::Center, {0, 0});
 
   m_scrollbar = Scrollbar::create(m_scroll);
