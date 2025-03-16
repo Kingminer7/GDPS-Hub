@@ -73,7 +73,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     name->setID("name");
     addChildAtPosition(name, Anchor::Left, {75,25});
 
-    auto author = CCLabelBMFont::create(fmt::format("By {}",entry.owner).c_str(), "bigFont.fnt");
+    auto author = CCLabelBMFont::create(fmt::format("By {}",entry.owner).c_str(), "goldFont.fnt");
     author->setAnchorPoint({0, 0.5});
     author->limitLabelWidth(150, .4f, 0.1f);
     author->setID("author");
