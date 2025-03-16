@@ -2,9 +2,10 @@
 
 ## Now
 - [ ] Remove description parsing stuff
+- [ ] Possibly update endpoints used
+- [ ] Make sure server is updated for search + desc changes
 
-## Future
+## Possible for future
 
-- [ ] Save level progress?
-- [ ] Endpoint checking
-- [ ] Level save only for server
+- [ ] Endpoint checking?
+- [ ] Level save only for server?
