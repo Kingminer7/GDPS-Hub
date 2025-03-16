@@ -23,7 +23,6 @@ protected:
     m_bgSprite->setContentSize(contentSize);
     setID("search-popup"_spr);
     m_title->setID("title");
-    m_title->setPositionY(135);
     m_buttonMenu->setID("back-menu");
     m_closeBtn->setID("close-btn");
     m_mainLayer->setID("main-layer");
@@ -31,7 +30,7 @@ protected:
     m_layer = layer;
 
     auto menu = CCMenu::create();
-    menu->setContentSize({250, 150});
+    menu->setContentSize({250, 125});
     menu->setID("button-layer");
 
     // Top Selection
@@ -46,12 +45,12 @@ protected:
     topSel->setID("top");
     topSel->m_baseScale = 0.75f;
     topSel->setScale(0.75f);
-    menu->addChildAtPosition(topSel, Anchor::Left, {25, 35});
+    menu->addChildAtPosition(topSel, Anchor::Left, {25, 20});
     auto topLab = CCLabelBMFont::create("Top Servers","bigFont.fnt");
     topLab->setAnchorPoint({ 0, 0.5 });
     topLab->setScale(0.575);
     topLab->setID("top-label");
-    menu->addChildAtPosition(topLab, Anchor::Left, {40, 35});
+    menu->addChildAtPosition(topLab, Anchor::Left, {40, 20});
 
     // Recent Selection
     CCSprite *recentOn = CCSprite::createWithSpriteFrameName("GJ_checkOn_001.png");
@@ -65,12 +64,12 @@ protected:
     recentSel->setID("recent");
     recentSel->m_baseScale = 0.75f;
     recentSel->setScale(0.75f);
-    menu->addChildAtPosition(recentSel, Anchor::Left, {25, 8});
+    menu->addChildAtPosition(recentSel, Anchor::Left, {25, -8});
     auto recentLab = CCLabelBMFont::create("Recently Added","bigFont.fnt");
     recentLab->setAnchorPoint({ 0, 0.5 });
     recentLab->setScale(0.575);
     recentLab->setID("recent-label");
-    menu->addChildAtPosition(recentLab, Anchor::Left, {40, 8});
+    menu->addChildAtPosition(recentLab, Anchor::Left, {40, -8});
 
     // Search Box
     m_query = TextInput::create(205.f, "Search");
@@ -115,7 +114,7 @@ protected:
 public:
   static PSSearchPopup *create(GDPSHubLayer *layer) {
     auto ret = new PSSearchPopup();
-    if (ret->initAnchored(250.f, 150.f, layer)) {
+    if (ret->initAnchored(250.f, 125.f, layer)) {
       ret->autorelease();
       return ret;
     }
@@ -358,7 +357,7 @@ bool GDPSHubLayer::init() {
       leftArrowSpr, this, menu_selector(GDPSHubLayer::onLeftArrow));
   m_leftArrow->setVisible(false);
   m_leftArrow->setID("left-btn");
-  menu->addChildAtPosition(m_leftArrow, Anchor::Left, {25.f, 0});
+  menu->addChildAtPosition(m_leftArrow, Anchor::Left, {25.f, -(m_header->getScaledContentHeight()-10.f)});
 
   auto rightArrowSpr =
       CCSprite::createWithSpriteFrameName("GJ_arrow_03_001.png");
@@ -367,7 +366,7 @@ bool GDPSHubLayer::init() {
       rightArrowSpr, this, menu_selector(GDPSHubLayer::onRightArrow));
   m_rightArrow->setVisible(false);
   m_rightArrow->setID("right-btn");
-  menu->addChildAtPosition(m_rightArrow, Anchor::Right, {-25.f, 0});
+  menu->addChildAtPosition(m_rightArrow, Anchor::Right, {-25.f, -(m_header->getScaledContentHeight()-10.f)});
 
   if (GDPSHub::get()->servers.size() == 0) {
     fetchServers();

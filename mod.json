@@ -8,7 +8,7 @@
   "version": "v1.0.0",
   "id": "lblazen.gdps_hub",
   "name": "GDPS Hub",
-  "developers": ["GDPS Hub Team", "km7dev"],
+  "developers": ["GDPS Hub Team", "km7dev", "cdc"],
   "description": "Preview private servers from GDPS Hub",
   "tags": ["online", "content"],
   "links": {

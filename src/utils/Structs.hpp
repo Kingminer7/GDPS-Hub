@@ -35,14 +35,14 @@ struct matjson::Serialize<Server>
     {
         Server server = Server();
         server.id = value["id"].asInt().unwrapOrDefault();
-        server.title = value["title"].asString().unwrapOr("No title provided");
-        server.owner = value["owner"].asString().unwrapOr("No owner provided");
+        server.title = value["title"].asString().unwrapOr("Unknown");
+        server.owner = value["owner"].asString().unwrapOr("Unknown");
         server.description = value["description"].asString().unwrapOr("No description provided.");
-        server.url = value["gdpsdb"].asString().unwrapOr("No URL provided.");
-        server.pfp = value["pfp"].asString().unwrapOr("No PFP provided");
-        server.banner = value["banner"].asString().unwrapOr("none");
-        server.dcUrl = value["discord_url"].asString().unwrapOr("No discord provided.");
-        server.toolsUrl = value["toolpage"].asString().unwrapOr("No toolpage provided.");
+        server.url = value["gdpsdb"].asString().unwrapOr("");
+        server.pfp = value["pfp"].asString().unwrapOr("");
+        server.banner = value["banner"].asString().unwrapOr("");
+        server.dcUrl = value["discord_url"].asString().unwrapOr("");
+        server.toolsUrl = value["toolpage"].asString().unwrapOr("");
         server.views = value["views"].asInt().unwrapOrDefault();
         server.rating = value["rating"].asInt().unwrapOrDefault();
         server.likes = value["likes"].asInt().unwrapOrDefault();

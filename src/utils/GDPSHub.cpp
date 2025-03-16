@@ -105,6 +105,9 @@ void GDPSHub::restoreInfo(bool saveDummyInfo) {
 
 void GDPSHub::beginPreview(Server server) {
   if (this->serverId != -1) return;
+  if (server.url.empty()) {
+    return FLAlertLayer::create("Error", "This server did not provide a URL.", "OK")->show();
+  }
   this->server = &server;
   this->serverId = ServerAPIEvents::registerServer(server.url, 5).id;
   if (!this->overriding) {
