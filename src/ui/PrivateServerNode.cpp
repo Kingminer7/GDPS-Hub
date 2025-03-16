@@ -67,9 +67,9 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     icon->setID("server-icon");
     addChildAtPosition(icon, Anchor::Left, {40, 0});
 
-    auto name = CCLabelBMFont::create(entry.title.c_str(), "goldFont.fnt");
+    auto name = CCLabelBMFont::create(entry.title.c_str(), "bigFont.fnt");
     name->setAnchorPoint({0, 0.5});
-    name->limitLabelWidth(150, .9f, 0.1f);
+    name->limitLabelWidth(150, .5f, 0.1f);
     name->setID("name");
     addChildAtPosition(name, Anchor::Left, {75,25});
 
@@ -90,8 +90,9 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
 
 
     auto descStr = removeMarkdown(entry.description);
-    if (descStr.size() > 150) {
-        descStr = descStr.substr(0, 150) + "...";
+	// 150 => 200 (increased to account for text size change)
+    if (descStr.size() > 200) {
+        descStr = descStr.substr(0, 200) + "...";
     }
     std::transform(descStr.begin(), descStr.end(), descStr.begin(), [&](char c) {
         return (c<0) ? ' ' : c;
@@ -107,8 +108,8 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     descBg->setAnchorPoint({0, 1});
     addChildAtPosition(descBg, Anchor::Left, {75, 12.5});
 
-    auto desc = TextArea::create(descStr, "chatFont.fnt", .7, 180, {0, 1}, 10, false);
-    desc->setContentSize({180, desc->getContentHeight()});
+    auto desc = TextArea::create(descStr, "chatFont.fnt", .6, 180, {0, 1}, 10, false);
+    desc->setContentSize({207, desc->getContentHeight()});
     desc->setAnchorPoint({0, 1});
     desc->setID("description");
 
@@ -131,8 +132,8 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     menu->setPosition(size.width * .8 + 8, 0);
     menu->setID("menu");
 
-    auto spr = ButtonSprite::create("View");
-    spr->updateBGImage("geode.loader/GE_button_05.png");
+    auto spr = ButtonSprite::create("View","bigFont.fnt","geode.loader/GE_button_05.png",.8f);
+    //spr->updateBGImage("geode.loader/GE_button_05.png");
     spr->setScale(0.8f);
     auto viewBtn = CCMenuItemSpriteExtra::create(spr,
         this,
