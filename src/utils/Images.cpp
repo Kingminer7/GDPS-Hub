@@ -49,10 +49,25 @@ void IconNode::setupSprite(CCImage *image) {
     m_sprite = CCSprite::createWithTexture(texture);
     texture->release();
     float imgScale = 50 / m_sprite->getContentHeight();
-    m_sprite->setScale(imgScale);
-    m_sprite->setScaleX(m_sprite->getContentHeight() / m_sprite->getContentWidth() * imgScale);
+    if (!isBanner) {
+    	m_sprite->setScale(imgScale);
+        m_sprite->setScaleX(m_sprite->getContentHeight() / m_sprite->getContentWidth() * imgScale);
+		/*auto bgSprite = CCScale9Sprite::create("square02b_001.png");
+		bgSprite->setScale(0.5f);
+		bgSprite->setContentSize({100,100});
+		bgSprite->setColor({0,0,0});
+		bgSprite->setOpacity(90.f);
+		addChildAtPosition(bgSprite,Anchor::Center);*/
+		addChildAtPosition(m_sprite,Anchor::Center);
+
+	} else {
+		m_sprite->setScale(this->getContentWidth()/m_sprite->getContentWidth());
+		m_sprite->setOpacity(90.f);
+		addChildAtPosition(m_sprite,Anchor::Center);
+		
+	}
     m_sprite->setID("ps-logo");
-    addChildAtPosition(m_sprite, Anchor::Center);
+    //addChildAtPosition(m_sprite, Anchor::Center);
 }
 
 void IconNode::downloadImage(std::string id, std::string url) {
@@ -103,7 +118,8 @@ void IconNode::downloadImage(std::string id, std::string url) {
 bool IconNode::init(std::string id, std::string url) {
     if (!CCNode::init()) return false;
     ignoreAnchorPointForPosition(false);
-    setContentSize({50.f, 50.f});
+    if (isBanner) setContentSize({365.f,80.f});
+    else setContentSize({50.f, 50.f});
     if (auto image = ImageCache::get()->getImage(id)) {
       setupSprite(image);
     } else {
@@ -113,14 +129,16 @@ bool IconNode::init(std::string id, std::string url) {
       m_loadingWheel->setPosition({25.f, 25.f});
       m_loadingWheel->setParentLayer(this);
       m_loadingWheel->show();
+      if (isBanner) m_loadingWheel->setVisible(false);
       m_loadingWheel->setID("loading-circle");
       downloadImage(id, url);
     }
     return true;
 }
 
-IconNode *IconNode::create(std::string id, std::string url) {
+IconNode *IconNode::create(std::string id, std::string url,bool isBanner) {
     auto node = new IconNode();
+    node->isBanner = isBanner;
     if (node && node->init(id, url)) {
         node->autorelease();
         return node;

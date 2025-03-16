@@ -10,6 +10,7 @@ struct Server{
     std::string description;
     std::string url;
     std::string pfp;
+    std::string banner;
     std::string dcUrl;
     std::string toolsUrl;
     int views;
@@ -39,6 +40,7 @@ struct matjson::Serialize<Server>
         server.description = value["description"].asString().unwrapOr("No description provided.");
         server.url = value["gdpsdb"].asString().unwrapOr("No URL provided.");
         server.pfp = value["pfp"].asString().unwrapOr("No PFP provided");
+        server.banner = value["banner"].asString().unwrapOr("none");
         server.dcUrl = value["discord_url"].asString().unwrapOr("No discord provided.");
         server.toolsUrl = value["toolpage"].asString().unwrapOr("No toolpage provided.");
         server.views = value["views"].asInt().unwrapOrDefault();

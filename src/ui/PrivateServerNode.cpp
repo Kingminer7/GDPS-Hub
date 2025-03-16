@@ -61,7 +61,21 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     bg->setContentSize(size);
     bg->setID("server-node-bg");
     addChildAtPosition(bg, Anchor::Center);
-
+	if (server.banner != "none"){
+    	auto banner = IconNode::create(fmt::format("server-banner-{}",server.id),server.banner,true);
+    	banner->setAnchorPoint({0.5,0.5});
+    	//banner->setScale(size.width/banner->getContentWidth());
+    	//banner->setPosition(size.width/2,size.height/2);
+		//banner->setOpacity(90);
+		auto bannerClip = CCClippingNode::create();
+		bannerClip->setStencil(bg);
+		bannerClip->setAlphaThreshold(0.05f);
+		bannerClip->setContentSize(size);
+		bannerClip->setAnchorPoint({0.5,0.5});
+		bannerClip->addChildAtPosition(banner,Anchor::Center);
+		addChildAtPosition(bannerClip,Anchor::Center);
+	}
+	
     auto icon = IconNode::create(fmt::format("server-icon-{}", server.id), server.pfp);
     icon->setScale(1.125f);
     icon->setID("server-icon");
