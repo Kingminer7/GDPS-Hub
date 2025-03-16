@@ -94,7 +94,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
         descStr = descStr.substr(0, 150) + "...";
     }
     std::transform(descStr.begin(), descStr.end(), descStr.begin(), [&](char c) {
-        return (c < 0) ? ' ' : c;
+        return (c<0) ? ' ' : c;
     });
 
     // transparent black

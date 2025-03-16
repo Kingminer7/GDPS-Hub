@@ -128,6 +128,7 @@ bool PrivateServerPopup::setup(Server server) {
   auto viewBtn = CCMenuItemSpriteExtra::create(
       ButtonSprite::create("Play"), this,
       menu_selector(PrivateServerPopup::viewServer));
+  static_cast<ButtonSprite*>(viewBtn->getNormalImage())->updateBGImage("geode.loader/GE_button_05.png");
   viewBtn->setPosition({175, 26});
   viewBtn->setID("view-button");
   if (server.url == "No URL provided.") {
@@ -140,6 +141,7 @@ bool PrivateServerPopup::setup(Server server) {
   auto saveBtn = CCMenuItemSpriteExtra::create(
       ButtonSprite::create("Save"), this,
       menu_selector(PrivateServerPopup::saveServer));
+  static_cast<ButtonSprite*>(saveBtn->getNormalImage())->updateBGImage("geode.loader/GE_button_05.png");
   saveBtn->setPosition({265, 26});
   saveBtn->setID("save-button");
   menu->addChild(saveBtn);
