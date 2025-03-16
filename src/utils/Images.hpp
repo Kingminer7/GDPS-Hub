@@ -29,7 +29,7 @@ class IconNode : public CCLayer {
         LoadingCircle *m_loadingWheel = nullptr;
         CCSprite *m_sprite = nullptr;
         CCLabelBMFont *m_naLabel = nullptr;
-
+		bool isBanner=false;
         EventListener<web::WebTask> m_downloadListener;
         std::mutex m_mutex;
 
@@ -40,5 +40,5 @@ class IconNode : public CCLayer {
         /**
         * @brief Creating without a URL just loads from cache, or N/A if not in cache.
         */
-        static IconNode *create(std::string id, std::string url = "");
+        static IconNode *create(std::string id, std::string url = "",bool isBanner=false);
 };
