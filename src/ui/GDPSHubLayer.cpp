@@ -18,6 +18,9 @@ protected:
   bool changed = false;
   bool setup(GDPSHubLayer *layer) override {
     setTitle("Query Options");
+    auto contentSize = m_bgSprite->getContentSize();
+    m_bgSprite->setSpriteFrame(CCSprite::create("geode.loader/GE_square03.png")->displayFrame());
+    m_bgSprite->setContentSize(contentSize);
     setID("search-popup"_spr);
     m_title->setID("title");
     m_title->setPositionY(135);
@@ -306,7 +309,7 @@ bool GDPSHubLayer::init() {
   scrollBg->ignoreAnchorPointForPosition(false);
   scrollBg->setID("server-scroll-bg");
 
-  auto scrollBg2 = CCScale9Sprite::create("GJ_square02.png", {0, 0, 80, 80});
+  auto scrollBg2 = CCScale9Sprite::create("geode.loader/GE_square02.png", {0, 0, 80, 80});
   scrollBg2->setContentSize({400, 260});
   scrollBg2->ignoreAnchorPointForPosition(false);
   scrollBg2->setID("server-scroll-bg");
