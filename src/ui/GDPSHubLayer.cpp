@@ -184,6 +184,7 @@ bool GDPSHubLayer::init() {
     swelveLayer->setAnchorPoint({0.5,0});
     swelveLayer->setColor({layer.first.r,layer.first.g,layer.first.b});
     swelveLayer->setOpacity(layer.first.a);
+    swelveLayer->setID(fmt::format("swelve-layer-{}",layerIndex-1));
     if (layerIndex < 4){
       swelveLayer->setScale(0.675f);
       swelveLayer->setPosition({0, -(winSize.height/2+60-2*(layerIndex-1))});
@@ -288,7 +289,8 @@ bool GDPSHubLayer::init() {
 
   bottomGlow->runAction(CCRepeatForever::create(action));
   topGlow->runAction(CCRepeatForever::create(actionInverted));
-
+  bottomGlow->setID("bottom-glow");
+  topGlow->setID("top-glow");
 
   auto menu = CCMenu::create();
   menu->setID("main-menu");
