@@ -69,16 +69,24 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
 
     auto name = CCLabelBMFont::create(entry.title.c_str(), "goldFont.fnt");
     name->setAnchorPoint({0, 0.5});
-    name->limitLabelWidth(210, .9f, 0.1f);
+    name->limitLabelWidth(150, .9f, 0.1f);
     name->setID("name");
     addChildAtPosition(name, Anchor::Left, {75,25});
 
-    // auto idLab = CCLabelBMFont::create(fmt::format("id {}", entry.id).c_str(), "chatFont.fnt");
-    // idLab->setPosition(12 + name->getContentWidth() * name->getScaleX(), getContentHeight() - 15.f);
-    // idLab->setAnchorPoint({0, 0.5});
-    // idLab->limitLabelWidth(64, 0.5f, 0.1f);
-    // idLab->setID("id");
-    // addChild(idLab);
+    auto author = CCLabelBMFont::create(fmt::format("By {}",entry.owner).c_str(), "goldFont.fnt");
+    author->setAnchorPoint({0, 0.5});
+    author->limitLabelWidth(150, .4f, 0.1f);
+    author->setID("author");
+    addChildAtPosition(author, Anchor::Left, {80+name->getScaledContentWidth(),25});
+
+    auto idLab = CCLabelBMFont::create(fmt::format("#{}", entry.id).c_str(), "chatFont.fnt");
+    idLab->setPosition(ccp(bg->getContentWidth()-5.f, 5.f));
+    idLab->setAnchorPoint({1, 0.5});
+    idLab->setOpacity(100);
+    idLab->limitLabelWidth(64, 0.5f, 0.1f);
+    idLab->setID("id");
+    idLab->setAlignment(CCTextAlignment::kCCTextAlignmentRight);
+    addChild(idLab);
 
 
     auto descStr = removeMarkdown(entry.description);
@@ -86,9 +94,18 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
         descStr = descStr.substr(0, 150) + "...";
     }
     std::transform(descStr.begin(), descStr.end(), descStr.begin(), [&](char c) {
-        return (c < 0) ? '?' : c;
+        return (c < 0) ? ' ' : c;
     });
 
+    // transparent black
+    auto descBg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
+    descBg->setColor({0, 0, 0});
+    descBg->setOpacity(90);
+    descBg->setScale(0.5f);
+    descBg->setContentSize({410, 90});
+    descBg->setID("description-bg");
+    descBg->setAnchorPoint({0, 1});
+    addChildAtPosition(descBg, Anchor::Left, {75, 12.5});
 
     auto desc = TextArea::create(descStr, "chatFont.fnt", .7, 180, {0, 1}, 10, false);
     desc->setContentSize({180, desc->getContentHeight()});
@@ -109,35 +126,36 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
 
     addChildAtPosition(clip, Anchor::Left, {77.5, 10});
 
-    // auto menu = CCMenu::create();
-    // menu->setContentSize(ccp(size.width * .2 - 16, size.height));
-    // menu->setPosition(size.width * .8 + 8, 0);
-    // menu->setID("menu");
+    auto menu = CCMenu::create();
+    menu->setContentSize(ccp(size.width * .2 - 16, size.height));
+    menu->setPosition(size.width * .8 + 8, 0);
+    menu->setID("menu");
 
-    // auto spr = CCSprite::createWithSpriteFrameName("GJ_playBtn2_001.png");
-    // spr->setScale(.7f);
-    // auto viewBtn = CCMenuItemSpriteExtra::create(spr,
-    //     this,
-    //     menu_selector(PrivateServerNode::viewServer));
-    // viewBtn->setPosition(ccp(menu->getContentWidth() - 28.f, menu->getContentHeight() / 2));
-    // if (server.url == "No URL provided.") {
-    //     viewBtn->setEnabled(false);
-    //     viewBtn->setColor({100, 100, 100});
-    //     viewBtn->setOpacity(100);
-    // }
-    // viewBtn->setID("view-btn");
-    // menu->addChild(viewBtn);
+    auto spr = ButtonSprite::create("View");
+    spr->updateBGImage("geode.loader/GE_button_05.png");
+    spr->setScale(0.8f);
+    auto viewBtn = CCMenuItemSpriteExtra::create(spr,
+        this,
+        menu_selector(PrivateServerNode::viewServer));
+    viewBtn->setPosition(ccp(menu->getContentWidth()-36.f, menu->getContentHeight() / 2));
+    if (server.url == "No URL provided.") {
+        viewBtn->setEnabled(false);
+        viewBtn->setColor({100, 100, 100});
+        viewBtn->setOpacity(100);
+    }
+    viewBtn->setID("view-btn");
+    menu->addChild(viewBtn);
 
-    // spr = CircleButtonSprite::createWithSpriteFrameName("info.png"_spr, 1.5, CircleBaseColor::Green, CircleBaseSize::Large);
-    // spr->setScale(0.7f);
-    // auto infoBtn = CCMenuItemSpriteExtra::create(spr,
-    //     this,
-    //     menu_selector(PrivateServerNode::openPopup));
-    // infoBtn->setPosition(ccp(menu->getContentWidth() - 88.f, menu->getContentHeight() / 2));
-    // infoBtn->setID("info-btn");
-    // menu->addChild(infoBtn);
+    auto infoSpr = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
+    infoSpr->setScale(0.7f);
+    auto infoBtn = CCMenuItemSpriteExtra::create(infoSpr,
+        this,
+        menu_selector(PrivateServerNode::openPopup));
+    infoBtn->setPosition(ccp(menu->getContentWidth()-5.f, menu->getContentHeight()-13.f));
+    infoBtn->setID("info-btn");
+    menu->addChild(infoBtn);
 
-    // addChild(menu);
+    addChild(menu);
 
     return true;
 }

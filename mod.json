@@ -26,7 +26,8 @@
         "resources/sprites/gdps_hub.png",
         "resources/sprites/gdpsHubBtn.png",
         "resources/sprites/gdpsToolsBtn.png",
-        "resources/sprites/info.png"
+        "resources/sprites/info.png",
+        "resources/sprites/preview.png"
       ]
     },
     "sprites": [
