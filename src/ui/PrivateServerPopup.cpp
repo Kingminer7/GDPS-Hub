@@ -13,14 +13,15 @@ bool PrivateServerPopup::setup(Server server) {
   this->m_closeBtn->setID("back-button");
   this->m_server = server;
   setTitle(server.title);
+  m_title->setFntFile("bigFont.fnt");
   m_title->setPosition(80, 254);
   m_title->setAnchorPoint({0, 0.5});
-  m_title->limitLabelWidth(173, 0.9, 0.1);
+  m_title->limitLabelWidth(150, 0.7, 0.1);
   m_title->setID("server-name");
   setColor({ 0, 0, 0 });
 
   auto author = CCLabelBMFont::create(
-      fmt::format("by {}", server.owner).c_str(), "bigFont.fnt");
+      fmt::format("by {}", server.owner).c_str(), "goldFont.fnt");
   author->setPosition(80, 235);
   author->limitLabelWidth(173, 0.5, 0.05);
   author->setAnchorPoint({0, 0.5});

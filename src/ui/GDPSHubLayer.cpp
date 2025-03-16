@@ -453,7 +453,7 @@ void GDPSHubLayer::fetchServers() {
       auto data = opt.unwrapOr("err");
       if (data == "err") {
         log::info("{}", err);
-        m_infoLabel->setString("Failed to fetch servers.");
+        m_infoLabel->setString("Something went wrong.");
         m_pages = 0;
         m_fetching = false;
         m_loadingCircle->fadeAndRemove();
@@ -470,7 +470,7 @@ void GDPSHubLayer::fetchServers() {
           }
         }
         else
-          m_infoLabel->setString("Failed to fetch servers.");
+          m_infoLabel->setString("Something went wrong.");
         m_pages = 0;
         m_fetching = false;
         m_loadingCircle->fadeAndRemove();
