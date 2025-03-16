@@ -11,7 +11,7 @@ class $modify(menuLayer, MenuLayer) {
 		}
 
 		auto gdpsHubBtn = CCMenuItemSpriteExtra::create(
-			CircleButtonSprite::createWithSpriteFrameName("gdps_hub.png"_spr, .8, CircleBaseColor::Blue, CircleBaseSize::MediumAlt),
+			CircleButtonSprite::createWithSpriteFrameName("gdps_hub.png"_spr, .9, CircleBaseColor::Blue, CircleBaseSize::MediumAlt),
 			this,
 			menu_selector(menuLayer::onGdpsHub)
 		);
