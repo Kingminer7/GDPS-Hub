@@ -6,6 +6,9 @@
 bool PrivateServerPopup::setup(Server server) {
   setID("ps-popup"_spr);
   this->m_bgSprite->setID("background");
+  auto contentSize = this->m_bgSprite->getContentSize();
+  this->m_bgSprite->setSpriteFrame(CCSprite::create("geode.loader/GE_square03.png")->displayFrame());
+  this->m_bgSprite->setContentSize(contentSize);
   this->m_buttonMenu->setID("back-menu");
   this->m_closeBtn->setID("back-button");
   this->m_server = server;
@@ -14,7 +17,7 @@ bool PrivateServerPopup::setup(Server server) {
   m_title->setAnchorPoint({0, 0.5});
   m_title->limitLabelWidth(173, 0.9, 0.1);
   m_title->setID("server-name");
-  setColor({14, 55, 190});
+  setColor({ 0, 0, 0 });
 
   auto author = CCLabelBMFont::create(
       fmt::format("by {}", server.owner).c_str(), "bigFont.fnt");
