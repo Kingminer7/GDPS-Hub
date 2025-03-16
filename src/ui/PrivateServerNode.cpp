@@ -61,7 +61,7 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     bg->setContentSize(size);
     bg->setID("server-node-bg");
     addChildAtPosition(bg, Anchor::Center);
-	if (server.banner != "none"){
+	if (server.banner != ""){
     	auto banner = IconNode::create(fmt::format("server-banner-{}",server.id),server.banner,true);
     	banner->setAnchorPoint({0.5,0.5});
     	//banner->setScale(size.width/banner->getContentWidth());

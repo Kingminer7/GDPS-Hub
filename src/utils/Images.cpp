@@ -5,6 +5,9 @@
 ImageCache *ImageCache::m_instance = nullptr;
 
 CCImage *ImageCache::getImage(std::string id) {
+  if (!m_cache->objectForKey(id)) {
+    log::info("{} is not cached...", id);
+  }
   return static_cast<CCImage*>(m_cache->objectForKey(id));
 }
 
@@ -81,6 +84,7 @@ void IconNode::downloadImage(std::string id, std::string url) {
         m_naLabel->setAnchorPoint({0.5, 0.5});
         m_naLabel->setOpacity(150);
         m_naLabel->setID("no-icon");
+        m_naLabel->setVisible(isBanner);
         addChildAtPosition(m_naLabel, Anchor::Center);
         if (m_loadingWheel) m_loadingWheel->fadeAndRemove();
         release();
@@ -117,12 +121,23 @@ void IconNode::downloadImage(std::string id, std::string url) {
 
 bool IconNode::init(std::string id, std::string url) {
     if (!CCNode::init()) return false;
+    log::info("{}", url);
     ignoreAnchorPointForPosition(false);
     if (isBanner) setContentSize({365.f,80.f});
     else setContentSize({50.f, 50.f});
     if (auto image = ImageCache::get()->getImage(id)) {
       setupSprite(image);
     } else {
+      if (url.empty()) {
+        m_naLabel = CCLabelBMFont::create("N/A", "bigFont.fnt");
+        m_naLabel->setScale(0.82f);
+        m_naLabel->setAnchorPoint({0.5, 0.5});
+        m_naLabel->setOpacity(150);
+        m_naLabel->setID("no-icon");
+        m_naLabel->setVisible(isBanner);
+        addChildAtPosition(m_naLabel, Anchor::Center);
+        return true;
+      }
       m_loadingWheel = LoadingCircle::create();
       m_loadingWheel->ignoreAnchorPointForPosition(false);
       m_loadingWheel->setScale(0.75f);

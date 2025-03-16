@@ -21,7 +21,7 @@ bool PrivateServerPopup::setup(Server server) {
   setColor({ 0, 0, 0 });
 
   auto author = CCLabelBMFont::create(
-      fmt::format("by {}", server.owner).c_str(), "goldFont.fnt");
+      fmt::format("By {}", server.owner).c_str(), "goldFont.fnt");
   author->setPosition(80, 235);
   author->limitLabelWidth(173, 0.5, 0.05);
   author->setAnchorPoint({0, 0.5});
@@ -105,12 +105,14 @@ bool PrivateServerPopup::setup(Server server) {
   ratingn->setID("rating-label");
   infoBox->addChild(ratingn);
 
-  auto discordBtn = CCMenuItemSpriteExtra::create(
-      CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"), this,
-      menu_selector(PrivateServerPopup::onDiscord));
-  discordBtn->setPosition(420, 22);
-  discordBtn->setID("discord-button");
-  menu->addChild(discordBtn);
+  if (server.dcUrl != "") {
+    auto discordBtn = CCMenuItemSpriteExtra::create(
+        CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"), this,
+        menu_selector(PrivateServerPopup::onDiscord));
+    discordBtn->setPosition(420, 22);
+    discordBtn->setID("discord-button");
+    menu->addChild(discordBtn);
+  }
 
   auto webBtn = CCMenuItemSpriteExtra::create(
       CCSprite::createWithSpriteFrameName("gdpsHubBtn.png"_spr), this,
@@ -119,12 +121,14 @@ bool PrivateServerPopup::setup(Server server) {
   webBtn->setID("web-button");
   menu->addChild(webBtn);
 
-  auto toolBtn = CCMenuItemSpriteExtra::create(
+  if (server.toolsUrl != "") {
+    auto toolBtn = CCMenuItemSpriteExtra::create(
       CCSprite::createWithSpriteFrameName("gdpsToolsBtn.png"_spr), this,
       menu_selector(PrivateServerPopup::onTools));
   toolBtn->setPosition(350, 22);
   toolBtn->setID("tools-button");
   menu->addChild(toolBtn);
+  }
 
   auto viewBtn = CCMenuItemSpriteExtra::create(
       ButtonSprite::create("Play"), this,
@@ -156,7 +160,7 @@ bool PrivateServerPopup::setup(Server server) {
   m_mainLayer->addChild(menu);
   m_mainLayer->setID("main-layer");
 
-  auto icon = IconNode::create(fmt::format("{}", server.id), server.pfp);
+  auto icon = IconNode::create(fmt::format("server-icon-{}", server.id), server.pfp);
   icon->setPosition({47, 245});
   icon->setID("server-icon");
   m_mainLayer->addChild(icon);
