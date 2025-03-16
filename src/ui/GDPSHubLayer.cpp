@@ -301,6 +301,12 @@ bool GDPSHubLayer::init() {
   backBtn->setID("back-button");
   menu->addChildAtPosition(backBtn, Anchor::TopLeft, {25.f, -25.f});
 
+  auto header = CCSprite::create("gdpshub-header.png"_spr);
+  header->setScale(0.5f);
+  header->setID("header"_spr);
+  header->setAnchorPoint({0.5f,0.f});
+  addChildAtPosition(header, Anchor::Top,{0,-(header->getScaledContentHeight()+10.f)});
+
   auto scrollBg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
   scrollBg->setColor({0, 0, 0});
   scrollBg->setOpacity(90);
@@ -309,11 +315,11 @@ bool GDPSHubLayer::init() {
   scrollBg->ignoreAnchorPointForPosition(false);
   scrollBg->setID("server-scroll-bg");
 
-  auto scrollBg2 = CCScale9Sprite::create("geode.loader/GE_square02.png", {0, 0, 80, 80});
+  auto scrollBg2 = CCScale9Sprite::create("GH_square01.png"_spr, {0, 0, 80, 80});
   scrollBg2->setContentSize({400, 260});
   scrollBg2->ignoreAnchorPointForPosition(false);
   scrollBg2->setID("server-scroll-bg");
-  addChildAtPosition(scrollBg2, Anchor::Center);
+  addChildAtPosition(scrollBg2, Anchor::Center,{0,-(header->getScaledContentHeight()-10.f)});
 
   m_serverList = CCClippingNode::create();
   m_serverList->setID("server-list");
@@ -326,7 +332,7 @@ bool GDPSHubLayer::init() {
   m_scroll->ignoreAnchorPointForPosition(false);
   m_serverList->addChildAtPosition(m_scroll, Anchor::Center, {-5, 0});
   m_serverList->addChildAtPosition(scrollBg, Anchor::Center);
-  addChildAtPosition(m_serverList, Anchor::Center, {0, 0});
+  addChildAtPosition(m_serverList, Anchor::Center, {0, -(header->getScaledContentHeight()-10.f)});
 
   m_scrollbar = Scrollbar::create(m_scroll);
   m_scrollbar->setID("scrollbar");
