@@ -70,11 +70,11 @@ protected:
     menu->addChildAtPosition(recentLab, Anchor::Left, {40, 8});
 
     // Search Box
-    m_query = TextInput::create(200.f, "Search");
+    m_query = TextInput::create(205.f, "Search");
     m_query->setScale(.85); 
     m_query->setString(m_layer->m_search);
     m_query->setID("search-box");
-    menu->addChildAtPosition(m_query, Anchor::BottomLeft, {100 , 25});
+    menu->addChildAtPosition(m_query, Anchor::BottomLeft, {102.5 , 25});
     m_query->getInputNode()->setAllowedChars("`1234567890-=qwertyuiop[]\\asdfghjkl;'cxzvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>? ");
     m_query->setCallback([this](const std::string& str){
       m_layer->m_search = str;
