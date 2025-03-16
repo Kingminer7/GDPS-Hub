@@ -303,11 +303,11 @@ bool GDPSHubLayer::init() {
   backBtn->setID("back-button");
   menu->addChildAtPosition(backBtn, Anchor::TopLeft, {25.f, -25.f});
 
-  auto header = CCSprite::create("gdpshub-header.png"_spr);
-  header->setScale(0.5f);
-  header->setID("header"_spr);
-  header->setAnchorPoint({0.5f,0.f});
-  addChildAtPosition(header, Anchor::Top,{0,-(header->getScaledContentHeight()+10.f)});
+  m_header = CCSprite::create("gdpshub-header.png"_spr);
+  m_header->setScale(0.5f);
+  m_header->setID("header"_spr);
+  m_header->setAnchorPoint({0.5f,0.f});
+  addChildAtPosition(m_header, Anchor::Top,{0,-(m_header->getScaledContentHeight()+10.f)});
 
   auto scrollBg = CCScale9Sprite::create("square02b_001.png", {0, 0, 80, 80});
   scrollBg->setColor({0, 0, 0});
@@ -321,7 +321,7 @@ bool GDPSHubLayer::init() {
   scrollBg2->setContentSize({400, 260});
   scrollBg2->ignoreAnchorPointForPosition(false);
   scrollBg2->setID("server-scroll-bg");
-  addChildAtPosition(scrollBg2, Anchor::Center,{0,-(header->getScaledContentHeight()-10.f)});
+  addChildAtPosition(scrollBg2, Anchor::Center,{0,-(m_header->getScaledContentHeight()-10.f)});
 
   m_serverList = CCClippingNode::create();
   m_serverList->setID("server-list");
@@ -334,7 +334,7 @@ bool GDPSHubLayer::init() {
   m_scroll->ignoreAnchorPointForPosition(false);
   m_serverList->addChildAtPosition(m_scroll, Anchor::Center, {-5, 0});
   m_serverList->addChildAtPosition(scrollBg, Anchor::Center);
-  addChildAtPosition(m_serverList, Anchor::Center, {0, -(header->getScaledContentHeight()-10.f)});
+  addChildAtPosition(m_serverList, Anchor::Center, {0, -(m_header->getScaledContentHeight()-10.f)});
 
   m_scrollbar = Scrollbar::create(m_scroll);
   m_scrollbar->setID("scrollbar");
@@ -345,7 +345,7 @@ bool GDPSHubLayer::init() {
   m_infoLabel->setID("info-label");
   m_infoLabel->setAnchorPoint({0.5, 0.5});
   m_infoLabel->setScale(0.5);
-  addChildAtPosition(m_infoLabel, Anchor::Center);
+  addChildAtPosition(m_infoLabel, Anchor::Center,{0,-(m_header->getScaledContentHeight()-10.f)});
 
   auto searchBtn = CCMenuItemSpriteExtra::create(CCSprite::createWithSpriteFrameName("gj_findBtn_001.png"), this, menu_selector(GDPSHubLayer::onSearch));
   searchBtn->setID("search-btn");
@@ -440,7 +440,7 @@ void GDPSHubLayer::fetchServers() {
     m_loadingCircle = LoadingCircle::create();
   }
   m_loadingCircle->setParentLayer(this);
-  m_loadingCircle->setPosition({0, 0});
+  m_loadingCircle->setPosition({0, -(m_header->getScaledContentHeight()-10.f)});
   m_loadingCircle->setScale(1.f);
   m_loadingCircle->show();
   m_infoLabel->setString("");

@@ -21,6 +21,7 @@ protected:
     EventListener<web::WebTask> m_listener;
     CCLabelBMFont *m_infoLabel;
     Scrollbar *m_scrollbar;
+    CCSprite* m_header;
     CCMenuItemSpriteExtra *m_leftArrow;
     CCMenuItemSpriteExtra *m_rightArrow;
     bool m_fetching = false;
