@@ -180,6 +180,7 @@ bool GDPSHubLayer::init() {
     swelveLayer->getTexture()->setTexParameters(&params);
     auto rect = swelveLayer->getTextureRect();
     rect.size.width = winSize.width*1.75f;
+    rect.origin.y = rect.origin.y + 1;
     swelveLayer->setTextureRect(rect);
     swelveLayer->setAnchorPoint({0.5,0});
     swelveLayer->setColor({layer.first.r,layer.first.g,layer.first.b});
