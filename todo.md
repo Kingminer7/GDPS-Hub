@@ -3,7 +3,6 @@
 ## Now
 
 - [ ] Remove description parsing stuff
-- [ ] Possibly update endpoints used
 
 ## Possible for future
 
