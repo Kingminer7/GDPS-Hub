@@ -105,14 +105,17 @@ bool PrivateServerPopup::setup(Server server) {
   ratingn->setID("rating-label");
   infoBox->addChild(ratingn);
 
-  if (server.dcUrl != "") {
-    auto discordBtn = CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"), this,
-        menu_selector(PrivateServerPopup::onDiscord));
-    discordBtn->setPosition(420, 22);
-    discordBtn->setID("discord-button");
-    menu->addChild(discordBtn);
+  auto discordBtn = CCMenuItemSpriteExtra::create(
+      CCSprite::createWithSpriteFrameName("gj_discordIcon_001.png"), this,
+      menu_selector(PrivateServerPopup::onDiscord));
+  discordBtn->setPosition(420, 22);
+  discordBtn->setID("discord-button");
+  if (server.dcUrl == "") {
+    discordBtn->setEnabled(false);
+    discordBtn->setColor({100, 100, 100});
+    discordBtn->setOpacity(100);
   }
+  menu->addChild(discordBtn);
 
   auto webBtn = CCMenuItemSpriteExtra::create(
       CCSprite::createWithSpriteFrameName("gdpsHubBtn.png"_spr), this,
@@ -121,15 +124,18 @@ bool PrivateServerPopup::setup(Server server) {
   webBtn->setID("web-button");
   menu->addChild(webBtn);
 
-  if (server.toolsUrl != "") {
-    auto toolBtn = CCMenuItemSpriteExtra::create(
+  auto toolBtn = CCMenuItemSpriteExtra::create(
       CCSprite::createWithSpriteFrameName("gdpsToolsBtn.png"_spr), this,
       menu_selector(PrivateServerPopup::onTools));
   toolBtn->setPosition(350, 22);
   toolBtn->setID("tools-button");
-  menu->addChild(toolBtn);
+  if (server.toolsUrl == "") {
+    toolBtn->setEnabled(false);
+    toolBtn->setColor({100, 100, 100});
+    toolBtn->setOpacity(100);
   }
-
+  menu->addChild(toolBtn);
+  
   auto viewBtn = CCMenuItemSpriteExtra::create(
       ButtonSprite::create("Play"), this,
       menu_selector(PrivateServerPopup::viewServer));
@@ -164,6 +170,8 @@ bool PrivateServerPopup::setup(Server server) {
   icon->setPosition({47, 245});
   icon->setID("server-icon");
   m_mainLayer->addChild(icon);
+
+  log::info("{} {}", server.toolsUrl, server.dcUrl);
 
   return true;
 }
