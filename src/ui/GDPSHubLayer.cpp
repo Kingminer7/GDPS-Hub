@@ -80,6 +80,7 @@ protected:
     m_query->getInputNode()->setAllowedChars("`1234567890-=qwertyuiop[]\\asdfghjkl;'cxzvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>? ");
     m_query->setCallback([this](const std::string& str){
       m_layer->m_search = str;
+      m_layer->m_page = 1;
       changed = true;
     });
 
@@ -126,6 +127,7 @@ public:
   void resetSearch(CCObject *sender) {
     m_query->setString("");
     m_layer->m_search = "";
+    m_layer->m_page = 1;
     changed = true;
   }
 };
