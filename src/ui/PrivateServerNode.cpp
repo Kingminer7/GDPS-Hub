@@ -4,34 +4,6 @@
 #include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
 #include "../utils/Images.hpp"
-#include <regex>
-
-std::string removeMarkdown(const std::string& str) {
-    static const std::vector<std::pair<std::regex, std::string>> patterns = {
-        {std::regex(R"(\*\*(.+?)\*\*)"), "$1"},
-        {std::regex(R"(__(.+?)__)"), "$1"},
-        {std::regex(R"(_(.+?)_)"), "$1"},
-        {std::regex(R"(\*(.+?)\*)"), "$1"},
-        {std::regex(R"(~~(.+?)~~)"), "$1"},
-        {std::regex(R"(`(.+?)`)"), "$1"},
-        {std::regex(R"(```[\s\S]*?```)"), "$1"},
-        {std::regex(R"(\[(.+?)\]\((.+?)\))"), "$1"},
-        {std::regex(R"(!\[(.+?)\]\((.+?)\))"), "$1"},
-        {std::regex(R"(^#+\s+(.+?)\s*$)"), "$1"},
-        {std::regex(R"(^\s*=+\s*$)"), "$1"},
-        {std::regex(R"(^\s*-+\s*$)"), "$1"},
-        {std::regex(R"(^\s*>\s+(.+?)\s*$)"), "$1"},
-        {std::regex(R"(^\s*[\*\+-]\s+(.+?)\s*$)"), "$1"},
-        {std::regex(R"(^\s*\d+\.\s+(.+?)\s*$)"), "$1"},
-        {std::regex(R"(^\s*[-*_]{3,}\s*$)"), "$1"}
-    };
-
-    std::string result = str;
-    for (const auto& pattern : patterns) {
-        result = std::regex_replace(result, pattern.first, pattern.second);
-    }
-    return result;
-}
 
 PrivateServerNode *PrivateServerNode::create(GDPSHubLayer *layer, Server entry, CCSize size)
 {
@@ -103,12 +75,8 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     addChild(idLab);
 
 
-    auto descStr = removeMarkdown(entry.description);
-	// 150 => 200 (increased to account for text size change)
-    if (descStr.size() > 200) {
-        descStr = descStr.substr(0, 200) + "...";
-    }
-    std::transform(descStr.begin(), descStr.end(), descStr.begin(), [&](char c) {
+    auto descStr = entry.description.size() > 200 ? entry.description.substr(0, 200) + "..." : entry.description;
+	std::transform(descStr.begin(), descStr.end(), descStr.begin(), [&](char c) {
         return (c<0) ? ' ' : c;
     });
 

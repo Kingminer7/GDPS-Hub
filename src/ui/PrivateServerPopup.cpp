@@ -28,7 +28,7 @@ bool PrivateServerPopup::setup(Server server) {
   author->setID("server-owner");
   m_mainLayer->addChild(author);
 
-  auto desc = MDTextArea::create(server.description, ccp(420, 168));
+  auto desc = MDTextArea::create(server.fullDesc, ccp(420, 168));
   desc->setPosition(220, 131);
   desc->setID("server-description");
   m_mainLayer->addChild(desc);
