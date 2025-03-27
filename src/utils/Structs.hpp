@@ -8,6 +8,7 @@ struct Server{
     std::string title;
     std::string owner;
     std::string description;
+    std::string fullDesc;
     std::string url;
     std::string pfp;
     std::string banner;
@@ -38,6 +39,7 @@ struct matjson::Serialize<Server>
         server.title = value["title"].asString().unwrapOr("Unknown");
         server.owner = value["owner"].asString().unwrapOr("Unknown");
         server.description = value["description"].asString().unwrapOr("No description provided.");
+        server.fullDesc = value["full_description"].asString().unwrapOr("No description provided.");
         server.url = value["gdpsdb"].asString().unwrapOr("");
         server.pfp = value["pfp"].asString().unwrapOr("");
         server.banner = value["banner"].asString().unwrapOr("");
@@ -59,6 +61,7 @@ struct matjson::Serialize<Server>
         obj["title"] = value.title;
         obj["owner"] = value.owner;
         obj["description"] = value.description;
+        obj["full_description"] = value.fullDesc;
         obj["gdpsdb"] = value.url;
         obj["pfp"] = value.pfp;
         obj["discord_url"] = value.dcUrl;
