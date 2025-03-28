@@ -200,7 +200,6 @@ bool GDPSHubLayer::init() {
       swelveLayer->runAction(CCRepeatForever::create(action));
     }
     else {
-    geode::log::info("{}",layerIndex);
     switch (layerIndex){
       case 4: {
         swelveLayer->setPosition({0, -(winSize.height/2+110)});  
@@ -454,7 +453,7 @@ void GDPSHubLayer::fetchServers() {
       auto opt = res->json();
       auto data = opt.unwrapOr("err");
       if (data == "err") {
-        log::info("{}", err);
+        log::error("Failed to load servers: {}", err);
         m_infoLabel->setString("Something went wrong.");
         m_pages = 0;
         m_fetching = false;

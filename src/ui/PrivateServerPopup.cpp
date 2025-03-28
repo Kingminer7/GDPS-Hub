@@ -171,8 +171,6 @@ bool PrivateServerPopup::setup(Server server) {
   icon->setID("server-icon");
   m_mainLayer->addChild(icon);
 
-  log::info("{} {}", server.toolsUrl, server.dcUrl);
-
   return true;
 }
 
@@ -218,7 +216,6 @@ void PrivateServerPopup::onWeb(CCObject *sender) {
 }
 
 void PrivateServerPopup::onInfo(CCObject *) {
-  log::info("{}", m_server.created_at);
   FLAlertLayer::create(
       "Server Info",
       fmt::format("<cl>ID: {}</c>\n<cy>Created: {}</c>\n<cg>Recommended Version: {}</c>", m_server.id,
