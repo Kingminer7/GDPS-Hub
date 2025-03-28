@@ -6,7 +6,6 @@ ImageCache *ImageCache::m_instance = nullptr;
 
 CCImage *ImageCache::getImage(std::string id) {
   if (!m_cache->objectForKey(id)) {
-    log::info("{} is not cached...", id);
   }
   return static_cast<CCImage*>(m_cache->objectForKey(id));
 }
@@ -121,7 +120,6 @@ void IconNode::downloadImage(std::string id, std::string url) {
 
 bool IconNode::init(std::string id, std::string url) {
     if (!CCNode::init()) return false;
-    log::info("{}", url);
     ignoreAnchorPointForPosition(false);
     if (isBanner) setContentSize({365.f,80.f});
     else setContentSize({50.f, 50.f});
