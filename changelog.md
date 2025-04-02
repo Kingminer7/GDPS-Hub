@@ -1,3 +1,5 @@
+# 1.0.2
+- iOS support
 # 1.0.1
 - Remove some logs I forgot to remove
 - Fix pages only resetting on change in search and not sort type
