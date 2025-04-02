@@ -58,6 +58,8 @@ jobs:
           combine: true
           sdk: nightly
           cli: nightly
+          # too lazy to setup ninja for windows
+          configure-args: ${{ matrix.config.os != 'windows-latest' && '-G Ninja' || ''}}
           build-config: ${{ github.event.inputs.build_type != 'release' && 'RelWithDebInfo' || 'Release' }}
           export-pdb: ${{ github.event.inputs.build_type != 'release' }}
           # export-symbols: ${{ github.event.inputs.build_type != 'release' }}
