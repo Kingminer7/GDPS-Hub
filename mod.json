@@ -1,12 +1,12 @@
 {
-  "geode": "4.3.1",
+  "geode": "4.4.0",
   "gd": {
     "win": "2.2074",
     "android": "2.2074",
     "mac": "2.2074",
     "ios": "2.2074"
   },
-  "version": "v1.0.2",
+  "version": "v1.0.3",
   "id": "lblazen.gdps_hub",
   "name": "GDPS Hub",
   "developers": ["GDPS Hub Team", "km7dev", "cdc"],
@@ -53,19 +53,6 @@
       "type": "bool",
       "default": false,
       "description": "Hides the 'Previewing' label when previewing a server."
-    },
-    "max-image": {
-      "name": "Image Caching Max",
-      "description": "Maximum images to cache at a time - 0 to not cache",
-      "type": "int",
-      "default": 20,
-      "min": 0,
-      "max": 100,
-      "control": {
-        "slider": true,
-        "slider-step": 1,
-        "input": true
-      }
     }
   }
 }

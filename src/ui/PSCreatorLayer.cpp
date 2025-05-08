@@ -149,9 +149,9 @@ bool PSCreatorLayer::init() {
   GameLevelManager::get()->m_dailyID = -1;
   GameLevelManager::get()->m_weeklyID = -1;
   GameLevelManager::get()->m_eventID = -1;
-  GameLevelManager::get()->m_dailyIDUnk = -1;
-  GameLevelManager::get()->m_weeklyIDUnk = -1;
-  GameLevelManager::get()->m_eventIDUnk = -1;
+  GameLevelManager::get()->m_activeDailyID = -1;
+  GameLevelManager::get()->m_activeWeeklyID = -1;
+  GameLevelManager::get()->m_activeEventID = -1;
   GameLevelManager::get()->m_dailyTimeLeft = -1;
   GameLevelManager::get()->m_weeklyTimeLeft = -1;
   GameLevelManager::get()->m_eventTimeLeft = -1;
@@ -181,9 +181,9 @@ void PSCreatorLayer::onGoBack(CCObject *) {
   GameLevelManager::get()->m_dailyID = -1;
   GameLevelManager::get()->m_weeklyID = -1;
   GameLevelManager::get()->m_eventID = -1;
-  GameLevelManager::get()->m_dailyIDUnk = -1;
-  GameLevelManager::get()->m_weeklyIDUnk = -1;
-  GameLevelManager::get()->m_eventIDUnk = -1;
+  GameLevelManager::get()->m_activeDailyID = -1;
+  GameLevelManager::get()->m_activeWeeklyID = -1;
+  GameLevelManager::get()->m_activeEventID = -1;
   GameLevelManager::get()->m_dailyTimeLeft = -1;
   GameLevelManager::get()->m_weeklyTimeLeft = -1;
   GameLevelManager::get()->m_eventTimeLeft = -1;

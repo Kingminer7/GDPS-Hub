@@ -3,7 +3,8 @@
 #include "PrivateServerPopup.hpp"
 #include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
-#include "../utils/Images.hpp"
+
+#include <Geode/ui/LazySprite.hpp>
 
 PrivateServerNode *PrivateServerNode::create(GDPSHubLayer *layer, Server entry, CCSize size)
 {
@@ -34,22 +35,32 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     bg->setID("server-node-bg");
     addChildAtPosition(bg, Anchor::Center);
 	if (server.banner != ""){
-    	auto banner = IconNode::create(fmt::format("server-banner-{}",server.id),server.banner,true);
+        // Height shouldnt be limiting factor here so 500 is arbitrary
+    	auto banner = LazySprite::create({size.width, 500}, false);
+        banner->setAutoResize(true);
+        banner->loadFromUrl(server.banner);
+        banner->setScale(size.width / banner->getContentWidth());
     	banner->setAnchorPoint({0.5,0.5});
-    	//banner->setScale(size.width/banner->getContentWidth());
-    	//banner->setPosition(size.width/2,size.height/2);
-		//banner->setOpacity(90);
+		banner->setOpacity(90);
+        banner->setCascadeOpacityEnabled(true);
+        banner->setLoadCallback([banner](Result<>) {
+            banner->setOpacity(90);
+        });
+        banner->setID("banner");
 		auto bannerClip = CCClippingNode::create();
 		bannerClip->setStencil(bg);
 		bannerClip->setAlphaThreshold(0.05f);
 		bannerClip->setContentSize(size);
 		bannerClip->setAnchorPoint({0.5,0.5});
 		bannerClip->addChildAtPosition(banner,Anchor::Center);
+        bannerClip->setID("banner-clip");
 		addChildAtPosition(bannerClip,Anchor::Center);
 	}
 	
-    auto icon = IconNode::create(fmt::format("server-icon-{}", server.id), server.pfp);
-    icon->setScale(1.125f);
+    auto icon = LazySprite::create({56.25f, 56.25f}, true);
+    icon->setAutoResize(true);
+    icon->loadFromUrl(server.pfp);
+    icon->setScale(56.25 / icon->getContentWidth());
     icon->setID("server-icon");
     addChildAtPosition(icon, Anchor::Left, {40, 0});
 

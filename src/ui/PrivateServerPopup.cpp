@@ -1,7 +1,8 @@
 #include "PrivateServerPopup.hpp"
 #include "PSCreatorLayer.hpp"
 #include "../utils/GDPSHub.hpp"
-#include "../utils/Images.hpp"
+
+#include <Geode/ui/LazySprite.hpp>
 
 bool PrivateServerPopup::setup(Server server) {
   setID("ps-popup"_spr);
@@ -166,7 +167,10 @@ bool PrivateServerPopup::setup(Server server) {
   m_mainLayer->addChild(menu);
   m_mainLayer->setID("main-layer");
 
-  auto icon = IconNode::create(fmt::format("server-icon-{}", server.id), server.pfp);
+  auto icon = LazySprite::create({50.f, 50.f}, true);
+  icon->setAutoResize(true);
+  icon->loadFromUrl(server.pfp);
+  icon->setScale(50 / icon->getContentSize().width);
   icon->setPosition({47, 245});
   icon->setID("server-icon");
   m_mainLayer->addChild(icon);
