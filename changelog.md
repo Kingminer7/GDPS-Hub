@@ -1,3 +1,6 @@
+# 1.0.3
+- Use LazySprite (internal change)
+    - This removes the max image cache setting, as it isn't used anymore
 # 1.0.2
 - iOS support
 # 1.0.1

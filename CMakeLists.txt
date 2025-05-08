@@ -9,7 +9,7 @@ else()
 endif()
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-project(GDPSHub VERSION 1.0.0)
+project(GDPSHub VERSION 1.0.3)
 
 file(GLOB SOURCES
     src/utils/*.cpp
