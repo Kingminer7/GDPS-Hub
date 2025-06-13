@@ -20,11 +20,11 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      
       matrix:
         config:
         - name: Windows
-          os: windows-latest
+          os: ubuntu-latest
+          target: Win64
 
         - name: macOS
           os: macos-latest
@@ -43,7 +43,7 @@ jobs:
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
-    continue-on-error: true
+
     steps:
       - uses: actions/checkout@v4
 
@@ -51,16 +51,14 @@ jobs:
         run: echo "RELEASE_BUILD=${{ github.event.inputs.build_type == 'release' }}" >> $GITHUB_ENV
 
       - name: Build the mod
-        uses: geode-sdk/build-geode-mod@main
+        uses: hiimjasmine00/build-geode-mod@xwin
         with:
-          bindings: qm7dev/bindings
+          bindings: geode-sdk/bindings
           bindings-ref: main
           combine: true
-          sdk: nightly
-          cli: nightly
-          build-config: ${{ github.event.inputs.build_type != 'release' && 'RelWithDebInfo' || 'Release' }}
-          export-pdb: ${{ github.event.inputs.build_type != 'release' }}
-          # export-symbols: ${{ github.event.inputs.build_type != 'release' }}
+          build-config: ${{ (matrix.config.target == 'Android64' || matrix.config.target == 'Android32') && 'Release' || (github.event.inputs.build_type != 'release' && 'RelWithDebInfo' || 'Release') }}
+          export-pdb: true
+          export-symbols: true
           target: ${{ matrix.config.target }}
 
   package:
@@ -69,7 +67,7 @@ jobs:
     needs: ['build']
 
     steps:
-      - uses: geode-catgirls/build-geode-mod/combine@main
+      - uses: geode-sdk/build-geode-mod/combine@main
         id: build
 
       - uses: actions/upload-artifact@v4
@@ -129,7 +127,7 @@ jobs:
         run: |
           MOD_VERSION=$(jq -r '.version' mod.json)
           set +e
-          curl --fail "https://api.github.com/repos/kingminer7/gdps-hub/releases/tags/v$VERSION" --silent --output /dev/null
+          curl --fail "https://api.github.com/repos/geode-sdk/geode/releases/tags/v$VERSION" --silent --output /dev/null
           RESULT=$?
           set -e
           
