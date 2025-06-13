@@ -194,10 +194,10 @@ void PrivateServerPopup::saveServer(CCObject *) {
     return;
   }
 
-  if (GDPSUtils::createServer(m_server.title, m_server.url))
+  if (auto res = GDPSUtils::createServer(m_server.title, m_server.url))
     FLAlertLayer::create("Success", "Server saved to GDPS Switcher.", "OK")->show();
   else
-    FLAlertLayer::create("Error", "This server is already saved.","OK")->show();
+    FLAlertLayer::create("Error", fmt::format("An error occurred creating this server: {}", res.unwrapErr()).c_str(),"OK")->show();
 }
 
 void PrivateServerPopup::onDiscord(CCObject *sender) {
