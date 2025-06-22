@@ -1,3 +1,5 @@
+# 1.0.4
+- JIT-less iOS support
 # 1.0.3
 - Use LazySprite (internal change)
     - This removes the max image cache setting, as it isn't used anymore
