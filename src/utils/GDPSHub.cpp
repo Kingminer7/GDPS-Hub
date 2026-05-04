@@ -145,9 +145,6 @@ bool GDPSHub::isPreviewing() {
 
 std::string GDPSHub::stampToDateTime(int stamp)
 {
-  time_t t = stamp;
-  tm *tm = localtime(&t);
-  char buf[80];
-  strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", tm);
-  return buf;
+  auto lt = asp::localtime(stamp);
+  return fmt::format("{:%Y-%m-%d %H:%M:%S}", lt);
 }

@@ -10,6 +10,7 @@
 #include "Geode/ui/Scrollbar.hpp"
 
 using namespace geode::prelude;
+using namespace geode::utils::web;
 
 class GDPSHubLayer : public CCLayer
 {
@@ -18,7 +19,7 @@ protected:
     bool init() override;
     void keyBackClicked() override;
     LoadingCircle *m_loadingCircle = LoadingCircle::create();
-    EventListener<web::WebTask> m_listener;
+    async::TaskHolder<WebResponse> m_listener;
     CCLabelBMFont *m_infoLabel;
     Scrollbar *m_scrollbar;
     CCSprite* m_header;

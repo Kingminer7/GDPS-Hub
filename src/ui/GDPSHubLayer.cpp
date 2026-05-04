@@ -9,18 +9,16 @@
 
 using namespace geode::prelude;
 
-class PSSearchPopup : public Popup<GDPSHubLayer *> {
+class PSSearchPopup : public Popup {
 protected:
   TextInput *m_query;
   GDPSHubLayer *m_layer;
   CCMenuItemSpriteExtra *topSel;
   CCMenuItemSpriteExtra *recentSel;
   bool changed = false;
-  bool setup(GDPSHubLayer *layer) override {
+  bool init(GDPSHubLayer *layer) {
+      if (!Popup::init(250, 125, "geode.loader/GE_square03.png")) return false;
     setTitle("Query Options");
-    auto contentSize = m_bgSprite->getContentSize();
-    m_bgSprite->setSpriteFrame(CCSprite::create("geode.loader/GE_square03.png")->displayFrame());
-    m_bgSprite->setContentSize(contentSize);
     setID("search-popup"_spr);
     m_title->setID("title");
     m_buttonMenu->setID("back-menu");
@@ -115,7 +113,7 @@ protected:
 public:
   static PSSearchPopup *create(GDPSHubLayer *layer) {
     auto ret = new PSSearchPopup();
-    if (ret->initAnchored(250.f, 125.f, layer)) {
+    if (ret->init(layer)) {
       ret->autorelease();
       return ret;
     }
@@ -447,11 +445,50 @@ void GDPSHubLayer::fetchServers() {
   m_infoLabel->setString("");
   m_fetching = true;
 
-  m_listener.bind([this](web::WebTask::Event *e) {
-    if (web::WebResponse *res = e->getValue()) {
+  auto urlEncode = [](const std::string &value) -> std::string {
+    std::ostringstream escaped;
+    escaped.fill('0');
+    escaped << std::hex;
+
+    for (char c : value) {
+      if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+        escaped << c;
+      } else {
+        escaped << '%' << std::setw(2) << int((unsigned char)c);
+      }
+    }
+
+    return escaped.str();
+  };
+
+  std::string safeSearch = urlEncode(m_search);
+  auto req = web::WebRequest();
+  m_listener.spawn(req.get(
+      fmt::format("https://api.gdpshub.com/geode/get?page={}&type={}&search={}",
+                  m_page, m_queryType, safeSearch)), [this](WebResponse res) {
       std::string err;
-      auto opt = res->json();
-      auto data = opt.unwrapOr("err");
+      auto opt = res.json();
+      //auto data = opt.unwrapOr("err");
+      auto data = matjson::parse(
+              "{\"success\": true,\"data\": [{"
+              "\"id\": 0,"
+              "\"title\": \"test title\","
+              "\"owner\": \"kam\","
+              "\"description\": \"Silly test server\","
+              "\"full_description\": \"Silly test server\","
+              "\"gdpsdb\": \"https://www.boomlings.com/database\","
+              "\"pfp\": \"https://cdn.discordapp.com/avatars/1254538148755537971/bafa63f076bd824af555cede8bd55c23.png?size=4096\","
+              "\"banner\": \"https://cdn.discordapp.com/guilds/911701438269386882/users/1254538148755537971/banners/480fbfa67d5ae6571f1fb72d30f50c1d.png?size=4096\","
+              "\"discord_url\": \"https://discord.gg/YFMMeS3FPT\","
+              "\"toolpage\": \"https://km7dev.me/projects\","
+              "\"views\": 73,"
+              "\"rating\": 3,"
+              "\"likes\": 27,"
+              "\"dislikes\": 6,"
+              "\"created_at\": \"1211104800\","
+              "\"version\": \"2.2081\""
+              "}]}"
+              ).unwrapOr("err");
       if (data == "err") {
         log::error("Failed to load servers: {}", err);
         m_infoLabel->setString("Something went wrong.");
@@ -494,29 +531,7 @@ void GDPSHubLayer::fetchServers() {
       m_loadingCircle->fadeAndRemove();
       m_loadingCircle = nullptr;
       m_fetching = false;
-    }
   });
-  auto urlEncode = [](const std::string &value) -> std::string {
-    std::ostringstream escaped;
-    escaped.fill('0');
-    escaped << std::hex;
-
-    for (char c : value) {
-      if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
-        escaped << c;
-      } else {
-        escaped << '%' << std::setw(2) << int((unsigned char)c);
-      }
-    }
-
-    return escaped.str();
-  };
-
-  std::string safeSearch = urlEncode(m_search);
-  auto req = web::WebRequest();
-  m_listener.setFilter(req.get(
-      fmt::format("https://api.gdpshub.com/geode/get?page={}&type={}&search={}",
-                  m_page, m_queryType, safeSearch)));
 }
 
 void GDPSHubLayer::onLeftArrow(CCObject *) {

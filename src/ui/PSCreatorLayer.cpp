@@ -2,7 +2,7 @@
 #include "../utils/GDPSHub.hpp"
 #include "Geode/binding/GameLevelManager.hpp"
 #include "Geode/cocos/CCDirector.h"
-#include "Geode/ui/SceneManager.hpp"
+#include "Geode/ui/OverlayManager.hpp"
 #include <Geode/binding/GauntletSelectLayer.hpp>
 #include <Geode/binding/LeaderboardsLayer.hpp>
 #include <Geode/binding/LevelSearchLayer.hpp>
@@ -164,8 +164,7 @@ bool PSCreatorLayer::init() {
     infoLabel->setScale(0.5);
     infoLabel->setZOrder(10);
     infoLabel->setOpacity(155);
-    addChild(infoLabel);
-    SceneManager::get()->keepAcrossScenes(infoLabel);
+    OverlayManager::get()->addChild(infoLabel);
   }
 
   return true;
@@ -175,7 +174,7 @@ void PSCreatorLayer::keyBackClicked() { onGoBack(nullptr); }
 
 void PSCreatorLayer::onGoBack(CCObject *) {
   GDPSHub::get()->endPreview();
-  SceneManager::get()->forget(infoLabel);
+  infoLabel->removeFromParent();
   CCDirector::sharedDirector()->popSceneWithTransition(.5, PopTransition::kPopTransitionFade);
 
   GameLevelManager::get()->m_dailyID = -1;
@@ -200,7 +199,7 @@ PSCreatorLayer *PSCreatorLayer::create() {
 }
 
 void PSCreatorLayer::onScores(CCObject *) {
-  auto scene = LeaderboardsLayer::scene(LeaderboardState::Default);
+  auto scene = LeaderboardsLayer::scene(LeaderboardType::Default, LeaderboardStat::Stars);
   CCDirector::sharedDirector()->pushScene(
       CCTransitionFade::create(0.5, scene));
 }

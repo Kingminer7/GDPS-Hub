@@ -49,7 +49,7 @@ struct matjson::Serialize<Server>
         server.rating = value["rating"].asInt().unwrapOrDefault();
         server.likes = value["likes"].asInt().unwrapOrDefault();
         server.dislikes = value["dislikes"].asInt().unwrapOrDefault();
-        server.created_at = std::stoi(value["created_at"].asString().unwrapOrDefault());
+        server.created_at = geode::utils::numFromString<int>(value["created_at"].asString().unwrapOr("0")).unwrapOrDefault();
         server.version = value["version"].asString().unwrapOr("No version provided.");
         return Ok(server);
     }

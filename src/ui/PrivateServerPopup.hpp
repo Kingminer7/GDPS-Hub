@@ -6,13 +6,13 @@
 
 using namespace geode::prelude;
 
-class PrivateServerPopup : public Popup<Server> {
+class PrivateServerPopup : public Popup {
 protected:
   Server m_server;
 
-  bool setup(Server server) override;
+  bool init(Server server);
   void viewServer(CCObject *);
-  void saveServer(CCObject *);
+  // void saveServer(CCObject *);
   void onDiscord(CCObject *sender);
   void onTools(CCObject *sender);
   void onWeb(CCObject *sender);
@@ -23,5 +23,5 @@ protected:
   void loadIcon();
 
 public:
-  static PrivateServerPopup *create(Server server);
+  static PrivateServerPopup* create(Server server);
 };

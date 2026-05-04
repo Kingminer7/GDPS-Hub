@@ -4,12 +4,10 @@
 
 #include <Geode/ui/LazySprite.hpp>
 
-bool PrivateServerPopup::setup(Server server) {
+bool PrivateServerPopup::init(Server server) {
+    if (!Popup::init(440, 280, "geode.loader/GE_square03.png")) return false; 
   setID("ps-popup"_spr);
   this->m_bgSprite->setID("background");
-  auto contentSize = this->m_bgSprite->getContentSize();
-  this->m_bgSprite->setSpriteFrame(CCSprite::create("geode.loader/GE_square03.png")->displayFrame());
-  this->m_bgSprite->setContentSize(contentSize);
   this->m_buttonMenu->setID("back-menu");
   this->m_closeBtn->setID("back-button");
   this->m_server = server;
@@ -152,7 +150,7 @@ bool PrivateServerPopup::setup(Server server) {
 
   auto saveBtn = CCMenuItemSpriteExtra::create(
       ButtonSprite::create("Save"), this,
-      menu_selector(PrivateServerPopup::saveServer));
+      /*menu_selector(PrivateServerPopup::saveServer)*/ nullptr);
   static_cast<ButtonSprite*>(saveBtn->getNormalImage())->updateBGImage("geode.loader/GE_button_05.png");
   saveBtn->setPosition({265, 26});
   saveBtn->setID("save-button");
@@ -184,7 +182,7 @@ void PrivateServerPopup::viewServer(CCObject *) {
   GDPSHub::get()->beginPreview(m_server);
 }
 
-void PrivateServerPopup::saveServer(CCObject *) {
+/*void PrivateServerPopup::saveServer(CCObject *) {
   if (!Loader::get()->isModLoaded("km7dev.gdps-switcher")) {
     FLAlertLayer::create(
         "Error",
@@ -198,7 +196,8 @@ void PrivateServerPopup::saveServer(CCObject *) {
     FLAlertLayer::create("Success", "Server saved to GDPS Switcher.", "OK")->show();
   else
     FLAlertLayer::create("Error", fmt::format("An error occurred creating this server: {}", res.unwrapErr()).c_str(),"OK")->show();
-}
+    
+}*/
 
 void PrivateServerPopup::onDiscord(CCObject *sender) {
   if (m_server.dcUrl == "") {
@@ -231,7 +230,7 @@ void PrivateServerPopup::onInfo(CCObject *) {
 PrivateServerPopup *PrivateServerPopup::create(Server server) {
   auto ret = new PrivateServerPopup();
   ret->setColor({14, 55, 190});
-  if (ret->initAnchored(440.f, 280.f, server)) {
+  if (ret->init(server)) {
     ret->autorelease();
     return ret;
   }
