@@ -28,6 +28,36 @@ struct ServerEntry {
 };
 
 
+// taken from 
+// https://github.com/cdc-sys/level-thumbs-mod/blob/4e72bb7d78eed712ff0fff532d4f4fcec1f2ded4/src/layers/ThumbnailPopup.cpp#L424-L449
+// thanks prevter
+
+// adapted from
+// https://github.com/geode-sdk/geode/blob/2f390747385b2c7fcf15b606df10f87d671f3929/loader/src/server/Server.cpp#L262
+static Result<uint64_t> parseISOTimestamp(std::string str) {
+#ifdef GEODE_IS_WINDOWS
+    std::stringstream ss(str);
+    std::chrono::system_clock::time_point seconds;
+    if (ss >> std::chrono::parse("%Y-%m-%dT%H:%M:%S", seconds)) {
+        return Ok(std::chrono::duration_cast<std::chrono::seconds>(seconds.time_since_epoch()).count());
+    }
+    return Err("Invalid date time format '{}'", str);
+#else
+    auto dotPos = str.find('.');
+    if (dotPos != std::string::npos) {
+        str.resize(dotPos);
+    }
+
+    tm t;
+    auto ptr = strptime(str.c_str(), "%Y-%m-%dT%H:%M:%S", &t);
+    if (ptr == nullptr || (*ptr != '\0' && *ptr != 'Z')) {
+        return Err("Invalid date time format '{}'", str);
+    }
+
+    return Ok(static_cast<uint64_t>(timegm(&t)));
+#endif
+}
+
 
 template <>
 struct matjson::Serialize<Server>
@@ -49,7 +79,15 @@ struct matjson::Serialize<Server>
         server.rating = value["rating"].asInt().unwrapOrDefault();
         server.likes = value["likes"].asInt().unwrapOrDefault();
         server.dislikes = value["dislikes"].asInt().unwrapOrDefault();
-        server.created_at = value["created_at"].asString().unwrapOr("Unknown");
+        auto ca = value["created_at"].asString().unwrapOr("Unknown");
+        auto caRes = parseISOTimestamp(ca);
+        if (!caRes) {
+            server.created_at = ca;
+            log::error("Failed to parse timestamp: {}", caRes.unwrapErr());
+        } else {
+            auto tm = geode::localtime(caRes.unwrap());
+            server.created_at = fmt::format("{:%Y-%m-%d at %H:%M}", tm);
+        }
         server.version = value["version"].asString().unwrapOr("No version provided.");
         return Ok(server);
     }

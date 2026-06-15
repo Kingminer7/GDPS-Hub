@@ -136,9 +136,8 @@ bool PrivateServerPopup::init(Server server) {
   menu->addChild(toolBtn);
   
   auto viewBtn = CCMenuItemSpriteExtra::create(
-      ButtonSprite::create("Play"), this,
+      ButtonSprite::create("Play", "bigFont.fnt", "geode.loader/GE_button_05.png"), this,
       menu_selector(PrivateServerPopup::viewServer));
-  static_cast<ButtonSprite*>(viewBtn->getNormalImage())->updateBGImage("geode.loader/GE_button_05.png");
   viewBtn->setPosition({175, 26});
   viewBtn->setID("view-button");
   if (server.url == "No URL provided.") {
@@ -148,8 +147,7 @@ bool PrivateServerPopup::init(Server server) {
   }
   menu->addChild(viewBtn);
 
-  auto saveSpr = ButtonSprite::create("Save");
-  saveSpr->updateBGImage("geode.loader/GE_button_05.png");
+  auto saveSpr = ButtonSprite::create("Save", "bigFont.fnt", "geode.loader/GE_button_05.png");
   auto saveBtn = CCMenuItemExt::createSpriteExtra(saveSpr, [this](auto){
     createQuickPopup("Temporarily Disabled", "Sorry, saving is temporarily disabled due to an issue. Do you want the URL copied to your clipboard instead?", "No", "Yes", [this](auto, bool second){
       if (second) clipboard::write(m_server.url);
