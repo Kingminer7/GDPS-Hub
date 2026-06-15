@@ -6,7 +6,7 @@
     "mac": "2.2081",
     "ios": "2.2081"
   },
-  "version": "v1.0.5",
+  "version": "v1.0.6",
   "id": "lblazen.gdps_hub",
   "name": "GDPS Hub",
   "developers": ["GDPS Hub Team", "km7dev", "cdc"],
@@ -43,7 +43,7 @@
       "version": "4.0.0"
     },
     "prevter.imageplus": {
-      "required": false,
+      "required": true,
       "version": "1.1.0"
     },
     "km7dev.gdps-switcher": {
@@ -57,6 +57,12 @@
       "type": "bool",
       "default": false,
       "description": "Hides the 'Previewing' label when previewing a server."
+    },
+    "dont-animate": {
+      "name": "Disable animated icons",
+      "type": "bool",
+      "default": false,
+      "description": "Disables animated icons and banners for servers."
     }
   }
 }

@@ -3,6 +3,7 @@
 #include "PrivateServerPopup.hpp"
 #include "../utils/GDPSHub.hpp"
 #include "../utils/Structs.hpp"
+#include <prevter.imageplus/include/api.hpp>
 
 #include <Geode/ui/LazySprite.hpp>
 
@@ -43,8 +44,14 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     	banner->setAnchorPoint({0.5,0.5});
 		banner->setOpacity(90);
         banner->setCascadeOpacityEnabled(true);
-        banner->setLoadCallback([banner](Result<>) {
-            banner->setOpacity(90);
+        banner->setLoadCallback([banner](Result<> res){
+            if (res) {
+                banner->setOpacity(90);
+                if (Mod::get()->getSettingValue<bool>("dont-animate")) {
+                    auto anim = imgp::AnimatedSprite::from(banner);
+                    if (anim->isAnimated()) anim->stop();
+                }
+            }
         });
         banner->setID("banner");
 		auto bannerClip = CCClippingNode::create();
@@ -58,6 +65,14 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
 	}
 	
     auto icon = LazySprite::create({56.25f, 56.25f}, true);
+    icon->setLoadCallback([icon](Result<> res){
+      if (Mod::get()->getSettingValue<bool>("dont-animate")) {
+        if (res) {
+          auto anim = imgp::AnimatedSprite::from(icon);
+          if (anim->isAnimated()) anim->stop();
+        }
+      }
+    });
     icon->setAutoResize(true);
     icon->loadFromUrl(server.pfp);
     icon->setScale(56.25 / icon->getContentWidth());

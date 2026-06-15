@@ -1,3 +1,5 @@
+# 1.0.6
+- Add a setting for disabling animated icons
 # 1.0.5
 - 2.2081 support
 - Temporarily disable the save to GDPS Switcher button.

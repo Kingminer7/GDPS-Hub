@@ -1,6 +1,7 @@
 #include "PrivateServerPopup.hpp"
 #include "PSCreatorLayer.hpp"
 #include "../utils/GDPSHub.hpp"
+#include <prevter.imageplus/include/api.hpp>
 
 #include <Geode/ui/LazySprite.hpp>
 
@@ -172,6 +173,14 @@ bool PrivateServerPopup::init(Server server) {
   icon->setScale(50 / icon->getContentSize().width);
   icon->setPosition({47, 245});
   icon->setID("server-icon");
+  icon->setLoadCallback([icon](Result<> res){
+    if (res) {
+      if (Mod::get()->getSettingValue<bool>("dont-animate")) {
+        auto anim = imgp::AnimatedSprite::from(icon);
+        if (anim->isAnimated()) anim->stop();
+      }
+    }
+  });
   m_mainLayer->addChild(icon);
 
   return true;
