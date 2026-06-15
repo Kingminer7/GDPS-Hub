@@ -126,7 +126,6 @@ bool PrivateServerNode::init(GDPSHubLayer *layer, Server entry, CCSize size)
     menu->setID("menu");
 
     auto spr = ButtonSprite::create("View","bigFont.fnt","geode.loader/GE_button_05.png",.8f);
-    //spr->updateBGImage("geode.loader/GE_button_05.png");
     spr->setScale(0.8f);
     auto viewBtn = CCMenuItemSpriteExtra::create(spr,
         this,

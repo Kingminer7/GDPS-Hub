@@ -1,3 +1,7 @@
+# 1.0.5
+- 2.2081 support
+- Temporarily disable the save to GDPS Switcher button.
+- Add an ImagePlus dependency since some servers use gif icons
 # 1.0.4
 - JIT-less iOS support
 # 1.0.3

@@ -468,27 +468,7 @@ void GDPSHubLayer::fetchServers() {
                   m_page, m_queryType, safeSearch)), [this](WebResponse res) {
       std::string err;
       auto opt = res.json();
-      //auto data = opt.unwrapOr("err");
-      auto data = matjson::parse(
-              "{\"success\": true,\"data\": [{"
-              "\"id\": 0,"
-              "\"title\": \"test title\","
-              "\"owner\": \"kam\","
-              "\"description\": \"Silly test server\","
-              "\"full_description\": \"Silly test server\","
-              "\"gdpsdb\": \"https://www.boomlings.com/database\","
-              "\"pfp\": \"https://cdn.discordapp.com/avatars/1254538148755537971/bafa63f076bd824af555cede8bd55c23.png?size=4096\","
-              "\"banner\": \"https://cdn.discordapp.com/guilds/911701438269386882/users/1254538148755537971/banners/480fbfa67d5ae6571f1fb72d30f50c1d.png?size=4096\","
-              "\"discord_url\": \"https://discord.gg/YFMMeS3FPT\","
-              "\"toolpage\": \"https://km7dev.me/projects\","
-              "\"views\": 73,"
-              "\"rating\": 3,"
-              "\"likes\": 27,"
-              "\"dislikes\": 6,"
-              "\"created_at\": \"1211104800\","
-              "\"version\": \"2.2081\""
-              "}]}"
-              ).unwrapOr("err");
+      auto data = opt.unwrapOr("err");
       if (data == "err") {
         log::error("Failed to load servers: {}", err);
         m_infoLabel->setString("Something went wrong.");

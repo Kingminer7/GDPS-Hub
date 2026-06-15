@@ -49,5 +49,4 @@ class GDPSHub {
         void switchPreview(Server server);
         Server *getCurrentServer();
         bool isPreviewing();
-        static std::string stampToDateTime(int stamp);
 };

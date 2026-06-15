@@ -142,9 +142,3 @@ Server *GDPSHub::getCurrentServer() {
 bool GDPSHub::isPreviewing() {
   return this->serverId != -1;
 }
-
-std::string GDPSHub::stampToDateTime(int stamp)
-{
-  auto lt = asp::localtime(stamp);
-  return fmt::format("{:%Y-%m-%d %H:%M:%S}", lt);
-}

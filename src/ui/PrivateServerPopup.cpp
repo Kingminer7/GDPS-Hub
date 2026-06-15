@@ -148,10 +148,13 @@ bool PrivateServerPopup::init(Server server) {
   }
   menu->addChild(viewBtn);
 
-  auto saveBtn = CCMenuItemSpriteExtra::create(
-      ButtonSprite::create("Save"), this,
-      /*menu_selector(PrivateServerPopup::saveServer)*/ nullptr);
-  static_cast<ButtonSprite*>(saveBtn->getNormalImage())->updateBGImage("geode.loader/GE_button_05.png");
+  auto saveSpr = ButtonSprite::create("Save");
+  saveSpr->updateBGImage("geode.loader/GE_button_05.png");
+  auto saveBtn = CCMenuItemExt::createSpriteExtra(saveSpr, [this](auto){
+    createQuickPopup("Temporarily Disabled", "Sorry, saving is temporarily disabled due to an issue. Do you want the URL copied to your clipboard instead?", "No", "Yes", [this](auto, bool second){
+      if (second) clipboard::write(m_server.url);
+    });
+  });
   saveBtn->setPosition({265, 26});
   saveBtn->setID("save-button");
   menu->addChild(saveBtn);
@@ -222,7 +225,7 @@ void PrivateServerPopup::onInfo(CCObject *) {
   FLAlertLayer::create(
       "Server Info",
       fmt::format("<cl>ID: {}</c>\n<cy>Created: {}</c>\n<cg>Recommended Version: {}</c>", m_server.id,
-                  GDPSHub::stampToDateTime(m_server.created_at), m_server.version),
+                  m_server.created_at, m_server.version),
       "Close")
       ->show();
 }
